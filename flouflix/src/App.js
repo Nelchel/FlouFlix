@@ -1,23 +1,21 @@
 import logo from './logo.svg';
 import './App.css';
+import Box from "@mui/material/Box"
+import { CircularProgress, Typography } from '@mui/material';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
       </header>
+      <body>
+        <Box>
+          <Typography variant="h1" component="h1">FlouFlix</Typography>
+          <Typography variant="h2" component="h2">Work In Progress</Typography>
+          <CircularProgress />
+        </Box>
+      </body>
     </div>
   );
 }
