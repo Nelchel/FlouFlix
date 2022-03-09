@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Inscription from "../pages/Inscription";
 
@@ -37,6 +37,7 @@ function Nav() {
           </Button>
         </Box>
       </Box>
+      <Outlet />
     </Box>
   );
 }
