@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Inscription from "../pages/Inscription";
 
@@ -32,11 +32,14 @@ function Nav() {
         </Link>
         <Box marginRight="10px" display="flex">
           <Box marginRight="10px"></Box>
+          <Link to="/connexion"> 
           <Button variant="contained" color="error">
-            <Typography>Se Connecter</Typography>
+            <Typography>Se connecter</Typography>
           </Button>
+          </Link>
         </Box>
       </Box>
+      <Outlet/>
     </Box>
   );
 }

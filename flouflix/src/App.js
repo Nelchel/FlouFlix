@@ -8,6 +8,8 @@ import { Routes, Route, Outlet, Link, BrowserRouter } from "react-router-dom";
 import Nav from "./components/Nav";
 import Home from "./components/Home";
 import Inscription from "./pages/Inscription";
+import Connexion from "./pages/Connexion";
+
 
 function App({ firebaseConfig }) {
   return (
@@ -25,6 +27,7 @@ function App({ firebaseConfig }) {
               <Route path="/" element={<Nav />}>
                 <Route index element={<Home />} />
                 <Route path="inscription" element={<Inscription />} />
+                <Route path="connexion" element={<Connexion />} />
                 {/* <Route path="*" element={<NoMatch />} /> */}
               </Route>
             </Routes>
