@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
@@ -17,10 +18,8 @@ const makeClass = makeStyles((theme) => ({
   },
 }));
 
-function Inscription({ firebaseConfig }) {
+function Inscription() {
   const classes = makeClass();
-
-  firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
   const [mailAddress, setMailAddress] = useState("");
@@ -51,7 +50,7 @@ function Inscription({ firebaseConfig }) {
         // console.log(errorMessage)
       });
 
-    db.collection("users")
+    await db.collection("users")
       .doc(userLog)
       .set({
         uid: userLog,
@@ -64,6 +63,9 @@ function Inscription({ firebaseConfig }) {
       .catch((error) => {
         console.error("Error writing document: ", error);
       });
+    localStorage.setItem("user", userLog);
+
+    window.location.replace(`/catalogue`);
   };
 
   return (
@@ -83,9 +85,10 @@ function Inscription({ firebaseConfig }) {
         defaultValue="password"
         onChange={handleChangePassword}
       />
-      <Button variant="contained" color="error" onClick={handleSubmit}>
-        <Typography>S'inscrire</Typography>
-      </Button>
+        <Button variant="contained" color="error" onClick={handleSubmit}>
+          <Typography>S'inscrire</Typography>
+        </Button>
+      <Outlet />
     </Box>
   );
 }
