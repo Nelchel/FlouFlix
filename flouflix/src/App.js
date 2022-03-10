@@ -28,7 +28,7 @@ function App({ firebaseConfig }) {
             <Routes>
               <Route path="/" element={<Nav />}>
                 <Route index element={<Home />} />
-                <Route path="inscription" element={<Inscription />} />
+                <Route path="inscription" element={<Inscription firebaseConfig={firebaseConfig} />} />
                 <Route path="connexion" element={<Connexion />} />
                 {/* <Route path="*" element={<NoMatch />} /> */}
               </Route>
