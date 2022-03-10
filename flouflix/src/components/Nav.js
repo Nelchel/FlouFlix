@@ -19,12 +19,12 @@ function Nav() {
     <Box bgcolor="black" maxHeight="70px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box marginLeft="50px">
-          <Link to="/">Home</Link>
-          <img
-            src="images/logo-flouflix.png"
+          <Link to="/">
+            <img src="images/logo-flouflix.png"
             alt="logo flouflix"
-            height="70px"
-          />
+            height="70px"/>
+           </Link>
+          
         </Box>
         <Link to="/inscription">
           <Button variant="outlined" color="error">
