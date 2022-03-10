@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Inscription from "../pages/Inscription";
+import SignOut from "./SignOut";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -38,7 +39,8 @@ function Nav() {
           </Button>
           </Link>
         </Box>
-      </Box>
+        <SignOut/>
+        </Box>
       <Outlet/>
     </Box>
   );
