@@ -39,8 +39,10 @@ function Nav() {
           </Button>
           </Link>
         </Box>
-        <SignOut/>
-        </Box>
+        <Link to="/catalogue">
+          Catalogue
+        </Link>
+      </Box>
       <Outlet/>
     </Box>
   );
