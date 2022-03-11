@@ -33,16 +33,17 @@ function Connexion() {
      const handleSubmit = () => {
       signInWithEmailAndPassword(auth, mailAddress, password)
       .then((userCredential) => {
-        // Signed in 
+        // console.log(auth.currentUser)
         const user = userCredential.user;
         setUserLog(user.uid);
+        console.log(auth)
+        window.location.replace(`/`);
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // console.log(errorMessage)
+        console.log(errorMessage)
       });
-      localStorage.setItem("user",userLog);
     }
 
 

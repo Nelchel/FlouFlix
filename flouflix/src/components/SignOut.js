@@ -18,21 +18,22 @@ function Connexion() {
   
   const auth = getAuth();
 
+
      const handleSubmit = () => {
         signOut(auth).then(() => {
-            // Sign-out successful.
           }).catch((error) => {
             // An error happened.
           });
      
-     localStorage.removeItem("user");
+        window.location.replace(`/`);
     }
+
 
 
   return ( 
   <Button onClick={handleSubmit}>
       <Typography>Se déconnecter</Typography>
- </Button>
+  </Button>
 
   );
 }

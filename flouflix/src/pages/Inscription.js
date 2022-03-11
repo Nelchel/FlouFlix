@@ -11,6 +11,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import { initializeApp } from "firebase/app";
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -46,8 +47,6 @@ function Inscription() {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // console.log(errorCode)
-        // console.log(errorMessage)
       });
 
     await db.collection("users")
@@ -59,13 +58,12 @@ function Inscription() {
       })
       .then(() => {
         console.log("Document successfully written!");
+
       })
       .catch((error) => {
         console.error("Error writing document: ", error);
       });
-    localStorage.setItem("user", userLog);
-
-    window.location.replace(`/catalogue`);
+    window.location.replace(`/`);
   };
 
   return (

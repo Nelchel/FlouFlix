@@ -2,6 +2,13 @@ import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Link,
+  Outlet,
+} from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -12,8 +19,33 @@ const makeClass = makeStyles((theme) => ({
 function Home() {
   const classes = makeClass();
 
+  const [exist, setExist] = useState();
+  const [mail, setMail] = useState();
 
-  return ( <h2>Home</h2>
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setMail(user.email);
+      setExist(true);
+    } else {
+      setExist(false);
+    }
+  });
+
+  return (
+    <Box>
+      {exist === true && (
+        <Box>
+          <Typography variant="h2">Bienvenue {mail}</Typography>
+        </Box>
+      )}
+      <Link to="ajouter-film">
+        <Button variant="contained" color="error">
+          <Typography variant="body1">Ajouter un film</Typography>
+        </Button>
+      </Link>
+    </Box>
   );
 }
 
