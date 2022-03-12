@@ -72,6 +72,7 @@ function AddMovie() {
       })
       .then(() => {
         console.log("Document successfully written!");
+        window.location.replace('/catalogue')
       })
       .catch((error) => {
         console.error("Error writing document: ", error);
