@@ -6,6 +6,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import Button from "@mui/material/Button";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -14,13 +15,16 @@ const makeClass = makeStyles((theme) => ({
 }));
 
 function AddMovie() {
+    // const storage = firebase.storage()
   const db = firebase.firestore();
+  const storage = getStorage();
+  const imagesRef = ref(storage, 'catalogue');
 
   const [name, setName] = useState("");
   const [releaseDate, setReleaseDate] = useState();
   const [price, setPrice] = useState();
   const [desc, setDesc] = useState();
-  const [img, setImg] = useState();
+  const [image , setImage] = useState('');
 
   const handleChangeName = (event) => {
     setName(event.target.value);
@@ -38,11 +42,13 @@ function AddMovie() {
     setDesc(event.target.value);
   };
 
-  const handleChangeImg = (event) => {
-    setImg(event.target.value);
-  };
 
   const handleSubmit = async () => {
+
+    uploadBytes(imagesRef, image).then((snapshot) => {
+        console.log('Uploaded a blob or file!');
+      });
+
     await db
       .collection("movies")
       .doc()
@@ -51,7 +57,7 @@ function AddMovie() {
         releaseDate: releaseDate,
         price: price,
         description: desc,
-        img: img,
+        // img: image,
       })
       .then(() => {
         console.log("Document successfully written!");
@@ -91,12 +97,7 @@ function AddMovie() {
           label="Description"
           onChange={handleChangeDesc}
         />
-        <TextField
-          value={img}
-          id="outlined-required"
-          label="Affiche du film"
-          onChange={handleChangeImg}
-        />
+        <input type="file" onChange={(e)=>{setImage(e.target.files[0])}} />
         <Button onClick={handleSubmit} variant="contained">
           <Typography>Ajouter le film</Typography>
         </Button>

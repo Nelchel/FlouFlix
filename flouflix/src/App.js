@@ -8,9 +8,13 @@ import Inscription from "./pages/Inscription";
 import Connexion from "./pages/Connexion";
 import Catalogue from "./pages/Catalogue";
 import AddMovie from "./pages/AddMovie";
+import { getStorage } from "firebase/storage";
+import { initializeApp } from "firebase/app";
 
 function App({ firebaseConfig }) {
   firebase.initializeApp(firebaseConfig);
+  const firebaseApp = initializeApp(firebaseConfig);
+  const storage = getStorage(firebaseApp);
 
   return (
     <BrowserRouter>
@@ -21,7 +25,7 @@ function App({ firebaseConfig }) {
             <Route path="inscription" element={<Inscription />} />
             <Route path="connexion" element={<Connexion />} />
             <Route path="catalogue" element={<Catalogue />} />
-            <Route path="ajouter-film" element={<AddMovie />} />
+            <Route path="ajouter-film" element={<AddMovie storage={storage} />} />
             {/* <Route path="*" element={<NoMatch />} /> */}
           </Route>
         </Routes>
