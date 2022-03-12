@@ -6,12 +6,22 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { BrowserRouter as Router, Routes, Route, Link, Outlet } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Outlet,
+} from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import { initializeApp } from "firebase/app";
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useAuthState } from "react-firebase-hooks/auth";
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -26,6 +36,7 @@ function Inscription() {
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
+  const [isBoutique, setIsBoutique] = useState("");
 
   const handleChangeMail = (event) => {
     setMailAddress(event.target.value);
@@ -34,6 +45,10 @@ function Inscription() {
   const handleChangePassword = (event) => {
     setPassword(event.target.value);
   };
+
+  const handleChangeSeller = (event) => {
+    setIsBoutique(event.target.value);
+  }
 
   const auth = getAuth();
 
@@ -49,16 +64,17 @@ function Inscription() {
         const errorMessage = error.message;
       });
 
-    await db.collection("users")
+    await db
+      .collection("users")
       .doc(userLog)
       .set({
         uid: userLog,
         mailAddress: mailAddress,
         password: password,
+        isBoutique: isBoutique,
       })
       .then(() => {
         console.log("Document successfully written!");
-
       })
       .catch((error) => {
         console.error("Error writing document: ", error);
@@ -83,9 +99,22 @@ function Inscription() {
         defaultValue="password"
         onChange={handleChangePassword}
       />
-        <Button variant="contained" color="error" onClick={handleSubmit}>
-          <Typography>S'inscrire</Typography>
-        </Button>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Catégorie</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={isBoutique}
+          label="Catégorie"
+          onChange={handleChangeSeller}
+        >
+          <MenuItem value={true}>Boutique agréée</MenuItem>
+          <MenuItem value={false}>Particulier</MenuItem>
+        </Select>
+      </FormControl>
+      <Button variant="contained" color="error" onClick={handleSubmit}>
+        <Typography>S'inscrire</Typography>
+      </Button>
       <Outlet />
     </Box>
   );

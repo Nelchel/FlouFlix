@@ -6,8 +6,9 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import Button from "@mui/material/Button";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -16,7 +17,7 @@ const makeClass = makeStyles((theme) => ({
 }));
 
 function AddMovie() {
-    // const storage = firebase.storage()
+  // const storage = firebase.storage()
   const db = firebase.firestore();
   const storage = getStorage();
 
@@ -24,16 +25,18 @@ function AddMovie() {
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-        setUidUser(user.uid);
-    } 
+      setUidUser(user.uid);
+    }
   });
 
   const [name, setName] = useState("");
   const [releaseDate, setReleaseDate] = useState();
   const [price, setPrice] = useState();
   const [desc, setDesc] = useState();
-  const [image , setImage] = useState('');
-  const [uidUser, setUidUser] = useState('');
+  const [image, setImage] = useState("");
+  const [uidUser, setUidUser] = useState("");
+  const [movieId, setMovieId] = useState("");
+  const [url, setUrl] = useState("");
 
   const imagesRef = ref(storage, `/catalogue/${image.name}`);
   const handleChangeName = (event) => {
@@ -52,31 +55,46 @@ function AddMovie() {
     setDesc(event.target.value);
   };
 
-
   const handleSubmit = async () => {
-
     uploadBytes(imagesRef, image).then((snapshot) => {
-        console.log('Uploaded a blob or file!');
+        // console.log('written');
+    });
+
+    getDownloadURL(imagesRef).then(function (downloadURL) {
+        // console.log("File available at", downloadURL);
+        setUrl(downloadURL);
       });
 
     await db
       .collection("movies")
-      .doc()
-      .set({
+      .add({
         name: name,
         releaseDate: releaseDate,
         price: price,
         description: desc,
         img: image.name,
         seller: uidUser,
+        id: movieId,
+        url: url,
       })
-      .then(() => {
-        console.log("Document successfully written!");
-        window.location.replace('/catalogue')
+      .then((docRef) => {
+        // console.log("Document successfully written!");
+        // console.log(docRef);
+        // console.log("Document written with ID: ", docRef.id);
+        setMovieId(docRef.id);
       })
       .catch((error) => {
         console.error("Error writing document: ", error);
       });
+
+    const movieRef = doc(db, "movies", movieId);
+
+    await updateDoc(movieRef, {
+      id: movieId,
+      url: url,
+    });
+
+    window.location.replace("/catalogue");
   };
 
   return (
@@ -109,7 +127,12 @@ function AddMovie() {
           label="Description"
           onChange={handleChangeDesc}
         />
-        <input type="file" onChange={(e)=>{setImage(e.target.files[0])}} />
+        <input
+          type="file"
+          onChange={(e) => {
+            setImage(e.target.files[0]);
+          }}
+        />
         <Button onClick={handleSubmit} variant="contained">
           <Typography>Ajouter le film</Typography>
         </Button>
