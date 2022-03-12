@@ -7,6 +7,7 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import Button from "@mui/material/Button";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -18,14 +19,23 @@ function AddMovie() {
     // const storage = firebase.storage()
   const db = firebase.firestore();
   const storage = getStorage();
-  const imagesRef = ref(storage, 'catalogue');
+
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+        setUidUser(user.uid);
+    } 
+  });
 
   const [name, setName] = useState("");
   const [releaseDate, setReleaseDate] = useState();
   const [price, setPrice] = useState();
   const [desc, setDesc] = useState();
   const [image , setImage] = useState('');
+  const [uidUser, setUidUser] = useState('');
 
+  const imagesRef = ref(storage, `/catalogue/${image.name}`);
   const handleChangeName = (event) => {
     setName(event.target.value);
   };
@@ -57,7 +67,8 @@ function AddMovie() {
         releaseDate: releaseDate,
         price: price,
         description: desc,
-        // img: image,
+        img: image.name,
+        seller: uidUser,
       })
       .then(() => {
         console.log("Document successfully written!");
