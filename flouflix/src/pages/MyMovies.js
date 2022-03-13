@@ -5,10 +5,11 @@ import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import { collection, getDocs } from "firebase/firestore";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -16,27 +17,43 @@ const makeClass = makeStyles((theme) => ({
   },
 }));
 
-function Catalogue() {
+function MyMovies() {
   const db = firebase.firestore();
-  let movies = [];
 
-  const [getMovies, setMovies] = useState([]);
+  const [uid, setUid] = useState("");
+  const [movies, setMovies] = useState([]);
+  const getMovies = [];
+
+  const auth = getAuth();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+      setUid(uid);
+    } else {
+    }
+  });
 
   db.collection("movies")
+    .where("seller", "==", uid)
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        movies.push(doc.data());
+        // doc.data() is never undefined for query doc snapshots
+        // console.log(doc.id, " => ", doc.data());
+        getMovies.push(doc.data());
       });
-      setMovies(movies);
+      setMovies(getMovies);
+    })
+    .catch((error) => {
+      console.log("Error getting documents: ", error);
     });
-
 
   return (
     <Box>
-      <Typography variant="h1">Catalogue</Typography>
+      <Typography variant="h1">Mes films</Typography>
       <Box display="flex" justifyContent="space-evenly">
-        {getMovies.map((movie, index) => {
+        {movies.map((movie, index) => {
           return (
             <Box maxWidth="345px">
               <Card style={{ minWidth: "345px" }}>
@@ -63,4 +80,4 @@ function Catalogue() {
   );
 }
 
-export default Catalogue;
+export default MyMovies;
