@@ -32,7 +32,6 @@ function Connexion() {
      const handleSubmit = () => {
       signInWithEmailAndPassword(auth, mailAddress, password)
       .then((userCredential) => {
-        // console.log(auth.currentUser)
         const user = userCredential.user;
         setUserLog(user.uid);
         console.log(auth)
