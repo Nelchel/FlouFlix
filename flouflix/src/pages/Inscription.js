@@ -85,10 +85,11 @@ function Inscription() {
   return (
     <Box display="flex" flexDirection='column' align="center" width="375px" margin="auto">
      <Typography align="center">
-      Inscription
+      Inscription 
       </Typography>
 
       <TextField
+      required
         value={mailAddress}
         id="outlined-required"
         label="Adresse mail"
@@ -96,6 +97,7 @@ function Inscription() {
         onChange={handleChangeMail}
       />
       <TextField
+      required
         type="password"
         value={password}
         id="outlined-required"
