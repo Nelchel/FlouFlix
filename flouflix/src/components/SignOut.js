@@ -31,10 +31,9 @@ function Connexion() {
 
 
   return ( 
-  <Button onClick={handleSubmit}>
-      <Typography>Se déconnecter</Typography>
-  </Button>
-
+      <Button onClick={handleSubmit}>
+          <Typography>Se déconnecter</Typography>
+      </Button>
   );
 }
 
