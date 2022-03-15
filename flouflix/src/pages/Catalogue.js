@@ -9,6 +9,7 @@ import { collection, getDocs } from "firebase/firestore";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -31,34 +32,36 @@ function Catalogue() {
       setMovies(movies);
     });
 
-
   return (
     <Box>
       <Typography variant="h1">Catalogue</Typography>
       <Box display="flex" justifyContent="space-evenly">
         {getMovies.map((movie, index) => {
           return (
-            <Box maxWidth="345px">
-              <Card style={{ minWidth: "345px" }}>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={movie.url}
-                  alt="green iguana"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {movie.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {movie.description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
+            <Link to={'/movie/' + movie.id}>
+              <Box maxWidth="345px">
+                <Card style={{ minWidth: "345px" }}>
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={movie.url}
+                    alt="green iguana"
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {movie.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {movie.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Box>
+            </Link>
           );
         })}
       </Box>
+      <Outlet />
     </Box>
   );
 }
