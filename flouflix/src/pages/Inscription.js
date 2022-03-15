@@ -50,6 +50,8 @@ function Inscription() {
     setIsBoutique(event.target.value);
   }
 
+  const temp =  ["1", "2", "3"];
+
   const auth = getAuth();
 
   const handleSubmit = async () => {
