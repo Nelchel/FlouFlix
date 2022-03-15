@@ -10,6 +10,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 
+
 const makeClass = makeStyles((theme) => ({
   signupButton: {
     marginRight: "10px",
@@ -94,7 +95,7 @@ function AddMovie() {
       url: url,
     });
 
-    window.location.replace("/catalogue");
+    await window.location.replace("/catalogue");
   };
 
   return (
