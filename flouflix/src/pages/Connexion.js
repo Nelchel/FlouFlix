@@ -75,8 +75,8 @@ function Connexion() {
         justifyContent="center"
 
         />
-      <Button veariant="contained" color="error" onClick={handleSubmit}  >
-        <Typography>
+      <Button variant="contained" color="error" onClick={handleSubmit}  >
+        <Typography>  
           Connexion 
         </Typography>
       </Button>
