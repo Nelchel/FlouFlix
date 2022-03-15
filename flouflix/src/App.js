@@ -11,6 +11,7 @@ import AddMovie from "./pages/AddMovie";
 import MyMovies from "./pages/MyMovies";
 import MyCart from "./pages/MyCart";
 import Movie from "./pages/Movie";
+import Modify from "./pages/Modify";
 
 
 import { getStorage } from "firebase/storage";
@@ -34,6 +35,7 @@ function App({ firebaseConfig }) {
             <Route path="mes-films" element={<MyMovies />} />
             <Route path="mon-panier" element={<MyCart />} />
             <Route path="movie/:id" element={<Movie />} />
+            <Route path="modifier-film/:id" element={<Modify />} />
 
             {/* <Route path="*" element={<NoMatch />} /> */}
           </Route>

@@ -11,6 +11,7 @@ import { Button } from "@mui/material";
 import { chainPropTypes } from "@mui/utils";
 import Modal from "@mui/material/Modal";
 import { doc, deleteDoc } from "firebase/firestore";
+import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -70,7 +71,7 @@ function Movie() {
   const handleDelete = async () => {
     await deleteDoc(doc(db, "movies", movies[0].id));
 
-    window.location.replace('/catalogue');
+    window.location.replace("/catalogue");
   };
 
   return (
@@ -86,7 +87,9 @@ function Movie() {
             <Button>Ajouter au panier</Button>
             {uid === movies[0].seller && (
               <>
-                <Button>Modifier le film</Button>
+                <Link to={"/modifier-film/" + movies[0].id}>
+                  <Button>Modifier le film</Button>
+                </Link>
                 <Button onClick={handleOpen}>Supprimer le film</Button>
               </>
             )}
