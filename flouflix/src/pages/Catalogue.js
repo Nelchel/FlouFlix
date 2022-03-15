@@ -13,6 +13,8 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import StarIcon from "@mui/icons-material/Star";
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 import { Button } from "@mui/material";
+import Switch from '@mui/material/Switch';
+
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -87,10 +89,14 @@ function Catalogue() {
     return userData?.favoris?.includes(movieId);
   };
 
+  const favlist = { inputProps: { 'aria-label': 'Affichage' } };
+
+
   return (
     <Box>
       <Typography variant="h1">Catalogue</Typography>
-      <Box display="flex" justifyContent="space-evenly">
+
+     <Box display="flex" justifyContent="space-evenly">
         {getMovies.map((movie, index) => {
           return (
             <Box maxWidth="345px">

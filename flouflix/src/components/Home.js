@@ -9,13 +9,13 @@ import {
   Link,
   Outlet,
 } from "react-router-dom";
-
+import Catalogue from "../pages/Catalogue";
 const makeClass = makeStyles((theme) => ({
   signupButton: {
     marginRight: "10px",
   },
 }));
-
+  
 function Home() {
   const classes = makeClass();
 
@@ -38,7 +38,9 @@ function Home() {
       {exist === true && (
         <Box>
           <Typography variant="h2">Bienvenue {mail}</Typography>
+          <Catalogue/>        
         </Box>
+        
       )}
       <Link to="ajouter-film">
         <Button variant="contained" color="error">
