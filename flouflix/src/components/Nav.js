@@ -1,6 +1,7 @@
 import { Container, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import ShoppingCartSharpIcon from '@mui/icons-material/ShoppingCartSharp';
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import SignOut from "./SignOut";
@@ -72,7 +73,12 @@ function Nav() {
                 </Link>
               </Box>
             ) : (
-              <SignOut />
+              <>
+                <Link to="/mon-panier">
+                  <ShoppingCartSharpIcon/>
+                </Link>
+                <SignOut />
+              </>
             )}
           </Box>
           <Outlet />
