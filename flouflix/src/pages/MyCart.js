@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
@@ -16,41 +16,43 @@ import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
 
 function MyCart() {
-
   const db = firebase.firestore();
-  const storage = getStorage();
   const auth = getAuth();
-  let cart = [];
 
   const [uid, setUid] = useState("");
-  const [getCart, setCart] = useState([]);
+  const [myCart, setMyCart] = useState([]);
+  let getMyCart = [];
 
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const uid = user.uid;
-      setUid(uid);
-    } else {
-    }
-  });
-
-  db.collection("users")
-  .where("uid", "==", uid)
-  .get()
-  .then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      cart.push(doc.data());
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        setUid(uid);
+      } else {
+      }
     });
-    console.log(cart[0]);
-    // setCart(cart.MyCart);
-  });
+    db.collection("users")
+    .where("uid", "==", uid)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        getMyCart.push(doc.data());
+      });
+      console.log("récupération des données du pannier :",getMyCart);
+      setMyCart(getMyCart);
+    });
+    // db.collection("movies")
+    // .where("","",cart[0].myCart[0])
+  }, [uid]) 
+
 
 
     return(
       <Box>
         <Typography variant="h1">Page du panier</Typography>
         <Box>
-        {getCart.map((cart, index) => {
+        {myCart.map((cart, index) => {
+          // console.log(cart)
           return (
             <Box maxWidth="345px">
             <Card style={{ minWidth: "345px" }}>
@@ -62,10 +64,7 @@ function MyCart() {
               /> */}
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  {cart.favoris}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {cart.mailAddress}
+                  {cart.myCart}
                 </Typography>
               </CardContent>
             </Card>
