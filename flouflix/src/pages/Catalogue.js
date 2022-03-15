@@ -68,7 +68,6 @@ function Catalogue() {
   }, [upFavoris]);
 
   useEffect(async () => {
-    console.log(downFavoris);
     if (downFavoris) {
       await updateDoc(userRef, {
         favoris: userData.favoris.filter((e) => e !== downFavoris),
