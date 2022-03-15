@@ -50,6 +50,8 @@ function Inscription() {
     setIsBoutique(event.target.value);
   }
 
+  const temp =  ["1", "2", "3"];
+
   const auth = getAuth();
 
   const handleSubmit = async () => {
@@ -83,8 +85,13 @@ function Inscription() {
   };
 
   return (
-    <Box>
+    <Box display="flex" flexDirection='column' align="center" width="375px" margin="auto">
+     <Typography align="center">
+      Inscription 
+      </Typography>
+
       <TextField
+      required
         value={mailAddress}
         id="outlined-required"
         label="Adresse mail"
@@ -92,6 +99,7 @@ function Inscription() {
         onChange={handleChangeMail}
       />
       <TextField
+      required
         type="password"
         value={password}
         id="outlined-required"

@@ -26,15 +26,15 @@ function MyMovies() {
 
   const auth = getAuth();
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const uid = user.uid;
-      setUid(uid);
-    } else {
-    }
-  });
-
-  db.collection("movies")
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        setUid(uid);
+      } else {
+      }
+    });
+    db.collection("movies")
     .where("seller", "==", uid)
     .get()
     .then((querySnapshot) => {
@@ -44,10 +44,13 @@ function MyMovies() {
         getMovies.push(doc.data());
       });
       setMovies(getMovies);
+      console.log(getMovies)
     })
     .catch((error) => {
       console.log("Error getting documents: ", error);
     });
+  }, [uid]) 
+
 
   return (
     <Box>

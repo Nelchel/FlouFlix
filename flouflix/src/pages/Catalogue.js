@@ -11,6 +11,7 @@ import CardMedia from "@mui/material/CardMedia";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import StarIcon from '@mui/icons-material/Star';
+import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -96,28 +97,32 @@ function Catalogue() {
       <Box display="flex" justifyContent="space-evenly">
         {getMovies.map((movie, index) => {
           return (
-            <Box maxWidth="345px">
-              <Card style={{ minWidth: "345px" }}>
+
+            <Link to={'/movie/' + movie.id}>
+              <Box maxWidth="345px">
+                <Card style={{ minWidth: "345px" }}>
                 <StarIcon style={isFavoris(movie.id) ? {fill:"red"} : {fill:"grey"}} onClick={() => handleSubmit(movie.id, isFavoris(movie.id))}/>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={movie.url}
-                  alt="green iguana"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {movie.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {movie.description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={movie.url}
+                    alt="green iguana"
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {movie.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {movie.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Box>
+            </Link>
           );
         })}
       </Box>
+      <Outlet />
     </Box>
   );
 }
