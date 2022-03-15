@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-
 const makeClass = makeStyles((theme) => ({
   signupButton: {
     marginRight: "10px",
@@ -48,25 +47,37 @@ function Connexion() {
 
 
   return ( 
-    <Box>
+
+    <Box display="flex" flexDirection='column' align="center" width="375px" margin="auto">
+     <Typography align="center">
+      Connexion 
+      </Typography>
+     
       <TextField
+        required
         value={mailAddress}
         id="outlined-required"
         label="Adresse mail"
         defaultValue="mon-adresse@gmail.com"
         onChange={handleChangeMail}
+             
       />
       <TextField
+        required
         type="password"
         value={password}
         id="outlined-required"
-        label="Password"
+        label="Mot de passe"
         defaultValue="password"
         onChange={handleChangePassword}
-      />
-      <Button variant="contained" color="error" onClick={handleSubmit}>
+        display="flex" 
+        alignItems="center"
+        justifyContent="center"
+
+        />
+      <Button veariant="contained" color="error" onClick={handleSubmit}  >
         <Typography>
-          Connexion
+          Connexion 
         </Typography>
       </Button>
     </Box>

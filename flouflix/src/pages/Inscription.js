@@ -83,7 +83,11 @@ function Inscription() {
   };
 
   return (
-    <Box>
+    <Box display="flex" flexDirection='column' align="center" width="375px" margin="auto">
+     <Typography align="center">
+      Inscription
+      </Typography>
+
       <TextField
         value={mailAddress}
         id="outlined-required"
