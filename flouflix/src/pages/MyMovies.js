@@ -61,7 +61,7 @@ function MyMovies() {
   return (
     <Box>
       <Typography variant="h1">Mes films</Typography>
-      <Link to="ajouter-film">
+      <Link to="/ajouter-film">
         <Button variant="contained" color="error">
           <Typography variant="body1">Ajouter un film</Typography>
         </Button>
