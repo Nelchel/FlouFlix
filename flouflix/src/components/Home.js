@@ -15,7 +15,7 @@ const makeClass = makeStyles((theme) => ({
     marginRight: "10px",
   },
 }));
-  
+
 function Home() {
   const classes = makeClass();
 
@@ -38,15 +38,11 @@ function Home() {
       {exist === true && (
         <Box>
           <Typography variant="h2">Bienvenue {mail}</Typography>
-          <Catalogue/>        
+          <Catalogue/>
         </Box>
-        
+
       )}
-      <Link to="ajouter-film">
-        <Button variant="contained" color="error">
-          <Typography variant="body1">Ajouter un film</Typography>
-        </Button>
-      </Link>
+      <Catalogue />
     </Box>
   );
 }
