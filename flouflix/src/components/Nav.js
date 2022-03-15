@@ -70,7 +70,7 @@ function Nav() {
             ) : (
               <>
                 <Link to="/mon-panier">
-                  <ShoppingCartSharpIcon />
+                  <ShoppingCartSharpIcon fontSize="large" style={{color : 'white'}}/>
                 </Link>
                 <Link to="/mes-films">
                   <Button variant="contained" color="error">

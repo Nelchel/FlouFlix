@@ -8,6 +8,9 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { useSearchParams } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Button } from "@mui/material";
+import { chainPropTypes } from "@mui/utils";
+import Modal from "@mui/material/Modal";
+import { doc, deleteDoc } from "firebase/firestore";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -15,12 +18,27 @@ const makeClass = makeStyles((theme) => ({
   },
 }));
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 function Movie() {
   const db = firebase.firestore();
   let { id } = useParams();
   const [uid, setUid] = useState("");
   const getMovies = [];
   const [movies, setMovies] = useState([]);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const auth = getAuth();
 
@@ -32,6 +50,7 @@ function Movie() {
       } else {
       }
     });
+    console.log(uid);
     db.collection("movies")
       .where("id", "==", id)
       .get()
@@ -47,16 +66,50 @@ function Movie() {
         console.log("Error getting documents: ", error);
       });
   }, [uid]);
-  console.log(movies);
+
+  const handleDelete = async () => {
+    await deleteDoc(doc(db, "movies", movies[0].id));
+
+    window.location.replace('/catalogue');
+  };
+
   return (
     <section>
       <Box>
-        <Box>
-          <Typography variant="h2">{movies[0].name}</Typography>
-          <img src={movies[0].url} width="300" height="300" />
-          <Typography variant="body1">{movies[0].description}</Typography>
-        </Box>
-        <Button>Ajouter au panier</Button>
+        {movies.length !== undefined && movies.length > 0 && (
+          <>
+            <Box>
+              <Typography variant="h2">{movies[0].name}</Typography>
+              <img src={movies[0].url} width="300" height="300" />
+              <Typography variant="body1">{movies[0].description}</Typography>
+            </Box>
+            <Button>Ajouter au panier</Button>
+            {uid === movies[0].seller && (
+              <>
+                <Button>Modifier le film</Button>
+                <Button onClick={handleOpen}>Supprimer le film</Button>
+              </>
+            )}
+            <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={style}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Supprimer le film {movies[0].name}
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  Êtes-vous sûr ?
+                </Typography>
+                <Button onClick={handleDelete} color="error">
+                  Supprimer
+                </Button>
+              </Box>
+            </Modal>
+          </>
+        )}
       </Box>
     </section>
   );
