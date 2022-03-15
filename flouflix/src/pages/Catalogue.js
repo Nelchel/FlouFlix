@@ -64,8 +64,7 @@ function Catalogue() {
           : upFavoris,
       });
       setUpFavoris([]);
-    } else console.log("Stop");
-    console.log(uidUser);
+    }
   }, [upFavoris]);
 
   useEffect(async () => {
@@ -75,16 +74,13 @@ function Catalogue() {
         favoris: userData.favoris.filter((e) => e !== downFavoris),
       });
       setDownFavoris("");
-    } else console.log("Stop");
-    console.log(uidUser);
+    }
   }, [downFavoris]);
 
   const handleSubmit = (movieId, method) => {
-    console.log(method);
     if (!method) setUpFavoris([movieId]);
     else {
       setDownFavoris(movieId);
-      console.log(downFavoris);
     }
   };
 
