@@ -15,7 +15,7 @@ const makeClass = makeStyles((theme) => ({
     marginTop: "20px !important",
     margin: "auto",
     maxWidth: "122px",
-  }
+  },
   }));
 
 
