@@ -40,8 +40,6 @@ function Inscription() {
         setUserLog(user.uid);
       })
       .catch((error) => {});
-
-    console.log(userLog);
   };
 
   useEffect(() => {
