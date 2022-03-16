@@ -1,7 +1,6 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Icon from "@mui/material/Icon";
 import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
@@ -15,42 +14,42 @@ import "firebase/compat/firestore";
 import { useDebouncedCallback } from 'use-debounce';
 import {
   getAuth,
-  signOut,
   onAuthStateChanged,
-  updateCurrentUser,
 } from "firebase/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   doc,
   updateDoc,
-  setDoc,
   where,
   collection,
   getDocs,
   query,
   arrayRemove,
-  arrayUnion,
 } from "firebase/firestore";
 
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
+const makeClass = makeStyles((theme) => ({
+
+  style :{
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  }
+}));
+
 
 function MyCart() {
+  const classes = makeClass();
   const db = firebase.firestore();
   const auth = getAuth();
   const [uid, setUid] = useState("");
   const [moovieInMyCart, setMoovieInMyCart] = useState([]);
-  const [quantite, setQuantite] = useState(1);
+  const [quantity, setQuantity] = useState(1);
   const [userCurrent, setUserCurrent] = useState(undefined);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -126,17 +125,15 @@ function MyCart() {
 }
 
 
-const debounce = useDebouncedCallback((index) =>handleSubmit(index,quantite),3000)
+const debounce = useDebouncedCallback((index) =>handleSubmit(index,quantity),3000)
 
 const handleChange = async(e,index) => {
   if(e.target.value>0 && e.target.value <= 100)
   {
-    setQuantite(e.target.value)
+    setQuantity(e.target.value)
     debounce(index)
     }
   }
-  
-
 
   return (
     <section>
@@ -164,7 +161,7 @@ const handleChange = async(e,index) => {
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
                     >
-                      <Box sx={style}>
+                      <Box  className={classes.linkMenu}>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
                           Supprimer le film {cart.name}
                         </Typography>
@@ -177,7 +174,7 @@ const handleChange = async(e,index) => {
                       </Box>
                   </Modal>
                   <TextField
-                    value={quantite}
+                    value={quantity}
                     id="outlined-required"
                     label="Qté"
                     type="number"
