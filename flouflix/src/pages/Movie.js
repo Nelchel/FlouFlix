@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { chainPropTypes } from "@mui/utils";
 import Modal from "@mui/material/Modal";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc,updateDoc} from "firebase/firestore";
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
@@ -74,6 +74,13 @@ function Movie() {
     window.location.replace("/catalogue");
   };
 
+  const handleClick = async() => {
+    await updateDoc(doc(db,"users", uid),{
+      idMoovie : movies[0].id,
+      Quantity : 1
+    });
+  }
+
   return (
     <section>
       <Box>
@@ -84,7 +91,7 @@ function Movie() {
               <img src={movies[0].url} width="300" height="300" />
               <Typography variant="body1">{movies[0].description}</Typography>
             </Box>
-            <Button>Ajouter au panier</Button>
+            <Button onClick={handleClick()}>Ajouter au panier</Button>
             {uid === movies[0].seller && (
               <>
                 <Link to={"/modifier-film/" + movies[0].id}>

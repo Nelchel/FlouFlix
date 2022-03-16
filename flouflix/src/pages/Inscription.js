@@ -51,6 +51,7 @@ function Inscription() {
           mailAddress: mailAddress,
           password: password,
           isBoutique: isBoutique,
+          myCart : [{'idMoovie' :"",'Quantity' :0}]
         });
   
         window.location.replace(`/`);
