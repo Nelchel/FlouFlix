@@ -122,7 +122,7 @@ function Inscription() {
                 <Typography variant="body1">S'inscrire</Typography>
               </Button>
                
-              <Typography>Vous avez déjà un compte ? <Link to="/Inscription">Connectez-vous.</Link></Typography>
+              <Typography>Vous avez déjà un compte ? <Link to="/Connexion">Connectez-vous.</Link></Typography>
             </Box>
           </form>
           <Outlet />
