@@ -6,10 +6,9 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import Button from "@mui/material/Button";
-import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
-
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -39,7 +38,6 @@ function AddMovie() {
   const [movieId, setMovieId] = useState("");
   const [url, setUrl] = useState("");
 
-  const imagesRef = ref(storage, `/catalogue/${image.name}`);
   const handleChangeName = (event) => {
     setName(event.target.value);
   };
@@ -57,15 +55,16 @@ function AddMovie() {
   };
 
   const handleSubmit = async () => {
-    uploadBytes(imagesRef, image).then((snapshot) => {
-        // console.log('written');
-    });
+    // uploadBytes(imagesRef, image).then((snapshot) => {
+    //     // console.log('written');
+    // });
 
-    getDownloadURL(imagesRef).then(function (downloadURL) {
-        // console.log("File available at", downloadURL);
-        setUrl(downloadURL);
-      });
+    // getDownloadURL(imagesRef).then(function (downloadURL) {
+    //     // console.log("File available at", downloadURL);
+    //     setUrl(downloadURL);
+    //   });
 
+    console.log(url);
     await db
       .collection("movies")
       .add({
@@ -78,24 +77,24 @@ function AddMovie() {
         id: movieId,
         url: url,
       })
-      .then((docRef) => {
+      .then(async (docRef) => {
         // console.log("Document successfully written!");
         // console.log(docRef);
         // console.log("Document written with ID: ", docRef.id);
+        const movieRef = await doc(db, "movies", docRef.id);
         setMovieId(docRef.id);
+        console.log(docRef.id)
+        await updateDoc(movieRef, {
+          id: docRef.id,
+        });
       })
       .catch((error) => {
         console.error("Error writing document: ", error);
       });
 
-    const movieRef = doc(db, "movies", movieId);
+    // const movieRef = doc(db, "movies", movieId);
 
-    await updateDoc(movieRef, {
-      id: movieId,
-      url: url,
-    });
-
-    await window.location.replace("/catalogue");
+    window.location.replace("/catalogue");
   };
 
   return (
@@ -130,8 +129,23 @@ function AddMovie() {
         />
         <input
           type="file"
-          onChange={(e) => {
+          onChange={async (e) => {
             setImage(e.target.files[0]);
+            const nom = e.target.files[0].name;
+            const img = e.target.files[0];
+            const imagesRef = ref(storage, `/catalogue/${nom}`);
+            uploadBytes(imagesRef, img).then((snapshot) => {
+              console.log('Uploaded a blob or file!');
+            });
+            // await uploadBytes(imagesRef, img).then((snapshot) => {
+            //   console.log('written');
+            // });
+
+            getDownloadURL(imagesRef).then(function (downloadURL) {
+              // console.log("File available at", downloadURL);
+              setUrl(downloadURL);
+              console.log(downloadURL);
+            });
           }}
         />
         <Button onClick={handleSubmit} variant="contained">

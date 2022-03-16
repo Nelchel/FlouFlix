@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import { Container } from "@mui/material";
+import WarningIcon from "@mui/icons-material/Warning";
 
 import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -24,6 +25,38 @@ const makeClass = makeStyles((theme) => ({
       textDecoration: "underline",
     },
   },
+  required: {
+    position: "absolute",
+    top: "75px",
+    left: "35%",
+    backgroundColor: "#fff",
+    padding: "5px 15px",
+    borderRadius: "5px",
+    color: "#333",
+    transform: "translateX(-50%)",
+    boxShadow: "2px 2px 10px 0 rgba(0, 0, 0, 0.5)",
+    minWidth: "fit-content",
+    zIndex: 99,
+    display: "flex",
+    alignItems: "center",
+    "&::after": {
+      content: "''",
+      position: "absolute",
+      backgroundColor: "inherit",
+      top: "-6px",
+      left: "50%",
+      bgcolor: theme.palette.background.dark,
+      width: "13px",
+      height: "13px",
+      transform: "translateX(-50%) rotate(45deg)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      left: "45%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      top: "96px",
+    },
+  },
 }));
 
 function Connexion() {
@@ -33,6 +66,7 @@ function Connexion() {
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
+  const [isValid, setValid] = useState(false);
 
   const handleSubmit = () => {
     signInWithEmailAndPassword(auth, mailAddress, password)
@@ -47,6 +81,14 @@ function Connexion() {
         console.log(errorMessage);
       });
   };
+
+  function ValidateEmail(mail) {
+    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (mail.match(mailformat)) {
+      return true;
+    }
+    return false;
+  }
 
   return (
     <section>
@@ -65,7 +107,7 @@ function Connexion() {
           </Box>
           <form>
             <Box align="center" textAlign="center">
-              <Box paddingBottom="20px">
+              <Box paddingBottom="20px" position="relative">
                 <TextField
                   fullWidth
                   required
@@ -73,11 +115,19 @@ function Connexion() {
                   id="emailLogin"
                   label="Adresse mail"
                   onChange={(e) => {
+                    const valid = ValidateEmail(e.target.value);
+                    setValid(valid);
                     setMailAddress(e.target.value);
                   }}
                 />
+                {!isValid && mailAddress.length > 3 && (
+                  <div className={classes.required}>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
+                    <Typography>L'email saisi n'est pas valide.</Typography>
+                  </div>
+                )}
               </Box>
-              <Box paddingBottom="0px">
+              <Box paddingBottom="0px" position="relative">
                 <TextField
                   fullWidth
                   required
@@ -89,6 +139,12 @@ function Connexion() {
                     setPassword(e.target.value);
                   }}
                 />
+                {password.length > 1 && password.length < 6 && (
+                  <div className={classes.required}>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
+                    <Typography>Le mot de passe saisi doit comporter plus de 6 caractères.</Typography>
+                  </div>
+                )}
               </Box>
               <Button
                 variant="contained"
@@ -101,7 +157,10 @@ function Connexion() {
               <Box paddingTop="10px">
                 <Typography variant="body1">
                   Première visite sur FlouFlix?
-                  <Link to="/inscription" className={classes.linkColor}>Inscrivez-vous</Link>.
+                  <Link to="/inscription" className={classes.linkColor}>
+                    Inscrivez-vous
+                  </Link>
+                  .
                 </Typography>
               </Box>
             </Box>

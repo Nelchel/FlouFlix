@@ -113,6 +113,8 @@ function Movie() {
       });
     const movieRef = doc(db, "movies", id);
 
+    console.log(id)
+
     await updateDoc(movieRef, {
         name: name,
         description: desc,
