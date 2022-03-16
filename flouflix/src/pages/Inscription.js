@@ -8,12 +8,13 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Container } from "@mui/material";
-
 import React, { useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
+import { Link } from "react-router-dom";
+
 
 const makeClass = makeStyles((theme) => ({
   submitButton: {
@@ -120,6 +121,8 @@ function Inscription() {
               >
                 <Typography variant="body1">S'inscrire</Typography>
               </Button>
+               
+              <Typography>Vous avez déjà un compte ? <Link to="/Inscription">Connectez-vous.</Link></Typography>
             </Box>
           </form>
           <Outlet />

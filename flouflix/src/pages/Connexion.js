@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Container } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
   loginButton: {
@@ -93,6 +94,7 @@ function Connexion() {
               <Button variant="contained" color="secondary" onClick={handleSubmit} className={classes.loginButton}>
                 <Typography variant="body1">Connexion</Typography>
               </Button>
+              <Typography>Première visite sur FlouFlix? <Link to="/Inscription">Inscrivez-vous.</Link></Typography>
             </Box>
           </form>
         </Box>
