@@ -3,9 +3,10 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
+import { Container } from "@mui/material";
+
 import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { Container } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
@@ -14,31 +15,22 @@ const makeClass = makeStyles((theme) => ({
     marginTop: "20px !important",
     margin: "auto",
     maxWidth: "122px",
-  }
 }));
 
+}
 function Connexion() {
   const classes = makeClass();
+  const auth = getAuth();
+
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
-
-  const handleChangeMail = (event) => {
-    setMailAddress(event.target.value);
-  };
-
-  const handleChangePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const auth = getAuth();
 
   const handleSubmit = () => {
     signInWithEmailAndPassword(auth, mailAddress, password)
       .then((userCredential) => {
         const user = userCredential.user;
         setUserLog(user.uid);
-        console.log(auth);
         window.location.replace(`/`);
       })
       .catch((error) => {
@@ -70,10 +62,11 @@ function Connexion() {
                   fullWidth
                   required
                   value={mailAddress}
-                  id="outlined-required"
+                  id="emailLogin"
                   label="Adresse mail"
-                  defaultValue="mon-adresse@gmail.com"
-                  onChange={handleChangeMail}
+                  onChange={(e) => {
+                    setMailAddress(e.target.value);
+                  }}
                 />
               </Box>
               <Box paddingBottom="0px">
@@ -82,13 +75,11 @@ function Connexion() {
                   required
                   type="password"
                   value={password}
-                  id="outlined-required"
+                  id="passwordLogin"
                   label="Mot de passe"
-                  defaultValue="password"
-                  onChange={handleChangePassword}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                 />
               </Box>
               <Button variant="contained" color="secondary" onClick={handleSubmit} className={classes.loginButton}>
