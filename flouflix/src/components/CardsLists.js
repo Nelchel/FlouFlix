@@ -1,18 +1,10 @@
-import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import { makeStyles } from "@mui/styles";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
-import StarIcon from "@mui/icons-material/Star";
-import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
-import { Button } from "@mui/material";
 import Cards from "./Cards"
 
 function CardsLists(props) {
@@ -63,8 +55,6 @@ const db = firebase.firestore();
         setDownFavoris("");
         }
     }, [downFavoris]);
-
-    console.log(movies)
 
     return (<>
         <Box display="flex" justifyContent="space-evenly">
