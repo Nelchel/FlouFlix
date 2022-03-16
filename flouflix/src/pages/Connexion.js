@@ -139,12 +139,6 @@ function Connexion() {
                     setPassword(e.target.value);
                   }}
                 />
-                {password.length > 1 && password.length < 6 && (
-                  <div className={classes.required}>
-                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
-                    <Typography>Le mot de passe saisi doit comporter plus de 6 caractères.</Typography>
-                  </div>
-                )}
               </Box>
               <Button
                 variant="contained"

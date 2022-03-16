@@ -33,6 +33,8 @@ function Catalogue() {
       });
   }, []);
 
+  // console.log(window.location.pathname === "/");
+
   return (
     <Box>
       <Typography variant="h1">Catalogue</Typography>
@@ -41,7 +43,6 @@ function Catalogue() {
       </Box>
       <Box display="flex" justifyContent="space-evenly">
         <Cards movies={getMovies} isCardFavori={false}></Cards>
-
       </Box>
       <Outlet />
     </Box>

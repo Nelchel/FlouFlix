@@ -14,6 +14,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import { Link } from "react-router-dom";
+import WarningIcon from "@mui/icons-material/Warning";
 
 const makeClass = makeStyles((theme) => ({
   submitButton: {
@@ -29,6 +30,70 @@ const makeClass = makeStyles((theme) => ({
       textDecoration: "underline",
     },
   },
+  required: {
+    position: "absolute",
+    top: "75px",
+    left: "35%",
+    backgroundColor: "#fff",
+    padding: "5px 15px",
+    borderRadius: "5px",
+    color: "#333",
+    transform: "translateX(-50%)",
+    boxShadow: "2px 2px 10px 0 rgba(0, 0, 0, 0.5)",
+    minWidth: "fit-content",
+    zIndex: 99,
+    display: "flex",
+    alignItems: "center",
+    "&::after": {
+      content: "''",
+      position: "absolute",
+      backgroundColor: "inherit",
+      top: "-6px",
+      left: "50%",
+      bgcolor: theme.palette.background.dark,
+      width: "13px",
+      height: "13px",
+      transform: "translateX(-50%) rotate(45deg)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      left: "45%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      top: "96px",
+    },
+  },
+  requiredError: {
+    position: "absolute",
+    top: "75px",
+    left: "50%",
+    backgroundColor: "#fff",
+    padding: "5px 15px",
+    borderRadius: "5px",
+    color: "#333",
+    transform: "translateX(-50%)",
+    boxShadow: "2px 2px 10px 0 rgba(0, 0, 0, 0.5)",
+    minWidth: "fit-content",
+    zIndex: 99,
+    display: "flex",
+    alignItems: "center",
+    "&::after": {
+      content: "''",
+      position: "absolute",
+      backgroundColor: "inherit",
+      top: "-6px",
+      left: "50%",
+      bgcolor: theme.palette.background.dark,
+      width: "13px",
+      height: "13px",
+      transform: "translateX(-50%) rotate(45deg)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      left: "45%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      top: "96px",
+    },
+  },
 }));
 
 function Inscription() {
@@ -39,7 +104,9 @@ function Inscription() {
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
-  const [isBoutique, setIsBoutique] = useState("");
+  const [isBoutique, setIsBoutique] = useState(false);
+  const [isValid, setValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async () => {
     await createUserWithEmailAndPassword(auth, mailAddress, password)
@@ -47,7 +114,12 @@ function Inscription() {
         const user = userCredential.user;
         setUserLog(user.uid);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error.code);
+        if (error.code === "auth/email-already-in-use") {
+          setErrorMessage("Il existe déjà un compte associé à cet email.");
+        }
+      });
   };
 
   useEffect(() => {
@@ -66,6 +138,14 @@ function Inscription() {
     logIn();
   }, [userLog]);
 
+  function ValidateEmail(mail) {
+    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (mail.match(mailformat)) {
+      return true;
+    }
+    return false;
+  }
+
   return (
     <section>
       <Container maxWidth="1250px">
@@ -83,7 +163,7 @@ function Inscription() {
           </Box>
           <form>
             <Box align="center" textAlign="center">
-              <Box paddingBottom="20px">
+              <Box paddingBottom="20px" position="relative">
                 <TextField
                   fullWidth
                   required
@@ -91,11 +171,25 @@ function Inscription() {
                   id="mailAdressSingUp"
                   label="Adresse mail"
                   onChange={(e) => {
+                    const valid = ValidateEmail(e.target.value);
+                    setValid(valid);
                     setMailAddress(e.target.value);
                   }}
                 />
+                {errorMessage !== "" && (
+                  <div className={classes.requiredError}>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
+                    <Typography>{errorMessage}</Typography>
+                  </div>
+                )}
+                {!isValid && mailAddress.length > 3 && (
+                  <div className={classes.required}>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
+                    <Typography>L'email saisi n'est pas valide.</Typography>
+                  </div>
+                )}
               </Box>
-              <Box paddingBottom="20px">
+              <Box paddingBottom="20px" position="relative">
                 <TextField
                   required
                   fullWidth
@@ -107,6 +201,14 @@ function Inscription() {
                     setPassword(e.target.value);
                   }}
                 />
+                {password.length > 1 && password.length < 6 && (
+                  <div className={classes.required}>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
+                    <Typography>
+                      Le mot de passe saisi doit comporter plus de 6 caractères.
+                    </Typography>
+                  </div>
+                )}
               </Box>
               <FormControl fullWidth>
                 <InputLabel id="labelCategorie">Catégorie</InputLabel>
@@ -122,14 +224,25 @@ function Inscription() {
                   <MenuItem value={false}>Particulier</MenuItem>
                 </Select>
               </FormControl>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleSubmit}
-                className={classes.submitButton}
-              >
-                <Typography variant="body1">S'inscrire</Typography>
-              </Button>
+              {isValid && password.length >= 6 ? (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleSubmit}
+                  className={classes.submitButton}
+                >
+                  <Typography variant="body1">S'inscrire</Typography>
+                </Button>
+              ) : (
+                <Button
+                  disabled
+                  variant="contained"
+                  color="secondary"
+                  className={classes.submitButton}
+                >
+                  <Typography variant="body1">S'inscrire</Typography>
+                </Button>
+              )}
               <Box paddingTop="10px">
                 <Typography variant="body1">
                   Vous avez déjà un compte ?
