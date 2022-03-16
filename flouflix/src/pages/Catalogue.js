@@ -33,6 +33,8 @@ function Catalogue() {
       });
   }, []);
 
+  // console.log(window.location.pathname === "/");
+
   return (
     <Box>
       {/* <Typography variant="h1">Catalogue</Typography> */}

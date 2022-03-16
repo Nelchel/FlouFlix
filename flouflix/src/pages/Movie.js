@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { chainPropTypes } from "@mui/utils";
 import Modal from "@mui/material/Modal";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc,updateDoc,getDoc,arrayUnion} from "firebase/firestore";
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
@@ -35,6 +35,8 @@ function Movie() {
   const db = firebase.firestore();
   let { id } = useParams();
   const [uid, setUid] = useState("");
+  const [userRef, setRefUser] = useState("");
+  const [userData, setUserData] = useState([]);
   const getMovies = [];
   const [movies, setMovies] = useState([]);
   const [open, setOpen] = React.useState(false);
@@ -68,11 +70,26 @@ function Movie() {
       });
   }, [uid]);
 
+    //Get data User
+    useEffect(async () => {
+      setRefUser(await doc(db, "users", uid));
+      if(uid) setUserData(await (await getDoc(userRef)).data());
+  }, [uid]);
+  
   const handleDelete = async () => {
     await deleteDoc(doc(db, "movies", movies[0].id));
 
     window.location.replace("/catalogue");
   };
+
+  const handleClick = async() => {
+    if (userRef && userData)
+    {
+      await updateDoc(userRef,{
+        myCart:arrayUnion({idMoovie :movies[0].id,Quantity : 1})
+      });
+    }
+  }
 
   return (
     <section>
@@ -84,7 +101,7 @@ function Movie() {
               <img src={movies[0].url} width="300" height="300" />
               <Typography variant="body1">{movies[0].description}</Typography>
             </Box>
-            <Button>Ajouter au panier</Button>
+            <Button onClick={handleClick()}>Ajouter au panier</Button>
             {uid === movies[0].seller && (
               <>
                 <Link to={"/modifier-film/" + movies[0].id}>
