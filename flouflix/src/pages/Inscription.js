@@ -15,12 +15,19 @@ import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import { Link } from "react-router-dom";
 
-
 const makeClass = makeStyles((theme) => ({
   submitButton: {
     padding: "10px 20px !important",
     marginTop: "20px !important",
     margin: "auto",
+  },
+  linkColor: {
+    color: theme.palette.text.black,
+    marginLeft: "5px",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+    },
   },
 }));
 
@@ -51,9 +58,9 @@ function Inscription() {
           mailAddress: mailAddress,
           password: password,
           isBoutique: isBoutique,
-          myCart : [{'idMoovie' :"",'Quantity' :0}]
+          myCart: [{ idMoovie: "", Quantity: 0 }],
         });
-  
+
         window.location.replace(`/`);
       }
     };
@@ -124,8 +131,15 @@ function Inscription() {
               >
                 <Typography variant="body1">S'inscrire</Typography>
               </Button>
-               
-              <Typography paddingTop="20px" variant ="body1">Vous avez déjà un compte ? <Link to="/Connexion">Connectez-vous.</Link></Typography>
+              <Box paddingTop="10px">
+                <Typography variant="body1">
+                  Vous avez déjà un compte ?
+                  <Link to="/connexion" className={classes.linkColor}>
+                    Connectez-vous
+                  </Link>
+                  .
+                </Typography>
+              </Box>
             </Box>
           </form>
           <Outlet />
