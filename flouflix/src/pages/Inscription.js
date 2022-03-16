@@ -45,14 +45,16 @@ function Inscription() {
 
   useEffect(() => {
     const logIn = async () => {
-      await setDoc(doc(db, "users", userLog), {
-        uid: userLog,
-        mailAddress: mailAddress,
-        password: password,
-        isBoutique: isBoutique,
-      });
-
-      window.location.replace(`/`);
+      if (userLog !== "") {
+        await setDoc(doc(db, "users", userLog), {
+          uid: userLog,
+          mailAddress: mailAddress,
+          password: password,
+          isBoutique: isBoutique,
+        });
+  
+        window.location.replace(`/`);
+      }
     };
     logIn();
   }, [userLog]);
