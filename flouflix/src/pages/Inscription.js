@@ -3,128 +3,134 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { Container } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Outlet,
-} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
-import { initializeApp } from "firebase/app";
-import { useAuthState } from "react-firebase-hooks/auth";
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import { Link } from "react-router-dom";
+
 
 const makeClass = makeStyles((theme) => ({
-  signupButton: {
-    marginRight: "10px",
+  submitButton: {
+    padding: "10px 20px !important",
+    marginTop: "20px !important",
+    margin: "auto",
   },
 }));
 
 function Inscription() {
   const classes = makeClass();
   const db = firebase.firestore();
+  const auth = getAuth();
 
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
   const [isBoutique, setIsBoutique] = useState("");
 
-  const handleChangeMail = (event) => {
-    setMailAddress(event.target.value);
-  };
-
-  const handleChangePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleChangeSeller = (event) => {
-    setIsBoutique(event.target.value);
-  }
-
-  const temp =  ["1", "2", "3"];
-
-  const auth = getAuth();
-
   const handleSubmit = async () => {
-    createUserWithEmailAndPassword(auth, mailAddress, password)
+    await createUserWithEmailAndPassword(auth, mailAddress, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
         setUserLog(user.uid);
       })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
-
-    await db
-      .collection("users")
-      .doc(userLog)
-      .set({
-        uid: userLog,
-        mailAddress: mailAddress,
-        password: password,
-        isBoutique: isBoutique,
-      })
-      .then(() => {
-        console.log("Document successfully written!");
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
-    window.location.replace(`/`);
+      .catch((error) => {});
   };
 
-  return (
-    <Box display="flex" flexDirection='column' align="center" width="375px" margin="auto">
-     <Typography align="center">
-      Inscription 
-      </Typography>
+  useEffect(() => {
+    const logIn = async () => {
+      if (userLog !== "") {
+        await setDoc(doc(db, "users", userLog), {
+          uid: userLog,
+          mailAddress: mailAddress,
+          password: password,
+          isBoutique: isBoutique,
+        });
+  
+        window.location.replace(`/`);
+      }
+    };
+    logIn();
+  }, [userLog]);
 
-      <TextField
-      required
-        value={mailAddress}
-        id="outlined-required"
-        label="Adresse mail"
-        defaultValue="mon-adresse@gmail.com"
-        onChange={handleChangeMail}
-      />
-      <TextField
-      required
-        type="password"
-        value={password}
-        id="outlined-required"
-        label="Password"
-        defaultValue="password"
-        onChange={handleChangePassword}
-      />
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Catégorie</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={isBoutique}
-          label="Catégorie"
-          onChange={handleChangeSeller}
+  return (
+    <section>
+      <Container maxWidth="1250px">
+        <Box
+          display="flex"
+          flexDirection="column"
+          align="center"
+          width="375px"
+          margin="auto"
         >
-          <MenuItem value={true}>Boutique agréée</MenuItem>
-          <MenuItem value={false}>Particulier</MenuItem>
-        </Select>
-      </FormControl>
-      <Button variant="contained" color="error" onClick={handleSubmit}>
-        <Typography>S'inscrire</Typography>
-      </Button>
-      <Outlet />
-    </Box>
+          <Box padding="50px 0 20px 0">
+            <Typography align="center" variant="h2" component="h1">
+              Inscription
+            </Typography>
+          </Box>
+          <form>
+            <Box align="center" textAlign="center">
+              <Box paddingBottom="20px">
+                <TextField
+                  fullWidth
+                  required
+                  value={mailAddress}
+                  id="mailAdressSingUp"
+                  label="Adresse mail"
+                  onChange={(e) => {
+                    setMailAddress(e.target.value);
+                  }}
+                />
+              </Box>
+              <Box paddingBottom="20px">
+                <TextField
+                  required
+                  fullWidth
+                  type="password"
+                  value={password}
+                  id="passwordSignUp"
+                  label="Password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+              </Box>
+              <FormControl fullWidth>
+                <InputLabel id="labelCategorie">Catégorie</InputLabel>
+                <Select
+                  id="selectCategorie"
+                  value={isBoutique}
+                  label="Catégorie"
+                  onChange={(e) => {
+                    setIsBoutique(e.target.value);
+                  }}
+                >
+                  <MenuItem value={true}>Boutique agréée</MenuItem>
+                  <MenuItem value={false}>Particulier</MenuItem>
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleSubmit}
+                className={classes.submitButton}
+              >
+                <Typography variant="body1">S'inscrire</Typography>
+              </Button>
+               
+              <Typography paddingTop="20px" variant ="body1">Vous avez déjà un compte ? <Link to="/Connexion">Connectez-vous.</Link></Typography>
+            </Box>
+          </form>
+          <Outlet />
+        </Box>
+      </Container>
+    </section>
   );
 }
 

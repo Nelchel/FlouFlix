@@ -9,6 +9,10 @@ import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import Cards from "../components/Cards"
+import StarIcon from "@mui/icons-material/Star";
+import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
+import { Button } from "@mui/material";
+import Switch from '@mui/material/Switch';
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -41,6 +45,7 @@ function Catalogue() {
       </Box>
       <Box display="flex" justifyContent="space-evenly">
         <Cards movies={getMovies} isCardFavori={false}></Cards>
+
       </Box>
       <Outlet />
     </Box>

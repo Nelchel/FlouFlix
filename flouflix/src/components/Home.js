@@ -9,7 +9,7 @@ import {
   Link,
   Outlet,
 } from "react-router-dom";
-
+import Catalogue from "../pages/Catalogue";
 const makeClass = makeStyles((theme) => ({
   signupButton: {
     marginRight: "10px",
@@ -40,11 +40,7 @@ function Home() {
           <Typography variant="h2">Bienvenue {mail}</Typography>
         </Box>
       )}
-      <Link to="ajouter-film">
-        <Button variant="contained" color="error">
-          <Typography variant="body1">Ajouter un film</Typography>
-        </Button>
-      </Link>
+      <Catalogue />
     </Box>
   );
 }

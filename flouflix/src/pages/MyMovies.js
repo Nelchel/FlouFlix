@@ -9,6 +9,12 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {
+  BrowserRouter as Router,
+  Link,
+  Outlet,
+} from "react-router-dom";
+import Button from "@mui/material/Button";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 const makeClass = makeStyles((theme) => ({
@@ -55,6 +61,11 @@ function MyMovies() {
   return (
     <Box>
       <Typography variant="h1">Mes films</Typography>
+      <Link to="/ajouter-film">
+        <Button variant="contained" color="error">
+          <Typography variant="body1">Ajouter un film</Typography>
+        </Button>
+      </Link>
       <Box display="flex" justifyContent="space-evenly">
         {movies.map((movie, index) => {
           return (
