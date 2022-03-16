@@ -25,6 +25,7 @@ import {
   collection,
   getDocs,
   query,
+  arrayRemove,
 } from "firebase/firestore";
 
 function MyCart() {
@@ -96,13 +97,14 @@ function MyCart() {
   }, [uid]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
+
   useEffect(async () => {
     let movies = [];
     if (userCurrent !== undefined) {
       const cart = userCurrent.myCart;
       await Promise.all(
         cart.map(async (carte, index) => {
-          const q = query(collection(db, "movies"), where("id", "==", carte));
+          const q = query(collection(db, "movies"), where("id", "==", carte.idMoovie));
           const querySnapshot = await getDocs(q);
           querySnapshot.forEach((doc) => {
             movies.push(doc.data());
@@ -113,6 +115,13 @@ function MyCart() {
     }
   }, [userCurrent]);
 
+
+  const handleClick = async(index) => {
+      await updateDoc(doc(db, "users", uid),{
+        myCart:arrayRemove({idMoovie :moovieInMyCart[index].id,Quantity : 1})
+      });
+      window.location.replace("/mon-panier");
+  }
   return (
     <section>
       <Box>
@@ -132,6 +141,7 @@ function MyCart() {
                     <Typography gutterBottom variant="h5" component="div">
                       {cart.name}
                     </Typography>
+                    <Button onClick={() =>handleClick(index)}>Supprimer</Button>
                   </CardContent>
                 </Card>
               </Box>

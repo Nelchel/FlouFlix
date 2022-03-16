@@ -53,7 +53,6 @@ function Inscription() {
           isBoutique: isBoutique,
           myCart : [{'idMoovie' :"",'Quantity' :0}]
         });
-  
         window.location.replace(`/`);
       }
     };
