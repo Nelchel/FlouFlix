@@ -17,67 +17,18 @@ import { Button } from "@mui/material";
 function Cards(props) {
     const db = firebase.firestore();
     const auth = getAuth();
-    const { movies, isCardFavori } = props;
-
-
-    const [uidUser, setUidUser] = useState("");
-    const [userRef, setRefUser] = useState("");
-    const [userData, setUserData] = useState([]);
-    const [upFavoris, setUpFavoris] = useState([]);
-    const [downFavoris, setDownFavoris] = useState("");
-    
-    const [getcurrentMovies, setcurrentMovies] = useState([]);
-
-    //Set UID  User
-    useEffect(() => {
-        onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            setUidUser(user.uid);
-        }
-        });
-    }, []);
-
-    //Get data User
-    useEffect(async () => {
-        setRefUser(await doc(db, "users", uidUser));
-        if(uidUser) setUserData(await (await getDoc(userRef)).data());
-        if(!isCardFavori) await setcurrentMovies(movies)
-    }, [uidUser, movies, upFavoris, downFavoris]);
-
-    //Add film favori
-    useEffect(async () => {
-        if (userRef && userData && upFavoris.length > 0) {
-        await updateDoc(userRef, {
-            favoris: userData.favoris
-            ? userData.favoris.concat(upFavoris)
-            : upFavoris,
-        });
-        setUpFavoris([]);
-        if(!isCardFavori) window.location.reload(false);
-        }
-    }, [upFavoris]);
-
-    //Remove film favori
-    useEffect(async () => {
-        if (userRef && userData && downFavoris.length > 0) {
-        await updateDoc(userRef, {
-            favoris: userData.favoris.filter((e) => e !== downFavoris),
-        });
-        setDownFavoris("");
-        if(!isCardFavori) window.location.reload(false);
-        }
-    }, [downFavoris]);
+    const { title, movies, isCardFavori } = props;
 
     //Action button
     const handleSubmit = (movieId) => {
-        if (!isFavoris(movieId)) setUpFavoris([movieId]);
+        if (!isFavoris(movieId)) props.setUpFavoris([movieId]);
         else {
-        setDownFavoris(movieId);
+          props.setDownFavoris(movieId);
         }
     };
 
     const isFavoris = (movieId) => {
-        return userData?.favoris?.includes(movieId);
+        return props.userData?.favoris?.includes(movieId);
     };
 
     const createCard = (movie) => {
@@ -112,9 +63,11 @@ function Cards(props) {
       );
     }
     
-    return (<>{movies.map((movie, index) => {
+    return (<>
+    {(!isCardFavori || (props.userData?.favoris?.length > 0)) && <Typography variant="h2">{title}</Typography>}
+    {movies.map((movie, index) => {
       if (isCardFavori){
-        if(userData?.favoris?.includes(movie.id)) return createCard(movie)
+        if(props.userData?.favoris?.includes(movie.id)) return createCard(movie)
       }
       else return createCard(movie)
     })}</>) || <></>

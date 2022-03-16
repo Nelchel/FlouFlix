@@ -8,7 +8,7 @@ import "firebase/compat/firestore";
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
-import Cards from "../components/Cards"
+import CardsLists from "../components/CardsLists";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -35,14 +35,8 @@ function Catalogue() {
 
   return (
     <Box>
-      <Typography variant="h1">Catalogue</Typography>
-      <Box display="flex" justifyContent="space-evenly">
-        <Cards movies={getMovies} isCardFavori={true}></Cards>
-      </Box>
-      <Box display="flex" justifyContent="space-evenly">
-        <Cards movies={getMovies} isCardFavori={false}></Cards>
-
-      </Box>
+      {/* <Typography variant="h1">Catalogue</Typography> */}
+      <CardsLists movies={getMovies}></CardsLists>
       <Outlet />
     </Box>
   );
