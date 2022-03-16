@@ -16,8 +16,15 @@ const makeClass = makeStyles((theme) => ({
     margin: "auto",
     maxWidth: "122px",
   },
-  }));
-
+  linkColor: {
+    color: theme.palette.text.black,
+    marginLeft: "5px",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline",
+    },
+  },
+}));
 
 function Connexion() {
   const classes = makeClass();
@@ -83,10 +90,20 @@ function Connexion() {
                   }}
                 />
               </Box>
-              <Button variant="contained" color="secondary" onClick={handleSubmit} className={classes.loginButton}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleSubmit}
+                className={classes.loginButton}
+              >
                 <Typography variant="body1">Connexion</Typography>
               </Button>
-              <Typography paddingTop="20px" paddingBottom="20px" variant="body1"> Première visite sur FlouFlix? <Link to="/Inscription">Inscrivez-vous.</Link></Typography>
+              <Box paddingTop="10px">
+                <Typography variant="body1">
+                  Première visite sur FlouFlix?
+                  <Link to="/inscription" className={classes.linkColor}>Inscrivez-vous</Link>.
+                </Typography>
+              </Box>
             </Box>
           </form>
         </Box>
