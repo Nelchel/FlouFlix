@@ -25,11 +25,19 @@ function App({ firebaseConfig }) {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#000000",
+        main: "#212121",
+        light: "#484848",
+        dark: "#000000",
       },
       secondary: {
         main: "#E50914",
+        light: "#ff5740",
+        dark: "#aa0000",
       },
+      text: {
+        white: "#FFF",
+        black: "#333",
+      }
     },
   });
 

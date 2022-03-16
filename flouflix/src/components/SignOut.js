@@ -8,8 +8,8 @@ import { getAuth, signOut } from "firebase/auth";
 
 
 const makeClass = makeStyles((theme) => ({
-  signupButton: {
-    marginRight: "10px",
+  signOut: {
+    float: "right",
   },
 }));
 
@@ -31,9 +31,11 @@ function Connexion() {
 
 
   return ( 
-      <Button onClick={handleSubmit}>
-          <Typography>Se déconnecter</Typography>
+    <Box className={classes.signOut}>
+      <Button onClick={handleSubmit} variant="outlined" color="secondary">
+          <Typography variant="body1">Se déconnecter</Typography>
       </Button>
+    </Box>
   );
 }
 

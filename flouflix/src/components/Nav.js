@@ -2,83 +2,99 @@ import { Container, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ShoppingCartSharpIcon from "@mui/icons-material/ShoppingCartSharp";
-import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
-import { makeStyles } from "@mui/styles";
-import SignOut from "./SignOut";
+import { makeStyles, useTheme } from "@mui/styles";
+
+import { Link, Outlet } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import SignOut from "./SignOut";
 
 const makeClass = makeStyles((theme) => ({
   section: {
-    background: "black",
+    background: theme.palette.primary.main,
   },
+  linkMenu: {
+    marginLeft: "15px",
+    textDecoration: "none",
+  },
+  linkMenuRight: {
+    marginRight: "15px",
+    textDecoration: "none",
+  }
 }));
 
 function Nav() {
   const classes = makeClass();
   const [exist, setExist] = useState();
+  const theme = useTheme();
 
   const auth = getAuth();
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const mail = user.mailAddress;
-      setExist(true);
-    } else {
-      setExist(false);
-    }
-  });
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setExist(true);
+      } else {
+        setExist(false);
+      }
+    });
+  }, ([auth]))
 
   return (
     <section className={classes.section}>
       <Container maxWidth="1250px">
-        <Box bgcolor="black" maxHeight="70px">
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box marginLeft="50px">
+        <Box bgcolor={theme.palette.primary.main} maxHeight="70px">
+          <Box display="flex" alignItems="center" justifyContent="space-between">
+            <Box display="flex" alignItems="center">
               <Link to="/">
                 <img
-                  src="images/logo-flouflix.png"
+                  src="images/logo-flouflix-new.png"
                   alt="logo flouflix"
                   height="70px"
                 />
               </Link>
+              <Link to="/" className={classes.linkMenu}>
+                <Typography color={theme.palette.text.white} variant="body1">
+                  Accueil
+                </Typography>
+              </Link>
+              <Link to="/catalogue" className={classes.linkMenu}>
+                <Typography color={theme.palette.text.white} variant="body1">
+                  Catalogue
+                </Typography>
+              </Link>
+              {exist && (
+                <Link to="/mes-films" className={classes.linkMenu}>
+                  <Typography color={theme.palette.text.white} variant="body1">
+                    Mes films
+                  </Typography>
+                </Link>
+              )}
             </Box>
-            <Link to="/catalogue">
-              <Button variant="contained" color="error">
-                <Typography>Catalogue</Typography>
-              </Button>
-            </Link>
-            {exist === false ? (
+            {!exist ? (
               <Box marginRight="10px" display="flex">
-                <Box marginRight="10px">
-                  <Link to="/inscription">
-                    <Button variant="outlined" color="error">
-                      <Typography>Inscription</Typography>
-                    </Button>
-                  </Link>
-                </Box>
-                <Link to="/connexion">
-                  <Button variant="contained" color="error">
-                    <Typography>Se connecter</Typography>
+                <Link to="/inscription" className={classes.linkMenu}>
+                  <Button variant="outlined" color="secondary">
+                    <Typography variant="body1">Inscription</Typography>
+                  </Button>
+                </Link>
+                <Link to="/connexion" className={classes.linkMenu}>
+                  <Button variant="contained" color="secondary">
+                    <Typography variant="body1">Se connecter</Typography>
                   </Button>
                 </Link>
               </Box>
             ) : (
-              <>
-                <Link to="/mon-panier">
-                  <ShoppingCartSharpIcon fontSize="large" style={{color : 'white'}}/>
-                </Link>
-                <Link to="/mes-films">
-                  <Button variant="contained" color="error">
-                    <Typography>Mes films</Typography>
-                  </Button>
+              <Box>
+                <Link to="/mon-panier" className={classes.linkMenuRight}>
+                  <ShoppingCartSharpIcon
+                    fontSize="large"
+                    style={{ color: "white" }}
+                  />
                 </Link>
                 <SignOut />
-              </>
+              </Box>
             )}
           </Box>
           <Outlet />

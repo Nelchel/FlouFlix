@@ -38,9 +38,7 @@ function Home() {
       {exist === true && (
         <Box>
           <Typography variant="h2">Bienvenue {mail}</Typography>
-          <Catalogue/>
         </Box>
-
       )}
       <Catalogue />
     </Box>
