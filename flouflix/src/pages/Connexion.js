@@ -76,7 +76,7 @@ function Connexion() {
                   onChange={handleChangeMail}
                 />
               </Box>
-              <Box paddingBottom="20px">
+              <Box paddingBottom="0px">
                 <TextField
                   fullWidth
                   required
@@ -94,7 +94,7 @@ function Connexion() {
               <Button variant="contained" color="secondary" onClick={handleSubmit} className={classes.loginButton}>
                 <Typography variant="body1">Connexion</Typography>
               </Button>
-              <Typography>Première visite sur FlouFlix? <Link to="/Inscription">Inscrivez-vous.</Link></Typography>
+              <Typography paddingTop="20px" paddingBottom="20px" variant="body1"> Première visite sur FlouFlix? <Link to="/Inscription">Inscrivez-vous.</Link></Typography>
             </Box>
           </form>
         </Box>
