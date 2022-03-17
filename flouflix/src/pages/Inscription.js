@@ -8,13 +8,14 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Container } from "@mui/material";
+import WarningIcon from "@mui/icons-material/Warning";
+
 import React, { useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import { Link } from "react-router-dom";
-import WarningIcon from "@mui/icons-material/Warning";
+import { Link, useLocation } from "react-router-dom";
 
 const makeClass = makeStyles((theme) => ({
   submitButton: {
@@ -101,6 +102,8 @@ function Inscription() {
   const db = firebase.firestore();
   const auth = getAuth();
 
+  localStorage.setItem("url", window.location.pathname);
+
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
@@ -115,7 +118,6 @@ function Inscription() {
         setUserLog(user.uid);
       })
       .catch((error) => {
-        console.log(error.code);
         if (error.code === "auth/email-already-in-use") {
           setErrorMessage("Il existe déjà un compte associé à cet email.");
         }

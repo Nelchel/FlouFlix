@@ -57,16 +57,51 @@ const makeClass = makeStyles((theme) => ({
       top: "96px",
     },
   },
+  requiredError: {
+    position: "absolute",
+    top: "75px",
+    left: "50%",
+    backgroundColor: "#fff",
+    padding: "5px 15px",
+    borderRadius: "5px",
+    color: "#333",
+    transform: "translateX(-50%)",
+    boxShadow: "2px 2px 10px 0 rgba(0, 0, 0, 0.5)",
+    minWidth: "fit-content",
+    zIndex: 99,
+    display: "flex",
+    alignItems: "center",
+    "&::after": {
+      content: "''",
+      position: "absolute",
+      backgroundColor: "inherit",
+      top: "-6px",
+      left: "50%",
+      bgcolor: theme.palette.background.dark,
+      width: "13px",
+      height: "13px",
+      transform: "translateX(-50%) rotate(45deg)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      left: "45%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      top: "96px",
+    },
+  },
 }));
 
 function Connexion() {
   const classes = makeClass();
   const auth = getAuth();
 
+  localStorage.setItem("url", window.location.pathname);
+
   const [mailAddress, setMailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
   const [isValid, setValid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = () => {
     signInWithEmailAndPassword(auth, mailAddress, password)
@@ -77,8 +112,10 @@ function Connexion() {
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage);
+        console.log(errorCode);
+        if (error.code === "auth/user-not-found") {
+          setErrorMessage("Il n'existe aucun compte associé à cet email.");
+        }
       });
   };
 
@@ -120,6 +157,12 @@ function Connexion() {
                     setMailAddress(e.target.value);
                   }}
                 />
+                {errorMessage !== "" && (
+                  <div className={classes.requiredError}>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
+                    <Typography>{errorMessage}</Typography>
+                  </div>
+                )}
                 {!isValid && mailAddress.length > 3 && (
                   <div className={classes.required}>
                     <WarningIcon style={{ marginRight: 5, color: "orange" }} />

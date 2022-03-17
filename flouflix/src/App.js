@@ -13,6 +13,7 @@ import MyCart from "./pages/MyCart";
 import Movie from "./pages/Movie";
 import Modify from "./pages/Modify";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 import { getStorage } from "firebase/storage";
 import { initializeApp } from "firebase/app";
@@ -37,33 +38,40 @@ function App({ firebaseConfig }) {
       text: {
         white: "#FFF",
         black: "#333",
-      }
+      },
     },
   });
 
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <React.Fragment>
-          <Routes>
-            <Route path="/" element={<Nav />}>
-              <Route index element={<Home />} />
-              <Route path="inscription" element={<Inscription />} />
-              <Route path="connexion" element={<Connexion />} />
-              <Route path="catalogue" element={<Catalogue />} />
-              <Route
-                path="ajouter-film"
-                element={<AddMovie storage={storage} />}
-              />
-              <Route path="mes-films" element={<MyMovies />} />
-              <Route path="mon-panier" element={<MyCart />} />
-              <Route path="movie/:id" element={<Movie />} />
-              <Route path="modifier-film/:id" element={<Modify />} />
+        <SnackbarProvider
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+        >
+          <React.Fragment>
+            <Routes>
+              <Route path="/" element={<Nav />}>
+                <Route index element={<Home />} />
+                <Route path="inscription" element={<Inscription />} />
+                <Route path="connexion" element={<Connexion />} />
+                <Route path="catalogue" element={<Catalogue />} />
+                <Route
+                  path="ajouter-film"
+                  element={<AddMovie storage={storage} />}
+                />
+                <Route path="mes-films" element={<MyMovies />} />
+                <Route path="mon-panier" element={<MyCart />} />
+                <Route path="movie/:id" element={<Movie />} />
+                <Route path="modifier-film/:id" element={<Modify />} />
 
-              {/* <Route path="*" element={<NoMatch />} /> */}
-            </Route>
-          </Routes>
-        </React.Fragment>
+                {/* <Route path="*" element={<NoMatch />} /> */}
+              </Route>
+            </Routes>
+          </React.Fragment>
+        </SnackbarProvider>
       </ThemeProvider>
     </BrowserRouter>
   );
