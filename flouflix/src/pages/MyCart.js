@@ -49,8 +49,10 @@ function MyCart() {
   const auth = getAuth();
   const [uid, setUid] = useState("");
   const [moovieInMyCart, setMoovieInMyCart] = useState([]);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState([]);
   const [userCurrent, setUserCurrent] = useState(undefined);
+
+  //Gestion de la fenêtre de suppression  
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -79,6 +81,9 @@ function MyCart() {
       querySnapshot.forEach((doc) => {
         user.push(doc.data());
       });
+      // console.log(user)
+      const quantityArray = user[0].myCart
+      setQuantity(quantityArray)
       setUserCurrent(user[0]);
     };
     getUser();
@@ -110,30 +115,35 @@ function MyCart() {
       window.location.replace("/mon-panier");
   }
 
-  const handleSubmit = async(index,value) => {
-    let movies = [];
+  const handleSubmit = async(index,quantity) => {
+    let changeArray = [];
     const q = query(collection(db, "users"), where("uid", "==", uid));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      movies.push(doc.data());
+      changeArray.push(doc.data());
     });
-    movies[0].myCart[index].Quantity = value
+    changeArray[0].myCart[index].Quantity = quantity
     await updateDoc(doc(db,  "users", uid), {
-      "myCart": movies[0].myCart
+      "myCart": changeArray[0].myCart
     }) 
 
 }
 
 
-const debounce = useDebouncedCallback((index) =>handleSubmit(index,quantity),3000)
+const debounce = useDebouncedCallback((index,quantity) =>handleSubmit(index,quantity),3000)
 
-const handleChange = async(e,index) => {
-  if(e.target.value>0 && e.target.value <= 100)
-  {
-    setQuantity(e.target.value)
-    debounce(index)
+const handleChange = async (e,index) => {
+  const quantityLocal = [...quantity]
+  console.log('nouvelle valeur dentree',e.target.value)
+  console.log(quantity[index].Quantity)
+    if(e.target.value>=0 && e.target.value <= 100)
+    {
+        quantityLocal[index].Quantity = e.target.value
+        setQuantity(quantityLocal)
+        debounce(index,e.target.value)
     }
-  }
+    else(console.log('Valeur incorrecte'))
+}
 
   return (
     <section>
@@ -174,11 +184,11 @@ const handleChange = async(e,index) => {
                       </Box>
                   </Modal>
                   <TextField
-                    value={quantity}
+                    value={quantity[index].Quantity}
                     id="outlined-required"
                     label="Qté"
                     type="number"
-                    onChange={(e)=> handleChange(e,index)}
+                    onChange={ (e)=> handleChange(e,index)}
                   />
                   </CardContent>
                 </Card>
