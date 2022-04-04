@@ -156,7 +156,7 @@ function Inscription() {
           isBoutique: isBoutique,
           addressLine1: addressLine1,
           addressLine2: addressLine2,
-          photoUrl: "https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/anonyme.png?alt=media&token=ebc235c8-d5df-4dd2-b834-d9d6f985fc1a",
+          photoURL: "https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/anonyme.png?alt=media&token=ebc235c8-d5df-4dd2-b834-d9d6f985fc1a",
           lat: lat,
           lon: lon,
         });

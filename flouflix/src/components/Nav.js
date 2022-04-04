@@ -35,6 +35,7 @@ function Nav() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setExist(true);
+        console.log(user)
       } else {
         setExist(false);
       }
