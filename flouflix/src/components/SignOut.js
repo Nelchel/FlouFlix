@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import { getAuth, signOut } from "firebase/auth";
 
-
 const makeClass = makeStyles((theme) => ({
   signOut: {
     float: "right",
@@ -15,26 +14,22 @@ const makeClass = makeStyles((theme) => ({
 
 function Connexion() {
   const classes = makeClass();
-  
+
   const auth = getAuth();
 
+  const handleSubmit = () => {
+    signOut(auth)
+      .then(() => {})
+      .catch((error) => {
+        // An error happened.
+      });
 
-     const handleSubmit = () => {
-        signOut(auth).then(() => {
-          }).catch((error) => {
-            // An error happened.
-          });
-     
-        window.location.replace(`/`);
-    }
+    window.location.replace(`/`);
+  };
 
-
-
-  return ( 
-    <Box className={classes.signOut}>
-      <Button onClick={handleSubmit} variant="outlined" color="secondary">
-          <Typography variant="body1">Se déconnecter</Typography>
-      </Button>
+  return (
+    <Box className={classes.signOut} onClick={handleSubmit}>
+      <Typography variant="body1">Se déconnecter</Typography>
     </Box>
   );
 }

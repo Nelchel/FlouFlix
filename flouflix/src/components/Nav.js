@@ -3,11 +3,25 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ShoppingCartSharpIcon from "@mui/icons-material/ShoppingCartSharp";
 import { makeStyles, useTheme } from "@mui/styles";
+import Avatar from "@mui/material/Avatar";
 
 import { Link, Outlet } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 
+import { doc, getDoc } from "firebase/firestore";
+import firebase from "firebase/compat/app";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import PersonAdd from "@mui/icons-material/PersonAdd";
+import Settings from "@mui/icons-material/Settings";
+import Logout from "@mui/icons-material/Logout";
+import SlideshowIcon from "@mui/icons-material/Slideshow";
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import SignOut from "./SignOut";
 
 const makeClass = makeStyles((theme) => ({
@@ -21,32 +35,65 @@ const makeClass = makeStyles((theme) => ({
   linkMenuRight: {
     marginRight: "15px",
     textDecoration: "none",
-  }
+  },
 }));
 
 function Nav() {
   const classes = makeClass();
   const [exist, setExist] = useState();
   const theme = useTheme();
+  const db = firebase.firestore();
 
   const auth = getAuth();
+
+  const [user, setUser] = useState();
+  const [uid, setUid] = useState();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setExist(true);
-        console.log(user)
+        const uid = user.uid;
+        setUid(uid);
       } else {
         setExist(false);
       }
     });
-  }, ([auth]))
+  }, [auth]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(async () => {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      // console.log("Document data:", docSnap.data());
+      setUser(docSnap.data());
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }, [uid, db]);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <section className={classes.section}>
       <Container maxWidth="1250px">
         <Box bgcolor={theme.palette.primary.main} maxHeight="70px">
-          <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Box display="flex" alignItems="center">
               <Link to="/">
                 <img
@@ -65,13 +112,6 @@ function Nav() {
                   Catalogue
                 </Typography>
               </Link>
-              {exist && (
-                <Link to="/mes-films" className={classes.linkMenu}>
-                  <Typography color={theme.palette.text.white} variant="body1">
-                    Mes films
-                  </Typography>
-                </Link>
-              )}
             </Box>
             {!exist ? (
               <Box marginRight="10px" display="flex">
@@ -87,21 +127,91 @@ function Nav() {
                 </Link>
               </Box>
             ) : (
-              <Box>
+              <Box display="flex" alignItems="center">
                 <Link to="/mon-panier" className={classes.linkMenuRight}>
-                  <ShoppingCartSharpIcon
-                    fontSize="large"
+                  <ShoppingBasketIcon
+                    fontSize="medium"
                     style={{ color: "white" }}
                   />
                 </Link>
-                <Link to="/mon-compte">
-                  <Button variant="contained">
-                    <Typography>
-                      Mon compte
-                    </Typography>
-                  </Button>
-                </Link>
-                <SignOut />
+                {user !== undefined && (
+                  <>
+                    <Tooltip title="Account settings">
+                      <IconButton
+                        onClick={handleClick}
+                        size="small"
+                        sx={{ ml: 2 }}
+                        aria-controls={open ? "account-menu" : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? "true" : undefined}
+                      >
+                        <Avatar alt="user photo" src={user.photoURL} />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      anchorEl={anchorEl}
+                      id="account-menu"
+                      open={open}
+                      onClose={handleClose}
+                      onClick={handleClose}
+                      PaperProps={{
+                        elevation: 0,
+                        sx: {
+                          overflow: "visible",
+                          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                          mt: 1.5,
+                          "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          "&:before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                          },
+                        },
+                      }}
+                      transformOrigin={{ horizontal: "right", vertical: "top" }}
+                      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                    >
+                      <MenuItem>
+                        <Avatar alt="user photo" src={user.photoURL} />
+                        <Link to="/mon-compte" className={classes.linkMenu}>
+                          <Typography color={theme.palette.text.black}>Mon compte</Typography>
+                        </Link>
+                      </MenuItem>
+                      <MenuItem>
+                        <ListItemIcon>
+                          <SlideshowIcon fontSize="small" />
+                        </ListItemIcon>
+                        <Link to="/mes-films" className={classes.linkMenu}>
+                          <Typography
+                            color={theme.palette.text.black}
+                            variant="body1"
+                          >
+                            Mes films
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                      <Divider />
+                      <MenuItem>
+                        <ListItemIcon>
+                          <Logout fontSize="small" />
+                        </ListItemIcon>
+                        <SignOut />
+                      </MenuItem>
+                    </Menu>
+                  </>
+                )}
               </Box>
             )}
           </Box>
