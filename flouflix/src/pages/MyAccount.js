@@ -6,9 +6,13 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
-import CardsLists from "../components/CardsLists";
+import Grid from "@mui/material/Grid";
+import {
+  getAuth,
+  onAuthStateChanged,
+  verifyPasswordResetCode,
+} from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -17,11 +21,71 @@ const makeClass = makeStyles((theme) => ({
 }));
 
 function MyAccount() {
-  // console.log(window.location.pathname === "/");
+  const db = firebase.firestore();
+
+  const [getUser, setUser] = useState([]);
+  const [uid, setUid] = useState();
+  const auth = getAuth();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(async () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        setUid(uid);
+      } else {
+      }
+    });
+  }, [uid]);
+
+  console.log(uid)
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(async () => {
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      // console.log("Document data:", docSnap.data());
+      setUser(docSnap.data());
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }, [uid, db]);
+
+  console.log(getUser.mailAdress)
 
   return (
     <Box>
-      {/* <Typography variant="h1">Catalogue</Typography> */}
+      {getUser !== [] && (
+        <>
+          <Typography>Mon compte</Typography>
+
+          <Grid container>
+            <Grid item>
+              <Typography>Mes informations personnelles</Typography>
+
+              <Box>
+                <Typography>Adresse mail</Typography>
+                <Typography>{getUser.mailAddress}</Typography>
+              </Box>
+            </Grid>
+
+            <Grid item>
+                <Box>
+                </Box>
+            </Grid>
+          </Grid>
+
+        {//ICI Modifier info connexion
+        }
+        <Box>      
+            {//DEDANS
+            }
+        </Box>
+        </>
+      )}
       <Outlet />
     </Box>
   );
