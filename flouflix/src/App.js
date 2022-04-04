@@ -1,9 +1,15 @@
 import React from "react";
 import "./App.css";
-import { Routes, Route, Outlet, Link, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import firebase from "firebase/compat/app";
+import { getStorage } from "firebase/storage";
+import { initializeApp } from "firebase/app";
+import { SnackbarProvider } from "notistack";
+import { GeoapifyContext } from '@geoapify/react-geocoder-autocomplete'
+
 import Nav from "./components/Nav";
 import Home from "./components/Home";
+
 import Inscription from "./pages/Inscription";
 import Connexion from "./pages/Connexion";
 import Catalogue from "./pages/Catalogue";
@@ -15,11 +21,6 @@ import Modify from "./pages/Modify";
 import MyAccount from "./pages/MyAccount";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { SnackbarProvider, useSnackbar } from "notistack";
-import { GeoapifyGeocoderAutocomplete, GeoapifyContext } from '@geoapify/react-geocoder-autocomplete'
-
-import { getStorage } from "firebase/storage";
-import { initializeApp } from "firebase/app";
 
 function App({ firebaseConfig }) {
   firebase.initializeApp(firebaseConfig);

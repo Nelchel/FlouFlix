@@ -79,10 +79,10 @@ function MyAccount() {
       }
     );
     autocomplete.on("select", async (location) => {
-      setAddressLine1(location.properties.address_line1)
-      setAddressLine2(location.properties.address_line2)
-      setLat(location.properties.lat)
-      setLon(location.properties.lon)
+      setAddressLine1(location.properties.address_line1);
+      setAddressLine2(location.properties.address_line2);
+      setLat(location.properties.lat);
+      setLon(location.properties.lon);
     });
 
     autocomplete.on("suggestions", (suggestions) => {
@@ -93,84 +93,80 @@ function MyAccount() {
   const handleClick = () => {
     var userRef = db.collection("users").doc(auth.currentUser.uid);
     return userRef
-    .update({
+      .update({
         addressLine1: addressLine1,
         addressLine2: addressLine2,
         lat: lat,
         lon: lon,
-    })
-    .then(() => {
-      console.log("Document successfully updated!");
-    })
-    .catch((error) => {
-      // The document probably doesn't exist.
-      console.error("Error updating document: ", error);
-    });
-  }
+      })
+      .then(() => {
+        console.log("Document successfully updated!");
+      })
+      .catch((error) => {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  };
 
-  
   const handleChange = (event) => {
     setMailAddress(event.target.value);
-  }
+  };
 
   const handleChangePassword = (event) => {
     setPassword(event.target.value);
-  }
+  };
 
   const handleSubmit = async (event) => {
-   updateEmail(auth.currentUser, mailAddress).then(() => {
-      console.log("MAIL geted");
-    }).catch((error) => {
-       console.log(error);
-    });  
+    updateEmail(auth.currentUser, mailAddress)
+      .then(() => {
+        console.log("MAIL geted");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     const docRef = doc(db, "users", uid);
     await updateDoc(docRef, {
       mailAddress: mailAddress,
-      });
-  
-    updatePassword(auth.currentUser,password).then(()=> {
-      console.log("PASS get")
-    }).catch((error)=>{ 
-      console.log(error);
     });
 
-    }
+    updatePassword(auth.currentUser, password)
+      .then(() => {
+        console.log("PASS get");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <Box>
-        <Typography>Mon compte</Typography>
-          <Grid container>
-              <Box>
-              <Typography>Adresse mail</Typography>
-                <Typography>{getUser.mailAddress}</Typography>
-              </Box>
-              <Grid item>
-              <Box>
-              <div
-                className={classes.inputAdress}
-                id="autocomplete"
-                style={{ position: "relative" }}
-              ></div>
-                          <Button onClick={handleClick}>Enregistrer mon adresse</Button>
-            </Box>
-              </Grid>
-          </Grid>
-          <Box>      
-            <TextField
-            value={mailAddress}
-            onChange={handleChange}
-            />
-            <TextField
-            type="password"
-            value={password}
-            onChange={handleChangePassword}
-            />
-            <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleSubmit}
-            >Envoyer       
-          </Button>
+      <Typography>Mon compte</Typography>
+      <Grid container>
+        <Box>
+          <Typography>Adresse mail</Typography>
+          <Typography>{getUser.mailAddress}</Typography>
         </Box>
+        <Grid item>
+          <Box>
+            <div
+              className={classes.inputAdress}
+              id="autocomplete"
+              style={{ position: "relative" }}
+            ></div>
+            <Button onClick={handleClick}>Enregistrer mon adresse</Button>
+          </Box>
+        </Grid>
+      </Grid>
+      <Box>
+        <TextField value={mailAddress} onChange={handleChange} />
+        <TextField
+          type="password"
+          value={password}
+          onChange={handleChangePassword}
+        />
+        <Button variant="contained" color="secondary" onClick={handleSubmit}>
+          Envoyer
+        </Button>
+      </Box>
       <Outlet />
     </Box>
   );
