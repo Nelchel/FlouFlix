@@ -157,7 +157,7 @@ function Connexion() {
                     setMailAddress(e.target.value);
                   }}
                 />
-                {errorMessage !== "" && (
+                {errorMessage !== "" && mailAddress.length > 3 && (
                   <div className={classes.requiredError}>
                     <WarningIcon style={{ marginRight: 5, color: "orange" }} />
                     <Typography>{errorMessage}</Typography>
@@ -183,14 +183,26 @@ function Connexion() {
                   }}
                 />
               </Box>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleSubmit}
-                className={classes.loginButton}
-              >
-                <Typography variant="body1">Connexion</Typography>
-              </Button>
+              {isValid && password.length > 5 ? (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleSubmit}
+                  className={classes.loginButton}
+                >
+                  <Typography variant="body1">Connexion</Typography>
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleSubmit}
+                  className={classes.loginButton}
+                  disabled
+                >
+                  <Typography variant="body1">Connexion</Typography>
+                </Button>
+              )}
               <Box paddingTop="10px">
                 <Typography variant="body1">
                   Première visite sur FlouFlix?
