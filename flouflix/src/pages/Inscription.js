@@ -16,6 +16,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import { Link, useLocation } from "react-router-dom";
+import { ConfirmationNumber } from "@mui/icons-material";
 
 const makeClass = makeStyles((theme) => ({
   submitButton: {
@@ -110,6 +111,8 @@ function Inscription() {
   const [isBoutique, setIsBoutique] = useState(false);
   const [isValid, setValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [passwordValidation, setPasswordValidation] = useState("");
+  const [confirm, setConfirm] = useState();
 
   const handleSubmit = async () => {
     await createUserWithEmailAndPassword(auth, mailAddress, password)
@@ -146,6 +149,7 @@ function Inscription() {
     }
     return false;
   }
+
 
   return (
     <section>
@@ -197,7 +201,7 @@ function Inscription() {
                   type="password"
                   value={password}
                   id="passwordSignUp"
-                  label="Password"
+                  label="Mot de passe"
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
@@ -209,6 +213,34 @@ function Inscription() {
                       Le mot de passe saisi doit comporter plus de 6 caractères.
                     </Typography>
                   </div>
+                )}
+                </Box>
+                <Box paddingBottom="20px" position="relative">
+                <TextField
+                  required
+                  fullWidth
+                  type="password"
+                  value={passwordValidation}
+                  id="passwordValidation"
+                  label="Confirmer votre mot de passe"
+                  onChange={(e) => {
+                    setPasswordValidation(e.target.value);
+                    if (password === e.target.value) {
+                      setConfirm(true);       
+                    }
+                    else 
+                      setConfirm(false);
+                  }}  
+                  
+                />
+  
+                {confirm && password.length < 3 && (
+                  <div className={classes.required}>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }}/>
+                    <Typography>
+                      Les mots de passe ne correspondent pas.
+                    </Typography>
+              </div>
                 )}
               </Box>
               <FormControl fullWidth>
@@ -225,7 +257,7 @@ function Inscription() {
                   <MenuItem value={false}>Particulier</MenuItem>
                 </Select>
               </FormControl>
-              {isValid && password.length >= 6 ? (
+              {isValid && confirm && password.length >= 5 ? (
                 <Button
                   variant="contained"
                   color="secondary"
