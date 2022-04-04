@@ -44,6 +44,10 @@ function MyAccount() {
   const auth = getAuth();
   const [mailAddress, setMailAddress] = useState();
   const [password, setPassword] = useState();
+  const [pseudo, setPseudo] = useState();
+  const [dateOfBirth, setDateOfBirth] = useState();
+  const [phone, setPhone] = useState(); 
+
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -117,6 +121,19 @@ function MyAccount() {
     setPassword(event.target.value);
   }
 
+  const handleChangePseudo = (event) => {
+    setPseudo(event.target.value);
+  }
+
+  const handleChangeDateOfBirth = (event) => {
+    setDateOfBirth(event.target.value);
+  }
+
+  const handleChangePhone = (event) => {
+    setPhone(event.target.value);
+  }
+  
+
   const handleSubmit = async (event) => {
    updateEmail(auth.currentUser, mailAddress).then(() => {
       console.log("MAIL geted");
@@ -134,6 +151,24 @@ function MyAccount() {
       console.log(error);
     });
 
+    updatePseudo(auth.currentUser,password).then(()=> {
+      console.log("PSEU get")
+    }).catch((error)=>{ 
+      console.log(error);
+    });
+
+    updateDateOfBirth(auth.currentUser,password).then(()=> {
+      console.log("PSEU get")
+    }).catch((error)=>{ 
+      console.log(error);
+    });
+    
+    updatePhone(auth.currentUser,password).then(()=> {
+      console.log("PSEU get")
+    }).catch((error)=>{ 
+      console.log(error);
+    });
+  
     }
   return (
     <Box>
@@ -150,7 +185,7 @@ function MyAccount() {
                 id="autocomplete"
                 style={{ position: "relative" }}
               ></div>
-                          <Button onClick={handleClick}>Enregistrer mon adresse</Button>
+            <Button onClick={handleClick}>Enregistrer mon adresse</Button>
             </Box>
               </Grid>
           </Grid>
@@ -164,6 +199,23 @@ function MyAccount() {
             value={password}
             onChange={handleChangePassword}
             />
+             <TextField
+            value={pseudo}
+            onChange={handleChangePseudo}
+            />
+
+            <TextField
+            value={dateOfBirth}
+            onChange={handleChangePseudo}
+            />
+            
+            
+            <TextField
+            value={phone}
+            onChange={handleChangePhone}
+            />
+           
+            
             <Button
             variant="contained"
             color="secondary"
