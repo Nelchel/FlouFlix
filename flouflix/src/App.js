@@ -16,6 +16,8 @@ import MyAccount from "./pages/MyAccount";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SnackbarProvider, useSnackbar } from "notistack";
+import { GeoapifyGeocoderAutocomplete, GeoapifyContext } from '@geoapify/react-geocoder-autocomplete'
+
 import { getStorage } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 
@@ -43,7 +45,39 @@ function App({ firebaseConfig }) {
     },
   });
 
-  return (
+  function onPlaceSelect(value) {
+    console.log(value);
+  }
+
+  function onSuggectionChange(value) {
+    console.log(value);
+  }
+
+  function preprocessHook(value) {
+    return `${value}, Munich, Germany`
+  }
+
+  function postprocessHook(feature) {
+    return feature.properties.street;
+  }
+
+  function suggestionsFilter(suggestions) {
+    const processedStreets = [];
+
+    const filtered = suggestions.filter(value => {
+      if (!value.properties.street || processedStreets.indexOf(value.properties.street) >= 0) {
+        return false;
+      } else {
+        processedStreets.push(value.properties.street);
+        return true;
+      }
+    })
+
+    return filtered;
+  }
+
+  return ( 
+  <GeoapifyContext apiKey="f99dc96855554b5e94169e8f6015c05c">
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <SnackbarProvider
@@ -75,6 +109,7 @@ function App({ firebaseConfig }) {
         </SnackbarProvider>
       </ThemeProvider>
     </BrowserRouter>
+    </GeoapifyContext>
   );
 }
 
