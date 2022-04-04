@@ -17,6 +17,7 @@ import { SnackbarProvider, useSnackbar } from "notistack";
 
 import { getStorage } from "firebase/storage";
 import { initializeApp } from "firebase/app";
+import MyAccount from "./pages/MyAccount";
 
 function App({ firebaseConfig }) {
   firebase.initializeApp(firebaseConfig);
@@ -66,7 +67,7 @@ function App({ firebaseConfig }) {
                 <Route path="mon-panier" element={<MyCart />} />
                 <Route path="movie/:id" element={<Movie />} />
                 <Route path="modifier-film/:id" element={<Modify />} />
-
+                <Route path="mon-compte" element={<MyAccount />} /> 
                 {/* <Route path="*" element={<NoMatch />} /> */}
               </Route>
             </Routes>

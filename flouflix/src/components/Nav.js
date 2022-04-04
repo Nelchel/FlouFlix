@@ -93,6 +93,13 @@ function Nav() {
                     style={{ color: "white" }}
                   />
                 </Link>
+                <Link to="/mon-compte">
+                  <Button variant="contained">
+                    <Typography>
+                      Mon compte
+                    </Typography>
+                  </Button>
+                </Link>
                 <SignOut />
               </Box>
             )}
