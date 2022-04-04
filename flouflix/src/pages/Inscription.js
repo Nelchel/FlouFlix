@@ -214,8 +214,8 @@ function Inscription() {
                     </Typography>
                   </div>
                 )}
-                </Box>
-                <Box paddingBottom="20px" position="relative">
+              </Box>
+              <Box paddingBottom="20px" position="relative">
                 <TextField
                   required
                   fullWidth
@@ -226,21 +226,21 @@ function Inscription() {
                   onChange={(e) => {
                     setPasswordValidation(e.target.value);
                     if (password === e.target.value) {
-                      setConfirm(true);       
+                      setConfirm(true);
                     }
-                    else 
+                    else
                       setConfirm(false);
-                  }}  
-                  
+                  }}
+
                 />
-  
+
                 {confirm && password.length < 3 && (
                   <div className={classes.required}>
-                    <WarningIcon style={{ marginRight: 5, color: "orange" }}/>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
                     <Typography>
                       Les mots de passe ne correspondent pas.
                     </Typography>
-              </div>
+                  </div>
                 )}
               </Box>
               <FormControl fullWidth>

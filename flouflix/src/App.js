@@ -12,12 +12,12 @@ import MyMovies from "./pages/MyMovies";
 import MyCart from "./pages/MyCart";
 import Movie from "./pages/Movie";
 import Modify from "./pages/Modify";
+import MyAccount from "./pages/MyAccount";
+
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SnackbarProvider, useSnackbar } from "notistack";
-
 import { getStorage } from "firebase/storage";
 import { initializeApp } from "firebase/app";
-import MyAccount from "./pages/MyAccount";
 
 function App({ firebaseConfig }) {
   firebase.initializeApp(firebaseConfig);
