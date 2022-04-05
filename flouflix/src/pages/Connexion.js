@@ -103,7 +103,8 @@ function Connexion() {
   const [isValid, setValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     signInWithEmailAndPassword(auth, mailAddress, password)
       .then((userCredential) => {
         const user = userCredential.user;

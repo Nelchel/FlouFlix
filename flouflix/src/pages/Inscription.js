@@ -138,9 +138,9 @@ function Inscription() {
   const [pseudo, setPseudo] = useState();
   const [phone, setPhone] = useState();
   const [dateBirth, setDateBirth] = useState(null);
-  const [value, setValue] = React.useState(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     await createUserWithEmailAndPassword(auth, mailAddress, password)
       .then((userCredential) => {
         const user = userCredential.user;
