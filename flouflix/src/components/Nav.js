@@ -1,27 +1,23 @@
 import { Container, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import ShoppingCartSharpIcon from "@mui/icons-material/ShoppingCartSharp";
 import { makeStyles, useTheme } from "@mui/styles";
 import Avatar from "@mui/material/Avatar";
-
-import { Link, Outlet } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useEffect, useState } from "react";
-
-import { doc, getDoc } from "firebase/firestore";
-import firebase from "firebase/compat/app";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import PersonAdd from "@mui/icons-material/PersonAdd";
-import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+
+import { Link, Outlet } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import firebase from "firebase/compat/app";
 import SignOut from "./SignOut";
 
 const makeClass = makeStyles((theme) => ({
@@ -67,10 +63,8 @@ function Nav() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data());
       setUser(docSnap.data());
     } else {
-      // doc.data() will be undefined in this case
       console.log("No such document!");
     }
   }, [uid, db]);
