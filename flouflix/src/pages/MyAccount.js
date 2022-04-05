@@ -45,7 +45,7 @@ function MyAccount() {
   const [mailAddress, setMailAddress] = useState();
   const [password, setPassword] = useState();
   const [pseudo, setPseudo] = useState();
-  const [dateOfBirth, setDateOfBirth] = useState();
+  const [dateBirth, setDateBirth] = useState();
   const [phone, setPhone] = useState();
 
 
@@ -68,6 +68,10 @@ function MyAccount() {
     if (docSnap.exists()) {
       // console.log("Document data:", docSnap.data());
       setUser(docSnap.data());
+      setMailAddress(docSnap.data().mailAddress);
+      setPhone(docSnap.data().phone);
+      setDateBirth(docSnap.data().dateBirth);
+      setPseudo(docSnap.data().pseudo);
     } else {
       // doc.data() will be undefined in this case
       console.log("No such document!");
@@ -93,7 +97,6 @@ function MyAccount() {
       // process suggestions here
     });
   }, []);
-
   const handleClick = () => {
     var userRef = db.collection("users").doc(auth.currentUser.uid);
     return userRef
@@ -112,6 +115,23 @@ function MyAccount() {
       });
   };
 
+  const handleUpdate = () => {
+    var userRef = db.collection("users").doc(auth.currentUser.uid);
+    return userRef
+      .update({
+        phone : phone,
+        dateBirth:dateBirth,
+        pseudo:pseudo        
+      })
+      .then(() => {
+        console.log("Document successfully updated!");
+      })
+      .catch((error) => {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  };
+  
   const handleChange = (event) => {
     setMailAddress(event.target.value);
   };
@@ -122,16 +142,16 @@ function MyAccount() {
 
   const handleChangePseudo = (event) => {
     setPseudo(event.target.value);
+    console.log(event.target.value);
   }
 
-  const handleChangeDateOfBirth = (event) => {
-    setDateOfBirth(event.target.value);
+  const handleChangeDateBirth = (event) => {
+    setDateBirth(event.target.value);
   }
 
   const handleChangePhone = (event) => {
     setPhone(event.target.value);
   }
-
 
   const handleSubmit = async (event) => {
     updateEmail(auth.currentUser, mailAddress)
@@ -146,40 +166,22 @@ function MyAccount() {
       mailAddress: mailAddress,
     });
 
-    updatePseudo(auth.currentUser,password).then(()=> {
-      console.log("PSEU get")
-    }).catch((error)=>{
-      console.log(error);
-    });
-
-    updateDateOfBirth(auth.currentUser,password).then(()=> {
-      console.log("PSEU get")
-    }).catch((error)=>{
-      console.log(error);
-    });
-
-    updatePhone(auth.currentUser,password).then(()=> {
-      console.log("PSEU get")
-    }).catch((error)=>{
-      console.log(error);
-    });
-
     }
   return (
     <Box>
         <Typography>Mon compte</Typography>
           <Grid container>
               <Box>
-              <Typography>Adresse mail</Typography>
+                <Typography>Adresse mail</Typography>
                 <Typography>{getUser.mailAddress}</Typography>
               </Box>
-              <Grid item>
-              <Box>
-              <div
+              <Grid item> 
+                <Box>
+                <div
                 className={classes.inputAdress}
                 id="autocomplete"
                 style={{ position: "relative" }}
-              ></div>
+              > </div>
             <Button onClick={handleClick}>Enregistrer mon adresse</Button>
             </Box>
               </Grid>
@@ -200,8 +202,8 @@ function MyAccount() {
             />
 
             <TextField
-            value={dateOfBirth}
-            onChange={handleChangePseudo}
+            value={dateBirth}
+            onChange={handleChangeDateBirth}
             />
 
 
@@ -218,26 +220,10 @@ function MyAccount() {
             >Envoyer
           </Button>
         </Box>
-        <Grid item>
-          <Box>
-            <div
-              className={classes.inputAdress}
-              id="autocomplete"
-              style={{ position: "relative" }}
-            ></div>
-            <Button onClick={handleClick}>Enregistrer mon adresse</Button>
-          </Box>
-        </Grid>
-      </Grid>
+  
       <Box>
-        <TextField value={mailAddress} onChange={handleChange} />
-        <TextField
-          type="password"
-          value={password}
-          onChange={handleChangePassword}
-        />
-        <Button variant="contained" color="secondary" onClick={handleSubmit}>
-          Envoyer
+        <Button variant="contained" color="secondary" onClick={handleUpdate}>
+          Update
         </Button>
       </Box>
       <Outlet />
