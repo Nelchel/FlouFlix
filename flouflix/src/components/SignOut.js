@@ -1,9 +1,8 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
-import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
+
+import React from "react";
 import { getAuth, signOut } from "firebase/auth";
 
 const makeClass = makeStyles((theme) => ({
@@ -14,17 +13,16 @@ const makeClass = makeStyles((theme) => ({
 
 function Connexion() {
   const classes = makeClass();
-
   const auth = getAuth();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     signOut(auth)
-      .then(() => {})
+      .then(() => {
+        // console.log("success")
+      })
       .catch((error) => {
-        // An error happened.
+        // console.log(error)
       });
-
-    window.location.replace(`/`);
   };
 
   return (

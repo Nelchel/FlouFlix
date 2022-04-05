@@ -288,6 +288,7 @@ function Inscription() {
                 id="autocomplete"
                 style={{ position: "relative" }}
               ></div>
+              
               <FormControl fullWidth>
                 <InputLabel id="labelCategorie">Catégorie</InputLabel>
                 <Select
