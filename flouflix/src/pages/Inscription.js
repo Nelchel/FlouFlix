@@ -166,6 +166,9 @@ function Inscription() {
           addressLine2: addressLine2,
           photoURL:
             "https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/anonyme.png?alt=media&token=ebc235c8-d5df-4dd2-b834-d9d6f985fc1a",
+          phone: phone,
+          dateBirth: dateBirth,
+          pseudo: pseudo,
           lat: lat,
           lon: lon,
         });
@@ -350,7 +353,7 @@ function Inscription() {
                   <MenuItem value={false}>Particulier</MenuItem>
                 </Select>
               </FormControl>
-              {isValid && confirm && password.length >= 5 ? (
+              {isValid && confirm && password.length >= 5 && pseudo.length >= 3 && phone !== null && dateBirth !== null  ? (
                 <Button
                   variant="contained"
                   color="secondary"
