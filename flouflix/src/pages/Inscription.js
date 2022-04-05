@@ -9,13 +9,16 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Container } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import DatePicker from "@mui/lab/DatePicker";
 
 import React, { useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 
@@ -132,6 +135,10 @@ function Inscription() {
   const [addressLine2, setAddressLine2] = useState();
   const [lat, setLat] = useState();
   const [lon, setLon] = useState();
+  const [pseudo, setPseudo] = useState();
+  const [phone, setPhone] = useState();
+  const [dateBirth, setDateBirth] = useState(null);
+  const [value, setValue] = React.useState(null);
 
   const handleSubmit = async () => {
     await createUserWithEmailAndPassword(auth, mailAddress, password)
@@ -152,12 +159,13 @@ function Inscription() {
         await setDoc(doc(db, "users", userLog), {
           uid: userLog,
           mailAddress: mailAddress,
-          myCart : [],
+          myCart: [],
           password: password,
           isBoutique: isBoutique,
           addressLine1: addressLine1,
           addressLine2: addressLine2,
-          photoURL: "https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/anonyme.png?alt=media&token=ebc235c8-d5df-4dd2-b834-d9d6f985fc1a",
+          photoURL:
+            "https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/anonyme.png?alt=media&token=ebc235c8-d5df-4dd2-b834-d9d6f985fc1a",
           lat: lat,
           lon: lon,
         });
@@ -165,7 +173,7 @@ function Inscription() {
       }
     };
     logIn();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLog]);
 
   useEffect(() => {
@@ -213,6 +221,18 @@ function Inscription() {
           </Box>
           <form>
             <Box align="center" textAlign="center">
+              <Box paddingBottom="20px" position="relative">
+                <TextField
+                  required
+                  fullWidth
+                  value={pseudo}
+                  id="pseudo"
+                  label="Entrer un pseudo"
+                  onChange={(e) => {
+                    setPseudo(e.target.value);
+                  }}
+                />
+              </Box>
               <Box paddingBottom="20px" position="relative">
                 <TextField
                   fullWidth
@@ -284,12 +304,38 @@ function Inscription() {
                   </div>
                 )}
               </Box>
+              <Box paddingBottom="20px" position="relative">
+                <TextField
+                  required
+                  fullWidth
+                  type="phone"
+                  value={phone}
+                  id="phone"
+                  label="+330612345678"
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
+                />
+              </Box>
+              <Box paddingBottom="20px" position="relative">
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label="mm/dd/yyyy"
+                    value={dateBirth}
+                    onChange={(e) => {
+                      setDateBirth(e);
+                    }}
+                    renderInput={(params) => (
+                      <TextField required fullWidth {...params} />
+                    )}
+                  />
+                </LocalizationProvider>
+              </Box>
               <div
                 className={classes.inputAdress}
                 id="autocomplete"
                 style={{ position: "relative" }}
               ></div>
-              
               <FormControl fullWidth>
                 <InputLabel id="labelCategorie">Catégorie</InputLabel>
                 <Select
