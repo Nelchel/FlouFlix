@@ -12,6 +12,7 @@ import { chainPropTypes } from "@mui/utils";
 import Modal from "@mui/material/Modal";
 import { doc, deleteDoc,updateDoc,getDoc,arrayUnion} from "firebase/firestore";
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -35,13 +36,16 @@ function Movie() {
   const db = firebase.firestore();
   let { id } = useParams();
   const [uid, setUid] = useState("");
-  const [userRef, setRefUser] = useState("");
+  const [idFilm,setIdFilm] = useState("");
   const [userData, setUserData] = useState([]);
   const getMovies = [];
   const [movies, setMovies] = useState([]);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const { closeSnackBar } = useSnackbar();
+
 
   const auth = getAuth();
 
@@ -52,12 +56,13 @@ function Movie() {
         setUid(uid);
       } else {
       }
-    });
-    console.log(uid);
+    },[auth]);
+
     db.collection("movies")
       .where("id", "==", id)
       .get()
       .then((querySnapshot) => {
+        
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
           // console.log(doc.id, " => ", doc.data());
@@ -70,11 +75,19 @@ function Movie() {
       });
   }, [uid]);
 
-    //Get data User
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async () => {
-      setRefUser(await doc(db, "users", uid));
-      if(uid) setUserData(await (await getDoc(userRef)).data());
-  }, [uid]);
+      const getUser = async () => {
+        let user = [];
+        const q = query(collection(db, "users"), where("uid", "==", uid));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          user.push(doc.data());
+        });
+        setUserData(user[0])
+      };
+      getUser();
+    }, [uid,db]);
   
   const handleDelete = async () => {
     await deleteDoc(doc(db, "movies", movies[0].id));
@@ -83,14 +96,44 @@ function Movie() {
   };
 
   const handleClick = async() => {
-    if (userRef && userData)
+    let quantity = 1
+    const idMoovie = movies[0].id
+    const moovieName = `${movies[0].name} ajouté au panier`
+    const idMoovieFind = userData.myCart.find(m=> m.idMoovie === idMoovie)
+    if(idMoovieFind !== undefined)
     {
-      await updateDoc(userRef,{
-        myCart:arrayUnion({idMoovie :movies[0].id,Quantity : 1})
+      quantity = parseFloat(idMoovieFind.Quantity)
+    }
+    if(idMoovieFind == undefined && idFilm==="")
+    {
+      await updateDoc(await doc(db, "users", uid),{
+        myCart:arrayUnion({idMoovie :idMoovie,Quantity : quantity})
       });
+      addMoovie(moovieName)
+      setIdFilm(idMoovie)
+    }
+    else
+    {
+      // await updateDoc(doc(db,  "users", uid), {
+      //     "myCart": changeArray[0].myCart
+      //   }) 
+        console.log("n'ajoute pas le film")
+        const moovieName = `${movies[0].name} est déjà dans votre panier`
+      addMoovie(moovieName)
     }
   }
 
+
+const addMoovie = (moovieName) =>{
+  const key = enqueueSnackbar(moovieName,{
+    autoHideDuration: 1000,
+    variant : 'success',
+    anchorOrigin :{
+      vertical: 'bottom',
+      horizontal: 'center',
+    },
+  });
+}
   return (
     <section>
       <Box>
@@ -101,7 +144,7 @@ function Movie() {
               <img src={movies[0].url} width="300" height="300" />
               <Typography variant="body1">{movies[0].description}</Typography>
             </Box>
-            <Button onClick={handleClick()}>Ajouter au panier</Button>
+            <Button onClick={() => handleClick()}>Ajouter au panier</Button>
             {uid === movies[0].seller && (
               <>
                 <Link to={"/modifier-film/" + movies[0].id}>

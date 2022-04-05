@@ -1,12 +1,11 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { makeStyles } from "@mui/styles";
+import { makeStyles,useTheme } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Modal from "@mui/material/Modal";
+import ModalSuppr from "../components/ModalSuppr";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
@@ -29,34 +28,29 @@ import {
 
 const makeClass = makeStyles((theme) => ({
 
-  style :{
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  }
 }));
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+}; 
 
 function MyCart() {
   const classes = makeClass();
+  const theme = useTheme();
   const db = firebase.firestore();
   const auth = getAuth();
   const [uid, setUid] = useState("");
   const [moovieInMyCart, setMoovieInMyCart] = useState([]);
   const [quantity, setQuantity] = useState([]);
   const [userCurrent, setUserCurrent] = useState(undefined);
-
-  //Gestion de la fenêtre de suppression  
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
 
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,8 +64,6 @@ function MyCart() {
     });
   }, [auth]);
 
-
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     const getUser = async () => {
@@ -81,7 +73,6 @@ function MyCart() {
       querySnapshot.forEach((doc) => {
         user.push(doc.data());
       });
-      // console.log(user)
       const quantityArray = user[0].myCart
       setQuantity(quantityArray)
       setUserCurrent(user[0]);
@@ -107,14 +98,16 @@ function MyCart() {
     }
   }, [userCurrent,db]);
 
+//Suppresion de film 
+const handleClick = async(index) => {
+  await updateDoc(doc(db, "users", uid),{
+    "myCart":arrayRemove({idMoovie :quantity[index].idMoovie,Quantity : quantity[index].Quantity})
+  });
+  window.location.replace("/mon-panier");
+}
 
-  const handleClick = async(index) => {
-      await updateDoc(doc(db, "users", uid),{
-        myCart:arrayRemove({idMoovie :moovieInMyCart[index].id,Quantity : 1})
-      });
-      window.location.replace("/mon-panier");
-  }
 
+  //Modifier la quantité
   const handleSubmit = async(index,quantity) => {
     let changeArray = [];
     const q = query(collection(db, "users"), where("uid", "==", uid));
@@ -128,14 +121,9 @@ function MyCart() {
     }) 
 
 }
-
-
 const debounce = useDebouncedCallback((index,quantity) =>handleSubmit(index,quantity),3000)
-
 const handleChange = async (e,index) => {
   const quantityLocal = [...quantity]
-  console.log('nouvelle valeur dentree',e.target.value)
-  console.log(quantity[index].Quantity)
     if(e.target.value>=0 && e.target.value <= 100)
     {
         quantityLocal[index].Quantity = e.target.value
@@ -164,31 +152,18 @@ const handleChange = async (e,index) => {
                     <Typography gutterBottom variant="h5" component="div">
                       {cart.name}
                     </Typography>
-                    <Button onClick={handleOpen}>Supprimer</Button>
-                    <Modal
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box  className={classes.linkMenu}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                          Supprimer le film {cart.name}
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                          Êtes-vous sûr ?
-                        </Typography>
-                        <Button onClick={() =>handleClick(index)} color="error">
-                          Supprimer
-                        </Button>
-                      </Box>
-                  </Modal>
+                    <ModalSuppr 
+                      indexModal={index} 
+                      moovie={moovieInMyCart[index]} 
+                      quantity={quantity}
+                      handleClickModal={handleClick}
+                    />
                   <TextField
                     value={quantity[index].Quantity}
                     id="outlined-required"
                     label="Qté"
                     type="number"
-                    onChange={ (e)=> handleChange(e,index)}
+                    onChange={(e)=> handleChange(e,index)}
                   />
                   </CardContent>
                 </Card>
