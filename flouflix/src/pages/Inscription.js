@@ -15,7 +15,9 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import { Link, useLocation } from "react-router-dom";
+import { Link} from "react-router-dom";
+import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
+import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 
 const makeClass = makeStyles((theme) => ({
   submitButton: {
@@ -95,6 +97,20 @@ const makeClass = makeStyles((theme) => ({
       top: "96px",
     },
   },
+  inputAdress: {
+    paddingBottom: "20px",
+    "& .geoapify-autocomplete-input": {
+      height: "56px",
+      borderRadius: "4px",
+    },
+    "& .geoapify-close-button": {
+      top: "-10px",
+    },
+    "& .geoapify-autocomplete-items": {
+      marginTop: "-20px",
+      borderRadius: "0 0 4px 4px",
+    },
+  },
 }));
 
 function Inscription() {
@@ -110,6 +126,12 @@ function Inscription() {
   const [isBoutique, setIsBoutique] = useState(false);
   const [isValid, setValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [passwordValidation, setPasswordValidation] = useState("");
+  const [confirm, setConfirm] = useState();
+  const [addressLine1, setAddressLine1] = useState();
+  const [addressLine2, setAddressLine2] = useState();
+  const [lat, setLat] = useState();
+  const [lon, setLon] = useState();
 
   const handleSubmit = async () => {
     await createUserWithEmailAndPassword(auth, mailAddress, password)
@@ -133,12 +155,38 @@ function Inscription() {
           myCart : [],
           password: password,
           isBoutique: isBoutique,
+          addressLine1: addressLine1,
+          addressLine2: addressLine2,
+          photoURL: "https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/anonyme.png?alt=media&token=ebc235c8-d5df-4dd2-b834-d9d6f985fc1a",
+          lat: lat,
+          lon: lon,
         });
         window.location.replace(`/`);
       }
     };
     logIn();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLog]);
+
+  useEffect(() => {
+    const autocomplete = new GeocoderAutocomplete(
+      document.getElementById("autocomplete"),
+      "f99dc96855554b5e94169e8f6015c05c",
+      {
+        /* Geocoder options */
+      }
+    );
+    autocomplete.on("select", async (location) => {
+      setAddressLine1(location.properties.address_line1);
+      setAddressLine2(location.properties.address_line2);
+      setLat(location.properties.lat);
+      setLon(location.properties.lon);
+    });
+
+    autocomplete.on("suggestions", (suggestions) => {
+      // process suggestions here
+    });
+  }, []);
 
   function ValidateEmail(mail) {
     const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -198,7 +246,7 @@ function Inscription() {
                   type="password"
                   value={password}
                   id="passwordSignUp"
-                  label="Password"
+                  label="Mot de passe"
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
@@ -212,6 +260,36 @@ function Inscription() {
                   </div>
                 )}
               </Box>
+              <Box paddingBottom="20px" position="relative">
+                <TextField
+                  required
+                  fullWidth
+                  type="password"
+                  value={passwordValidation}
+                  id="passwordValidation"
+                  label="Confirmer votre mot de passe"
+                  onChange={(e) => {
+                    setPasswordValidation(e.target.value);
+                    if (password === e.target.value) {
+                      setConfirm(true);
+                    } else setConfirm(false);
+                  }}
+                />
+                {confirm && password.length < 3 && (
+                  <div className={classes.required}>
+                    <WarningIcon style={{ marginRight: 5, color: "orange" }} />
+                    <Typography>
+                      Les mots de passe ne correspondent pas.
+                    </Typography>
+                  </div>
+                )}
+              </Box>
+              <div
+                className={classes.inputAdress}
+                id="autocomplete"
+                style={{ position: "relative" }}
+              ></div>
+              
               <FormControl fullWidth>
                 <InputLabel id="labelCategorie">Catégorie</InputLabel>
                 <Select
@@ -226,7 +304,7 @@ function Inscription() {
                   <MenuItem value={false}>Particulier</MenuItem>
                 </Select>
               </FormControl>
-              {isValid && password.length >= 6 ? (
+              {isValid && confirm && password.length >= 5 ? (
                 <Button
                   variant="contained"
                   color="secondary"

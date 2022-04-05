@@ -1,9 +1,15 @@
 import React from "react";
 import "./App.css";
-import { Routes, Route, Outlet, Link, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import firebase from "firebase/compat/app";
+import { getStorage } from "firebase/storage";
+import { initializeApp } from "firebase/app";
+import { SnackbarProvider } from "notistack";
+import { GeoapifyContext } from '@geoapify/react-geocoder-autocomplete'
+
 import Nav from "./components/Nav";
 import Home from "./components/Home";
+
 import Inscription from "./pages/Inscription";
 import Connexion from "./pages/Connexion";
 import Catalogue from "./pages/Catalogue";
@@ -12,12 +18,9 @@ import MyMovies from "./pages/MyMovies";
 import MyCart from "./pages/MyCart";
 import Movie from "./pages/Movie";
 import Modify from "./pages/Modify";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { SnackbarProvider, useSnackbar } from "notistack";
-
-import { getStorage } from "firebase/storage";
-import { initializeApp } from "firebase/app";
 import MyAccount from "./pages/MyAccount";
+
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function App({ firebaseConfig }) {
   firebase.initializeApp(firebaseConfig);
@@ -43,7 +46,39 @@ function App({ firebaseConfig }) {
     },
   });
 
-  return (
+  function onPlaceSelect(value) {
+    console.log(value);
+  }
+
+  function onSuggectionChange(value) {
+    console.log(value);
+  }
+
+  function preprocessHook(value) {
+    return `${value}, Munich, Germany`
+  }
+
+  function postprocessHook(feature) {
+    return feature.properties.street;
+  }
+
+  function suggestionsFilter(suggestions) {
+    const processedStreets = [];
+
+    const filtered = suggestions.filter(value => {
+      if (!value.properties.street || processedStreets.indexOf(value.properties.street) >= 0) {
+        return false;
+      } else {
+        processedStreets.push(value.properties.street);
+        return true;
+      }
+    })
+
+    return filtered;
+  }
+
+  return ( 
+  <GeoapifyContext apiKey="f99dc96855554b5e94169e8f6015c05c">
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <SnackbarProvider
@@ -75,6 +110,7 @@ function App({ firebaseConfig }) {
         </SnackbarProvider>
       </ThemeProvider>
     </BrowserRouter>
+    </GeoapifyContext>
   );
 }
 
