@@ -169,12 +169,12 @@ function Inscription() {
   const [errorMessage, setErrorMessage] = useState("");
   const [passwordValidation, setPasswordValidation] = useState("");
   const [confirm, setConfirm] = useState();
-  const [addressLine1, setAddressLine1] = useState();
-  const [addressLine2, setAddressLine2] = useState();
-  const [lat, setLat] = useState();
-  const [lon, setLon] = useState();
-  const [pseudo, setPseudo] = useState();
-  const [phone, setPhone] = useState();
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [lat, setLat] = useState("");
+  const [lon, setLon] = useState("");
+  const [pseudo, setPseudo] = useState("");
+  const [phone, setPhone] = useState("");
   const [dateBirth, setDateBirth] = useState(null);
 
   const handleSubmit = async (event) => {
@@ -364,7 +364,8 @@ function Inscription() {
                   type="phone"
                   value={phone}
                   id="phone"
-                  label="+330612345678"
+                  placeholder="+330612345678"
+                  label="Numéro de téléphone"
                   onChange={(e) => {
                     setPhone(e.target.value);
                   }}
@@ -376,7 +377,8 @@ function Inscription() {
               <Box paddingBottom="20px" position="relative">
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
-                    label="mm/dd/yyyy"
+                    label="Date de naissance"
+                    placeholder="mm/dd/yyyy"
                     value={dateBirth}
                     onChange={(e) => {
                       setDateBirth(e);
@@ -419,9 +421,7 @@ function Inscription() {
               {isValid &&
               confirm &&
               password.length >= 5 &&
-              pseudo.length >= 3 &&
-              phone !== null &&
-              dateBirth !== null ? (
+              pseudo.length >= 3 ? (
                 <Button
                   variant="contained"
                   color="secondary"
