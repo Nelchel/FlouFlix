@@ -146,28 +146,28 @@ function MyAccount() {
       mailAddress: mailAddress,
     });
 
-    updatePseudo(auth.currentUser,password).then(()=> {
-      console.log("PSEU get")
-    }).catch((error)=>{
-      console.log(error);
-    });
+    // updatePseudo(auth.currentUser,password).then(()=> {
+    //   console.log("PSEU get")
+    // }).catch((error)=>{
+    //   console.log(error);
+    // });
 
-    updateDateOfBirth(auth.currentUser,password).then(()=> {
-      console.log("PSEU get")
-    }).catch((error)=>{
-      console.log(error);
-    });
+    // updateDateOfBirth(auth.currentUser,password).then(()=> {
+    //   console.log("PSEU get")
+    // }).catch((error)=>{
+    //   console.log(error);
+    // });
 
-    updatePhone(auth.currentUser,password).then(()=> {
-      console.log("PSEU get")
-    }).catch((error)=>{
-      console.log(error);
-    });
+    // updatePhone(auth.currentUser,password).then(()=> {
+    //   console.log("PSEU get")
+    // }).catch((error)=>{
+    //   console.log(error);
+    // });
 
     }
   return (
     <Box>
-        <Typography>Mon compte</Typography>
+        {/* <Typography>Mon compte</Typography>
           <Grid container>
               <Box>
               <Typography>Adresse mail</Typography>
@@ -240,7 +240,7 @@ function MyAccount() {
           Envoyer
         </Button>
       </Box>
-      <Outlet />
+      <Outlet /> */}
     </Box>
   );
 }

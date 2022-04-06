@@ -6,6 +6,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import ModalSuppr from "../components/ModalSuppr";
+import MapModal from "../components/ModalMap";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
@@ -158,6 +159,13 @@ const handleChange = async (e,index) => {
                       quantity={quantity}
                       handleClickModal={handleClick}
                     />
+                    <MapModal
+                      // indexModal={index} 
+                      // moovie={moovieInMyCart[index]} 
+                      // quantity={quantity}
+                      // handleClickModal={handleClick}
+                      moovie={moovieInMyCart[index]}
+                      />
                   <TextField
                     value={quantity[index].Quantity}
                     id="outlined-required"
