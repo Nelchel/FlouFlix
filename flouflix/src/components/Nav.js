@@ -23,6 +23,7 @@ import SignOut from "./SignOut";
 const makeClass = makeStyles((theme) => ({
   section: {
     background: theme.palette.primary.main,
+    borderBottom: "1px solid #464646",
   },
   linkMenu: {
     marginLeft: "15px",
