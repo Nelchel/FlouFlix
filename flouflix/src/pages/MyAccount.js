@@ -113,34 +113,6 @@ function MyAccount() {
     });
   };
 
-<<<<<<< HEAD
-    // updatePseudo(auth.currentUser,password).then(()=> {
-    //   console.log("PSEU get")
-    // }).catch((error)=>{
-    //   console.log(error);
-    // });
-
-    // updateDateOfBirth(auth.currentUser,password).then(()=> {
-    //   console.log("PSEU get")
-    // }).catch((error)=>{
-    //   console.log(error);
-    // });
-
-    // updatePhone(auth.currentUser,password).then(()=> {
-    //   console.log("PSEU get")
-    // }).catch((error)=>{
-    //   console.log(error);
-    // });
-
-    }
-  return (
-    <Box>
-        {/* <Typography>Mon compte</Typography>
-          <Grid container>
-              <Box>
-              <Typography>Adresse mail</Typography>
-                <Typography>{getUser.mailAddress}</Typography>
-=======
   return (
     <section>
       <Container maxWidth="1250px">
@@ -154,7 +126,6 @@ function MyAccount() {
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Pseudo: </Typography>
                 <span className={classes.strong}>{getUser.pseudo}</span>
->>>>>>> 63682ed50111e27eb2ec6f33afce83e2a2c72174
               </Box>
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Adresse mail: </Typography>
@@ -208,23 +179,6 @@ function MyAccount() {
               </Button>
             </Box>
           </Box>
-<<<<<<< HEAD
-        </Grid>
-      </Grid>
-      <Box>
-        <TextField value={mailAddress} onChange={handleChange} />
-        <TextField
-          type="password"
-          value={password}
-          onChange={handleChangePassword}
-        />
-        <Button variant="contained" color="secondary" onClick={handleSubmit}>
-          Envoyer
-        </Button>
-      </Box>
-      <Outlet /> */}
-    </Box>
-=======
           <Modal
             open={connexion}
             onClose={(e) => {
@@ -361,7 +315,6 @@ function MyAccount() {
         </Box>
       </Container>
     </section>
->>>>>>> 63682ed50111e27eb2ec6f33afce83e2a2c72174
   );
 }
 
