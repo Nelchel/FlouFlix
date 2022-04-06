@@ -220,7 +220,7 @@ function Connexion() {
                   }}
                 />
               </Box>
-              {isValid && password.length > 5 ? (
+              {isValid && password.length > 3 ? (
                 <Button
                   id="connect"
                   variant="contained"
