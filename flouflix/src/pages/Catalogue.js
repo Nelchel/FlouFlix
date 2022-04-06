@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
@@ -10,6 +11,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import CardsLists from "../components/CardsLists";
 import ResearchBar from "../components/ResearchBar";
+import { Container } from "@mui/material";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -30,26 +32,26 @@ function Catalogue() {
   const [getMovies, setMovies] = useState([]);
   const [upFavoris, setUpFavoris] = useState([]);
   const [downFavoris, setDownFavoris] = useState("");
-  
+
   //Set Filter
   const [inputText, setInputText] = useState("");
   const [inputFilter, setFilter] = useState({});
-  
+
   const [displayList, setDisplayList] = useState("");
-  
+
   //Set UID  User
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-          setUidUser(user.uid);
+        setUidUser(user.uid);
       }
     });
   }, []);
 
   //Get data User
   useEffect(async () => {
-      setRefUser(await doc(db, "users", uidUser));
-      if(uidUser) setUserData(await (await getDoc(userRef)).data());
+    setRefUser(await doc(db, "users", uidUser));
+    if (uidUser) setUserData(await (await getDoc(userRef)).data());
   }, [uidUser, upFavoris, downFavoris, getMovies]);
 
   useEffect(() => {
@@ -67,45 +69,51 @@ function Catalogue() {
   //Add film favori
   useEffect(async () => {
     if (userRef && userData && upFavoris.length > 0) {
-    await updateDoc(userRef, {
+      await updateDoc(userRef, {
         favoris: userData.favoris
-        ? userData.favoris.concat(upFavoris)
-        : upFavoris,
-    });
-    setUpFavoris([]);
+          ? userData.favoris.concat(upFavoris)
+          : upFavoris,
+      });
+      setUpFavoris([]);
     }
   }, [upFavoris]);
 
   //Remove film favori
   useEffect(async () => {
-      if (userRef && userData && downFavoris.length > 0) {
+    if (userRef && userData && downFavoris.length > 0) {
       await updateDoc(userRef, {
-          favoris: userData.favoris.filter((e) => e !== downFavoris),
+        favoris: userData.favoris.filter((e) => e !== downFavoris),
       });
       setDownFavoris("");
-      }
+    }
   }, [downFavoris]);
 
   return (
-    <Box>
-      <ResearchBar 
-      userData={userData}
-      setUpFavoris={(movie) => setUpFavoris(movie)}
-      setDownFavoris={(movie) => setDownFavoris(movie)}
-      setInputText={(text) => setInputText(text)}
-      setFilter={(filter) => setFilter(filter)}
-      setDisplayList={(isDisplay) => setDisplayList(isDisplay)}
-      allInput={{ getMovies, inputText, inputFilter, displayList }}
-      ></ResearchBar>
-      {/* <Typography variant="h1">Catalogue</Typography> */}
-      {!displayList && <CardsLists 
-      userData={userData}
-      movies={getMovies} 
-      setUpFavoris={(movie) => setUpFavoris(movie)}
-      setDownFavoris={(movie) => setDownFavoris(movie)}
-      ></CardsLists>}
-      <Outlet />
-    </Box>
+    <section>
+      <Container maxWidth="1250px">
+        <Box paddingTop="50px">
+          <ResearchBar
+            userData={userData}
+            setUpFavoris={(movie) => setUpFavoris(movie)}
+            setDownFavoris={(movie) => setDownFavoris(movie)}
+            setInputText={(text) => setInputText(text)}
+            setFilter={(filter) => setFilter(filter)}
+            setDisplayList={(isDisplay) => setDisplayList(isDisplay)}
+            allInput={{ getMovies, inputText, inputFilter, displayList }}
+          ></ResearchBar>
+          {/* <Typography variant="h1">Catalogue</Typography> */}
+          {!displayList && (
+            <CardsLists
+              userData={userData}
+              movies={getMovies}
+              setUpFavoris={(movie) => setUpFavoris(movie)}
+              setDownFavoris={(movie) => setDownFavoris(movie)}
+            ></CardsLists>
+          )}
+          <Outlet />
+        </Box>
+      </Container>
+    </section>
   );
 }
 
