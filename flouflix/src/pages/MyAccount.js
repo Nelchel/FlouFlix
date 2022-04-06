@@ -203,7 +203,7 @@ function MyAccount() {
               </Box>
               <Box paddingBottom="20px">
                 <TextField
-                  label="Mot de passe"
+                  label="Nouveau mot de passe"
                   placeholer="Nouveau mot de passe"
                   type="password"
                   value={password}
