@@ -39,9 +39,9 @@ const style = {
     boxShadow: 24,
     p: 4,
   }; 
-
-
-function Map(props){
+  
+  function Map(props){
+    console.log(props.userMoovie)
     const classes = makeClass();
     //Variable de map
     const mapContainer = useRef(null);
@@ -53,7 +53,7 @@ function Map(props){
     const [open, setOpen] = useState(false);
     const [isBoutique, setIsBoutique] = useState(true);
     const [isPerson, setIsPerson] = useState(true);
-    const [filter, setFilter] = useState(true);
+    const [filter, setFilter] = useState("All");
     var currentMarker = [];
 
     
@@ -75,66 +75,101 @@ function Map(props){
 
     useEffect(()=>{
         console.log(filter)    
-        props.userMoovie.map(element =>{
-            if(filter ==="Boutique"){
-                if(element.boutique == true)
+        if(filter ==="Boutique")
+        {
+            console.log('je rentre dans la boucle boutique')
+
+            props.userMoovie.map(element =>{
+                if(element.boutique === true)
                 {
+                    console.log('ajout du marqueur boutique')
                     var oneMarker = new mapboxgl.Marker()
                     .setLngLat([element.longitute,element.latitutde])
-                    .setPopup(new mapboxgl.Popup().setHTML("Boutique name</Br>"+element.address1+"</Br>"+element.address2+"</Br>"+element.phone))
+                    .setPopup(new mapboxgl.Popup().setHTML("<div style='color:#333'>Boutique name</Br>"+element.address1+"</Br>"+element.address2+"</Br>"+element.phone+"</Br> its person : "+element.person+"<Div>"))
                     .addTo(map.current);
                     currentMarker.push({markers : oneMarker,boutique : element.boutique})
                     setCurrentMarkers(currentMarker)
                     
                 }
-            }
-            else if(filter === "Person")
+            })
+        }
+        else
+        { 
+            if(filter ==="Person")
             {
-                if(element.person == true)
-                {
-                    var oneMarker = new mapboxgl.Marker()
-                    .setLngLat([element.longitute,element.latitutde])
-                    .setPopup(new mapboxgl.Popup().setHTML("Boutique name</Br>"+element.address1+"</Br>"+element.address2+"</Br>"+element.phone))
-                    .addTo(map.current);
-                    currentMarker.push({markers : oneMarker,boutique : element.boutique})
-                    setCurrentMarkers(currentMarker) 
-                }
-            }
-            else 
-            {
-                var oneMarker = new mapboxgl.Marker()
-                .setLngLat([element.longitute,element.latitutde])
-                .setPopup(new mapboxgl.Popup().setHTML("Boutique name</Br>"+element.address1+"</Br>"+element.address2+"</Br>"+element.phone))
-                .addTo(map.current);
-                currentMarker.push({markers : oneMarker,boutique : element.boutique})
-                setCurrentMarkers(currentMarker)
-            }
-        })
-    },[filter])
-        
-        
-        const removeMarkers = (localFilter,all) => {
-        if (currentMarkers!==null) {
-            console.log(localFilter,all)
-            for (var i = currentMarkers.length - 1; i >= 0; i--) {
-                if(localFilter== !currentMarkers[i].boutique)    
-                {
-                    console.log(filter,'je rentre dans la boucle ')
-                    currentMarkers[i].markers.remove();
-                }
-            }
-            if(localFilter == true)
-            {
-                setFilter("Boutique")
+                console.log('je rentre dans la boucle person')
+                props.userMoovie.map(element =>{
+                    if(element.boutique === false)
+                    {
+                        console.log('ajout du marqueur particulier')
+                        var oneMarker = new mapboxgl.Marker()
+                        .setLngLat([element.longitute,element.latitutde])
+                        .setPopup(new mapboxgl.Popup().setHTML("<div style='color:#333'>Boutique name</Br>"+element.address1+"</Br>"+element.address2+"</Br>"+element.phone+"</Br> its person : "+element.person+"<Div>"))
+                        .addTo(map.current);
+                        currentMarker.push({markers : oneMarker,boutique : element.boutique})
+                        setCurrentMarkers(currentMarker) 
+                    }
+                })
             }
             else
             {
-                setFilter("Person")
-            }
+                console.log('je rentre dans la boucle all')
 
-            if(all==true)
+                props.userMoovie.map(element =>{
+                    console.log('ajout de tout les marqueurs')
+                    var oneMarker = new mapboxgl.Marker()
+                    .setLngLat([element.longitute,element.latitutde])
+                    .setPopup(new mapboxgl.Popup().setHTML("<div style='color:#333'>Boutique name</Br>"+element.address1+"</Br>"+element.address2+"</Br>"+element.phone+"</Br> its person : "+element.person+"<Div>"))
+                    .addTo(map.current);
+                    currentMarker.push({markers : oneMarker,boutique : element.boutique})
+                    setCurrentMarkers(currentMarker)
+                })
+            }
+        }
+    },[filter])
+        
+        
+        const removeMarkers = (localFilter,type) => {
+        if (currentMarkers!==null) {
+            console.log(localFilter,type)
+            if(type ==="Boutique")
             {
-                setFilter("All")
+                for (var i = currentMarkers.length - 1; i >= 0; i--) {
+                    if(localFilter== !currentMarkers[i].boutique)    
+                    {
+                        currentMarkers[i].markers.remove();
+                    }
+                    
+                }
+                console.log('Suppression des point Particulier : ',type)
+
+                setFilter(type)
+            }
+            else if(type ==="Person")
+            {
+                for (var i = currentMarkers.length - 1; i >= 0; i--) {
+                    if(localFilter== currentMarkers[i].boutique)    
+                    {
+                        currentMarkers[i].markers.remove();
+                    }
+                    
+                }
+                console.log('Suppression des point Boutique : ',type)
+                setFilter(type)
+
+            }
+            else
+            {
+                if(type !== "All" && type!=="Person")
+                {
+                    for (var i = currentMarkers.length - 1; i >= 0; i--) {
+                            currentMarkers[i].markers.remove();
+                   }
+                }
+                console.log('Suppression de tout les points : ',type)
+
+               setFilter(type)
+
             }
         }
     }
@@ -146,20 +181,20 @@ const handleClick = () => {
 
 const handleFilterPersonClick = () =>{
     const localFilter = false
-    const all = false
-    removeMarkers(localFilter,all)
+    const type = 'Person'
+    removeMarkers(localFilter,type)
 }
 
 const handleFilterStoreClick = () =>{
     const localFilter = true
-    const all = false
-    removeMarkers(localFilter,all)
+    const type = "Boutique"
+    removeMarkers(localFilter,type)
 }
 
 const handleNoFilterClick = () =>{
     const localFilter = null
-    const all = true
-    removeMarkers(localFilter,all)
+    const type = "All"
+    removeMarkers(localFilter,type)
 }
 
     return(
@@ -173,7 +208,7 @@ const handleNoFilterClick = () =>{
                     <ListItemIcon>
                         <FilterAltIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Filtre" />
+                    <ListItemText style={{color:"#333"}} primary="Filtre" />
                     {open ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
                 <Collapse in={open} timeout="auto" unmountOnExit>
@@ -183,21 +218,21 @@ const handleNoFilterClick = () =>{
                             <ListItemIcon>
                             <FilterAltOffIcon />
                             </ListItemIcon>
-                            <ListItemText primary="All" />
+                            <ListItemText style={{color:"#333"}} primary="All"/>
                         </ListItemButton>
 
                         <ListItemButton onClick={handleFilterStoreClick} sx={{ pl: 4 }}>
                             <ListItemIcon>
                             <StoreIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Boutique" />
+                            <ListItemText style={{color:"#333"}} primary="Boutique" />
                         </ListItemButton>
 
                         <ListItemButton onClick={handleFilterPersonClick} sx={{ pl: 4 }}>
                             <ListItemIcon>
                             <PersonIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Particulier" />
+                            <ListItemText style={{color:"#333"}} primary="Particulier" />
                         </ListItemButton>
                         
                     </List>

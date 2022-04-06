@@ -85,7 +85,6 @@ function MapModal(props){
         const user = []
         for (let i = 0; i < getUserMoovie.length; i++) {
             user.push({
-                person : !getUserMoovie[i].isBoutique,
                 boutique : getUserMoovie[i].isBoutique,
                 uid : getUserMoovie[i].uid,
                 address1 : getUserMoovie[i].addressLine1,
@@ -125,6 +124,7 @@ function MapModal(props){
         getUser();
     }, [uid,db]);
 
+    console.log(userMoovie)
     return(
     <>
         <Button onClick={handleOpen}>Afficher les boutiques</Button>

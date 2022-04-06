@@ -50,10 +50,10 @@ function ModalSuppr(props) {
     aria-describedby="modal-modal-description"
     >
     <Box sx={style}>
-      <Typography id="modal-modal-title" variant="h6" component="h2">
+      <Typography id="modal-modal-title" variant="h6" component="h2" color="primary">
         Supprimer le film {props.moovie.name}
       </Typography>
-      <Typography id="modal-modal-description" sx={{ mt: 2 }} >
+      <Typography id="modal-modal-description" sx={{ mt: 2 }} color="primary">
         Êtes-vous sûr ?
       </Typography>
       <Button onClick={() => handleClose()} color="primary">
