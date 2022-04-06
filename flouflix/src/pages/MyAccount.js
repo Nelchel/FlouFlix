@@ -1,32 +1,34 @@
-import { TextField, Typography } from "@mui/material";
+import { Divider, Modal, TextField, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import DatePicker from "@mui/lab/DatePicker";
+
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
+import { Outlet } from "react-router-dom";
 import {
   getAuth,
   updateEmail,
   onAuthStateChanged,
-  verifyPasswordResetCode,
-  updatePassword,
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
-import {
-  GeoapifyGeocoderAutocomplete,
-  GeoapifyContext,
-} from "@geoapify/react-geocoder-autocomplete";
 import { updateDoc } from "firebase/firestore";
 
+import InputAddress from "../components/InputAdress";
+
 const makeClass = makeStyles((theme) => ({
-  signupButton: {
-    marginRight: "10px",
+  strong: {
+    fontWeight: 600,
+    marginLeft: "2px",
+  },
+  button: {
+    padding: "10px 20px",
   },
 }));
 
@@ -47,7 +49,8 @@ function MyAccount() {
   const [pseudo, setPseudo] = useState();
   const [dateBirth, setDateBirth] = useState();
   const [phone, setPhone] = useState();
-
+  const [connexion, setConnexion] = useState(false);
+  const [personnal, setPersonnal] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -66,7 +69,6 @@ function MyAccount() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data());
       setUser(docSnap.data());
       setMailAddress(docSnap.data().mailAddress);
       setPhone(docSnap.data().phone);
@@ -78,29 +80,13 @@ function MyAccount() {
     }
   }, [uid, db]);
 
-  useEffect(() => {
-    const autocomplete = new GeocoderAutocomplete(
-      document.getElementById("autocomplete"),
-      "f99dc96855554b5e94169e8f6015c05c",
-      {
-        /* Geocoder options */
-      }
-    );
-    autocomplete.on("select", async (location) => {
-      setAddressLine1(location.properties.address_line1);
-      setAddressLine2(location.properties.address_line2);
-      setLat(location.properties.lat);
-      setLon(location.properties.lon);
-    });
-
-    autocomplete.on("suggestions", (suggestions) => {
-      // process suggestions here
-    });
-  }, []);
-  const handleClick = () => {
+  const handleUpdate = () => {
     var userRef = db.collection("users").doc(auth.currentUser.uid);
     return userRef
       .update({
+        phone: phone,
+        dateBirth: dateBirth,
+        pseudo: pseudo,
         addressLine1: addressLine1,
         addressLine2: addressLine2,
         lat: lat,
@@ -115,44 +101,6 @@ function MyAccount() {
       });
   };
 
-  const handleUpdate = () => {
-    var userRef = db.collection("users").doc(auth.currentUser.uid);
-    return userRef
-      .update({
-        phone : phone,
-        dateBirth:dateBirth,
-        pseudo:pseudo        
-      })
-      .then(() => {
-        console.log("Document successfully updated!");
-      })
-      .catch((error) => {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-      });
-  };
-  
-  const handleChange = (event) => {
-    setMailAddress(event.target.value);
-  };
-
-  const handleChangePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleChangePseudo = (event) => {
-    setPseudo(event.target.value);
-    console.log(event.target.value);
-  }
-
-  const handleChangeDateBirth = (event) => {
-    setDateBirth(event.target.value);
-  }
-
-  const handleChangePhone = (event) => {
-    setPhone(event.target.value);
-  }
-
   const handleSubmit = async (event) => {
     updateEmail(auth.currentUser, mailAddress)
       .then(() => {
@@ -165,67 +113,190 @@ function MyAccount() {
     await updateDoc(docRef, {
       mailAddress: mailAddress,
     });
+  };
 
-    }
   return (
     <Box>
-        <Typography>Mon compte</Typography>
-          <Grid container>
-              <Box>
-                <Typography>Adresse mail</Typography>
-                <Typography>{getUser.mailAddress}</Typography>
-              </Box>
-              <Grid item> 
-                <Box>
-                <div
-                className={classes.inputAdress}
-                id="autocomplete"
-                style={{ position: "relative" }}
-              > </div>
-            <Button onClick={handleClick}>Enregistrer mon adresse</Button>
-            </Box>
-              </Grid>
-          </Grid>
-          <Box>
-            <TextField
-            value={mailAddress}
-            onChange={handleChange}
-            />
-            <TextField
-            type="password"
-            value={password}
-            onChange={handleChangePassword}
-            />
-             <TextField
-            value={pseudo}
-            onChange={handleChangePseudo}
-            />
-
-            <TextField
-            value={dateBirth}
-            onChange={handleChangeDateBirth}
-            />
-
-
-            <TextField
-            value={phone}
-            onChange={handleChangePhone}
-            />
-
-
-            <Button
+      <Typography variant="h2">Mon compte</Typography>
+      <Typography variant="h4" component="h3">
+        Mes informations personnelles
+      </Typography>
+      {getUser !== [] && (
+        <Box padding="20px 0">
+          <Box padding="5px 0" display="flex" alignItems="baseline">
+            <Typography>Pseudo: </Typography>
+            <span className={classes.strong}>{getUser.pseudo}</span>
+          </Box>
+          <Box padding="5px 0" display="flex" alignItems="baseline">
+            <Typography>Adresse mail: </Typography>
+            <span className={classes.strong}>{getUser.mailAddress}</span>
+          </Box>
+          <Box padding="5px 0" display="flex" alignItems="baseline">
+            <Typography>Adresse postale:</Typography>
+            <span className={classes.strong}>
+              {getUser.addressLine1} {getUser.addressLine2}
+            </span>
+          </Box>
+          <Box padding="5px 0">
+            <Typography>Numéro de téléphone: {getUser.phone}</Typography>
+          </Box>
+          {/* <Box>
+              <Typography>Date de naissance: {getUser.dateBirth}</Typography>
+          </Box> */}
+        </Box>
+      )}
+      <Divider />
+      <Box padding="20px 0">
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-around"
+          paddingBottom="20px"
+        >
+          <Button
             variant="contained"
             color="secondary"
-            onClick={handleSubmit}
-            >Envoyer
+            onClick={(e) => {setConnexion(true);}}
+            className={classes.button}
+          >
+            <Typography variant="body1" style={{ textTransform: "none" }}>
+              Modifier mes informations de connexion
+            </Typography>
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={(e) => {setPersonnal(true);}}
+            className={classes.button}
+          >
+            <Typography variant="body1" style={{ textTransform: "none" }}>
+              Modifier mes informations personnelles
+            </Typography>
           </Button>
         </Box>
-  
-      <Box>
-        <Button variant="contained" color="secondary" onClick={handleUpdate}>
-          Update
-        </Button>
       </Box>
+      <Modal open={connexion} onClose={(e) => {setConnexion(false);}}>
+        <Box
+          position="absolute"
+          top="37%"
+          left="33%"
+          backgroundColor="#FFF"
+          padding="30px"
+          borderRadius="8px"
+        >
+          <Box paddingBottom="30px">
+            <Typography variant="h5">
+              Modifier mes informations de connexion
+            </Typography>
+          </Box>
+          <form>
+            <Box display="flex" flexDirection="column">
+              <Box paddingBottom="20px">
+                <TextField
+                  fullWidth
+                  value={mailAddress}
+                  onChange={(e) => {
+                    setMailAddress(e.target.value);
+                  }}
+                  label="Adresse mail"
+                />
+              </Box>
+              <Box paddingBottom="20px">
+                <TextField
+                  label="Mot de passe"
+                  placeholer="Nouveau mot de passe"
+                  type="password"
+                  value={password}
+                  fullWidth
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+              </Box>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleSubmit}
+              >
+                Envoyer
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </Modal>
+      <Modal open={personnal} onClose={(e) => {setPersonnal(false);}}>
+        <Box
+          position="absolute"
+          top="27%"
+          left="33%"
+          backgroundColor="#FFF"
+          padding="30px"
+          borderRadius="8px"
+        >
+          <Box paddingBottom="30px">
+            <Typography variant="h5">
+              Modifier mes informations personnelles
+            </Typography>
+          </Box>
+          <form>
+            <Box display="flex" flexDirection="column">
+              <Box paddingBottom="20px">
+                <TextField
+                  fullWidth
+                  value={pseudo}
+                  onChange={(e) => {
+                    setPseudo(e.target.value);
+                  }}
+                  placeholder="Renseigner un pseudo"
+                  label="Pseudo"
+                />
+              </Box>
+              <Box paddingBottom="20px">
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label="mm/dd/yyyy"
+                    value={dateBirth}
+                    onChange={(e) => {
+                      setDateBirth(e);
+                    }}
+                    renderInput={(params) => (
+                      <TextField fullWidth {...params} />
+                    )}
+                  />
+                </LocalizationProvider>
+              </Box>
+              <Box paddingBottom="20px">
+                <TextField
+                  type="phone"
+                  fullWidth
+                  label="Numéro de téléphone"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
+                />
+              </Box>
+              <InputAddress
+                addressLine1={addressLine1}
+                setAddressLine1={setAddressLine1}
+                addressLine2={addressLine2}
+                setAddressLine2={setAddressLine2}
+                lat={lat}
+                setLat={setLat}
+                lon={lon}
+                setLon={setLon}
+              />
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleUpdate}
+              >
+                Envoyer
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </Modal>
       <Outlet />
     </Box>
   );
