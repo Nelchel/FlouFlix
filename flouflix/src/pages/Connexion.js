@@ -222,6 +222,7 @@ function Connexion() {
               </Box>
               {isValid && password.length > 5 ? (
                 <Button
+                  id="connect"
                   variant="contained"
                   color="secondary"
                   onClick={handleSubmit}
@@ -231,6 +232,7 @@ function Connexion() {
                 </Button>
               ) : (
                 <Button
+                  id="connect"
                   variant="contained"
                   color="secondary"
                   onClick={handleSubmit}
