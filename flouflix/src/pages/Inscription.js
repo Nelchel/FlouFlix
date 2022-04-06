@@ -423,6 +423,7 @@ function Inscription() {
               password.length >= 5 &&
               pseudo.length >= 3 ? (
                 <Button
+                  id="submit"
                   variant="contained"
                   color="secondary"
                   onClick={handleSubmit}
@@ -432,6 +433,7 @@ function Inscription() {
                 </Button>
               ) : (
                 <Button
+                  id="submit"
                   disabled
                   variant="contained"
                   color="secondary"
