@@ -90,11 +90,28 @@ function ResearchBar(props) {
             minHeight: "56px",
             marginLeft: "20px",
             minWidth: "150px",
+            color: "#FFF",
           }),
           option: (base) => ({
             ...base,
-            background: "red",
+            background: "transparent",
             height: '100%',
+          }),
+          placeholder: (base) => ({
+            ...base,
+            color: "white",
+          }),
+          singleValue: (base) => ({
+            ...base,
+            color: "white",
+          }),
+          indicatorSeparator: (base) => ({
+            ...base,
+            color: "white",
+          }),
+          indicatorContainer: (base) => ({
+            ...base,
+            color: "white",
           }),
         }}
         value={selected}
