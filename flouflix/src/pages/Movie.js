@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import { makeStyles } from "@mui/styles";
+import { makeStyles, useTheme } from "@mui/styles";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -48,6 +48,7 @@ function Movie() {
 
 
   const auth = getAuth();
+  const theme = useTheme();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -144,13 +145,25 @@ const addMoovie = (moovieName) =>{
               <img src={movies[0].url} width="300" height="300" />
               <Typography variant="body1">{movies[0].description}</Typography>
             </Box>
-            <Button onClick={() => handleClick()}>Ajouter au panier</Button>
+            <Button onClick={() => handleClick()}>
+              <Typography color={theme.palette.text.white}>
+                Ajouter au panier
+              </Typography>
+              </Button>
             {uid === movies[0].seller && (
               <>
                 <Link to={"/modifier-film/" + movies[0].id}>
-                  <Button>Modifier le film</Button>
+                  <Button>
+                    <Typography color={theme.palette.text.white}>
+                    Modifier le film
+                    </Typography>
+                  </Button>
                 </Link>
-                <Button onClick={handleOpen}>Supprimer le film</Button>
+                <Button onClick={handleOpen}>
+                  <Typography color={theme.palette.text.white}>
+                    Supprimer le film
+                  </Typography>
+                </Button>
               </>
             )}
             <Modal
@@ -160,10 +173,10 @@ const addMoovie = (moovieName) =>{
               aria-describedby="modal-modal-description"
             >
               <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
+                <Typography color={theme.palette.text.black} id="modal-modal-title" variant="h6" component="h2">
                   Supprimer le film {movies[0].name}
                 </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <Typography color={theme.palette.text.black} id="modal-modal-description" sx={{ mt: 2 }}>
                   Êtes-vous sûr ?
                 </Typography>
                 <Button onClick={handleDelete} color="error">

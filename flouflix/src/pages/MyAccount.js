@@ -92,6 +92,7 @@ function MyAccount() {
       })
       .then(() => {
         console.log("Document successfully updated!");
+        setPersonnal(false)
       })
       .catch((error) => {
         // The document probably doesn't exist.
@@ -111,6 +112,7 @@ function MyAccount() {
     await updateDoc(docRef, {
       mailAddress: mailAddress,
     });
+    setConnexion(false)
   };
 
   return (
