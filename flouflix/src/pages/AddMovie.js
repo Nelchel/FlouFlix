@@ -67,6 +67,7 @@ function AddMovie() {
   const [uidUser, setUidUser] = useState("");
   const [movieId, setMovieId] = useState("");
   const [url, setUrl] = useState("");
+  const [isUpload, setIsUpload] = useState(false);
 
   const handleChangeName = (event) => {
     setName(event.target.value);
@@ -85,15 +86,6 @@ function AddMovie() {
   };
 
   const handleSubmit = async () => {
-    // uploadBytes(imagesRef, image).then((snapshot) => {
-    //     // console.log('written');
-    // });
-
-    // getDownloadURL(imagesRef).then(function (downloadURL) {
-    //     // console.log("File available at", downloadURL);
-    //     setUrl(downloadURL);
-    //   });
-
     console.log(url);
     await db
       .collection("movies")
@@ -113,7 +105,7 @@ function AddMovie() {
         // console.log("Document written with ID: ", docRef.id);
         const movieRef = await doc(db, "movies", docRef.id);
         setMovieId(docRef.id);
-        console.log(docRef.id)
+        console.log(docRef.id);
         await updateDoc(movieRef, {
           id: docRef.id,
         });
@@ -126,6 +118,8 @@ function AddMovie() {
 
     window.location.replace("/catalogue");
   };
+
+  console.log(isUpload)
 
   return (
     <Box>
@@ -177,7 +171,7 @@ function AddMovie() {
             const img = e.target.files[0];
             const imagesRef = ref(storage, `/catalogue/${nom}`);
             uploadBytes(imagesRef, img).then((snapshot) => {
-              console.log('Uploaded a blob or file!');
+              console.log("Uploaded a blob or file!");
             });
             // await uploadBytes(imagesRef, img).then((snapshot) => {
             //   console.log('written');
@@ -186,13 +180,20 @@ function AddMovie() {
             getDownloadURL(imagesRef).then(function (downloadURL) {
               // console.log("File available at", downloadURL);
               setUrl(downloadURL);
+              setIsUpload(true);
               console.log(downloadURL);
             });
           }}
         />
-        <Button onClick={handleSubmit} variant="contained">
-          <Typography>Ajouter le film</Typography>
-        </Button>
+        {isUpload ? (
+          <Button onClick={handleSubmit} variant="contained">
+            <Typography>Ajouter le film</Typography>
+          </Button>
+        ) : (
+          <Button onClick={handleSubmit} variant="contained" disabled>
+            <Typography>Ajouter le film</Typography>
+          </Button>
+        )}
       </form>
     </Box>
   );
