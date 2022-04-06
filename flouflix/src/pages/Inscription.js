@@ -3,19 +3,22 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { Container } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import DatePicker from "@mui/lab/DatePicker";
+import { withStyles } from "@mui/styles";
 
 import React, { useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { Outlet } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 
@@ -26,7 +29,7 @@ const makeClass = makeStyles((theme) => ({
     margin: "auto",
   },
   linkColor: {
-    color: theme.palette.text.black,
+    color: theme.palette.text.white,
     marginLeft: "5px",
     textDecoration: "none",
     "&:hover": {
@@ -102,16 +105,54 @@ const makeClass = makeStyles((theme) => ({
     "& .geoapify-autocomplete-input": {
       height: "56px",
       borderRadius: "4px",
+      background: "transparent",
+      borderColor: "white",
+      color: "white",
     },
     "& .geoapify-close-button": {
       top: "-10px",
+      color: "white",
     },
     "& .geoapify-autocomplete-items": {
       marginTop: "-20px",
       borderRadius: "0 0 4px 4px",
+      background: "#212121",
+      borderColor: "white",
+    },
+    "& .geoapify-autocomplete-items .secondary-part": {
+      color: "white",
     },
   },
 }));
+
+const CustomTextField = withStyles((theme) => ({
+  root: {
+    zIndex: 3,
+    color: "white",
+    borderColor: "white",
+    "label + &": {
+      color: "white",
+    },
+    "& .MuiOutlinedInput-root": {
+      color: "white",
+      "&::placeholder": {
+        color: "white",
+      },
+      "& fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+      "&:hover fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+    },
+  },
+}))(TextField);
 
 function Inscription() {
   const classes = makeClass();
@@ -132,8 +173,12 @@ function Inscription() {
   const [addressLine2, setAddressLine2] = useState();
   const [lat, setLat] = useState();
   const [lon, setLon] = useState();
+  const [pseudo, setPseudo] = useState();
+  const [phone, setPhone] = useState();
+  const [dateBirth, setDateBirth] = useState(null);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     await createUserWithEmailAndPassword(auth, mailAddress, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -152,12 +197,16 @@ function Inscription() {
         await setDoc(doc(db, "users", userLog), {
           uid: userLog,
           mailAddress: mailAddress,
-          myCart : [],
+          myCart: [],
           password: password,
           isBoutique: isBoutique,
           addressLine1: addressLine1,
           addressLine2: addressLine2,
-          photoURL: "https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/anonyme.png?alt=media&token=ebc235c8-d5df-4dd2-b834-d9d6f985fc1a",
+          photoURL:
+            "https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/anonyme.png?alt=media&token=ebc235c8-d5df-4dd2-b834-d9d6f985fc1a",
+          phone: phone,
+          dateBirth: dateBirth,
+          pseudo: pseudo,
           lat: lat,
           lon: lon,
         });
@@ -165,7 +214,7 @@ function Inscription() {
       }
     };
     logIn();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLog]);
 
   useEffect(() => {
@@ -214,7 +263,22 @@ function Inscription() {
           <form>
             <Box align="center" textAlign="center">
               <Box paddingBottom="20px" position="relative">
-                <TextField
+                <CustomTextField
+                  required
+                  fullWidth
+                  value={pseudo}
+                  id="pseudo"
+                  label="Entrer un pseudo"
+                  onChange={(e) => {
+                    setPseudo(e.target.value);
+                  }}
+                  InputLabelProps={{
+                    style: { color: "#fff" },
+                  }}
+                />
+              </Box>
+              <Box paddingBottom="20px" position="relative">
+                <CustomTextField
                   fullWidth
                   required
                   value={mailAddress}
@@ -224,6 +288,9 @@ function Inscription() {
                     const valid = ValidateEmail(e.target.value);
                     setValid(valid);
                     setMailAddress(e.target.value);
+                  }}
+                  InputLabelProps={{
+                    style: { color: "#fff" },
                   }}
                 />
                 {errorMessage !== "" && (
@@ -240,7 +307,7 @@ function Inscription() {
                 )}
               </Box>
               <Box paddingBottom="20px" position="relative">
-                <TextField
+                <CustomTextField
                   required
                   fullWidth
                   type="password"
@@ -249,6 +316,9 @@ function Inscription() {
                   label="Mot de passe"
                   onChange={(e) => {
                     setPassword(e.target.value);
+                  }}
+                  InputLabelProps={{
+                    style: { color: "#fff" },
                   }}
                 />
                 {password.length > 1 && password.length < 6 && (
@@ -261,7 +331,7 @@ function Inscription() {
                 )}
               </Box>
               <Box paddingBottom="20px" position="relative">
-                <TextField
+                <CustomTextField
                   required
                   fullWidth
                   type="password"
@@ -274,6 +344,9 @@ function Inscription() {
                       setConfirm(true);
                     } else setConfirm(false);
                   }}
+                  InputLabelProps={{
+                    style: { color: "#fff" },
+                  }}
                 />
                 {confirm && password.length < 3 && (
                   <div className={classes.required}>
@@ -284,18 +357,57 @@ function Inscription() {
                   </div>
                 )}
               </Box>
+              <Box paddingBottom="20px" position="relative">
+                <CustomTextField
+                  required
+                  fullWidth
+                  type="phone"
+                  value={phone}
+                  id="phone"
+                  label="+330612345678"
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
+                  InputLabelProps={{
+                    style: { color: "#fff" },
+                  }}
+                />
+              </Box>
+              <Box paddingBottom="20px" position="relative">
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label="mm/dd/yyyy"
+                    value={dateBirth}
+                    onChange={(e) => {
+                      setDateBirth(e);
+                    }}
+                    renderInput={(params) => (
+                      <CustomTextField
+                        required
+                        fullWidth
+                        {...params}
+                        InputLabelProps={{ style: { color: "#fff" } }}
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
+              </Box>
               <div
                 className={classes.inputAdress}
                 id="autocomplete"
                 style={{ position: "relative" }}
               ></div>
-              
               <FormControl fullWidth>
-                <InputLabel id="labelCategorie">Catégorie</InputLabel>
                 <Select
                   id="selectCategorie"
+                  sx={{
+                    border: "1px solid white",
+                    color: "#fff",
+                    "& .MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                  }}
                   value={isBoutique}
-                  label="Catégorie"
                   onChange={(e) => {
                     setIsBoutique(e.target.value);
                   }}
@@ -304,7 +416,12 @@ function Inscription() {
                   <MenuItem value={false}>Particulier</MenuItem>
                 </Select>
               </FormControl>
-              {isValid && confirm && password.length >= 5 ? (
+              {isValid &&
+              confirm &&
+              password.length >= 5 &&
+              pseudo.length >= 3 &&
+              phone !== null &&
+              dateBirth !== null ? (
                 <Button
                   variant="contained"
                   color="secondary"
@@ -319,6 +436,7 @@ function Inscription() {
                   variant="contained"
                   color="secondary"
                   className={classes.submitButton}
+                  style={{ backgroundColor: "#ff5740", color: "white"}}
                 >
                   <Typography variant="body1">S'inscrire</Typography>
                 </Button>

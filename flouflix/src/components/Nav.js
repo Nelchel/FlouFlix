@@ -23,10 +23,12 @@ import SignOut from "./SignOut";
 const makeClass = makeStyles((theme) => ({
   section: {
     background: theme.palette.primary.main,
+    borderBottom: "1px solid #464646",
   },
   linkMenu: {
     marginLeft: "15px",
     textDecoration: "none",
+    color: theme.palette.text.white,
   },
   linkMenuRight: {
     marginRight: "15px",
@@ -154,6 +156,8 @@ function Nav() {
                         elevation: 0,
                         sx: {
                           overflow: "visible",
+                          bgcolor: "#000000",
+                          color: "white",
                           filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
                           mt: 1.5,
                           "& .MuiAvatar-root": {
@@ -170,7 +174,7 @@ function Nav() {
                             right: 14,
                             width: 10,
                             height: 10,
-                            bgcolor: "background.paper",
+                            bgcolor: "#000000",
                             transform: "translateY(-50%) rotate(45deg)",
                             zIndex: 0,
                           },
@@ -182,16 +186,16 @@ function Nav() {
                       <MenuItem>
                         <Avatar alt="user photo" src={user.photoURL} />
                         <Link to="/mon-compte" className={classes.linkMenu}>
-                          <Typography color={theme.palette.text.black}>Mon compte</Typography>
+                          <Typography color={theme.palette.text.white}>Mon compte</Typography>
                         </Link>
                       </MenuItem>
                       <MenuItem>
                         <ListItemIcon>
-                          <SlideshowIcon fontSize="small" />
+                          <SlideshowIcon sx={{ color: "white" }}  fontSize="small" />
                         </ListItemIcon>
                         <Link to="/mes-films" className={classes.linkMenu}>
                           <Typography
-                            color={theme.palette.text.black}
+                            color={theme.palette.text.white}
                             variant="body1"
                           >
                             Mes films
@@ -201,7 +205,7 @@ function Nav() {
                       <Divider />
                       <MenuItem>
                         <ListItemIcon>
-                          <Logout fontSize="small" />
+                          <Logout sx={{ color: "white" }}  fontSize="small" />
                         </ListItemIcon>
                         <SignOut />
                       </MenuItem>

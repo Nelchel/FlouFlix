@@ -5,6 +5,7 @@ import { makeStyles } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import { Container } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
+import { withStyles } from "@mui/styles";
 
 import React, { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -18,7 +19,7 @@ const makeClass = makeStyles((theme) => ({
     maxWidth: "122px",
   },
   linkColor: {
-    color: theme.palette.text.black,
+    color: theme.palette.text.white,
     marginLeft: "5px",
     textDecoration: "none",
     "&:hover": {
@@ -91,6 +92,35 @@ const makeClass = makeStyles((theme) => ({
   },
 }));
 
+const CustomTextField = withStyles((theme) => ({
+  root: {
+    zIndex: 3,
+    color: "white",
+    borderColor: "white",
+    "label + &": {
+      color: "white",
+    },
+    "& .MuiOutlinedInput-root": {
+      color: "white",
+      "&::placeholder": {
+        color: "white",
+      },
+      "& fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+      "&:hover fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+    },
+  },
+}))(TextField);
+
 function Connexion() {
   const classes = makeClass();
   const auth = getAuth();
@@ -103,7 +133,8 @@ function Connexion() {
   const [isValid, setValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     signInWithEmailAndPassword(auth, mailAddress, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -145,7 +176,7 @@ function Connexion() {
           <form>
             <Box align="center" textAlign="center">
               <Box paddingBottom="20px" position="relative">
-                <TextField
+                <CustomTextField
                   fullWidth
                   required
                   value={mailAddress}
@@ -155,6 +186,9 @@ function Connexion() {
                     const valid = ValidateEmail(e.target.value);
                     setValid(valid);
                     setMailAddress(e.target.value);
+                  }}
+                  InputLabelProps={{
+                    style: { color: "#fff" },
                   }}
                 />
                 {errorMessage !== "" && mailAddress.length > 3 && (
@@ -171,7 +205,7 @@ function Connexion() {
                 )}
               </Box>
               <Box paddingBottom="0px" position="relative">
-                <TextField
+                <CustomTextField
                   fullWidth
                   required
                   type="password"
@@ -180,6 +214,9 @@ function Connexion() {
                   label="Mot de passe"
                   onChange={(e) => {
                     setPassword(e.target.value);
+                  }}
+                  InputLabelProps={{
+                    style: { color: "#fff" },
                   }}
                 />
               </Box>
@@ -199,6 +236,7 @@ function Connexion() {
                   onClick={handleSubmit}
                   className={classes.loginButton}
                   disabled
+                  style={{ backgroundColor: "#ff5740", color: "white"}}
                 >
                   <Typography variant="body1">Connexion</Typography>
                 </Button>

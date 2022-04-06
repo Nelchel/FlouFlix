@@ -43,6 +43,7 @@ function App({ firebaseConfig }) {
         white: "#FFF",
         black: "#333",
       },
+      succes: "#FFF",
     },
   });
 
