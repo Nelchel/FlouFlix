@@ -5,17 +5,14 @@ import { makeStyles, useTheme } from "@mui/styles";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
+import { Container } from "@mui/material";
 
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import { Outlet } from "react-router-dom";
-import {
-  getAuth,
-  updateEmail,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { getAuth, updateEmail, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import { updateDoc } from "firebase/firestore";
@@ -117,189 +114,207 @@ function MyAccount() {
   };
 
   return (
-    <Box>
-      <Typography variant="h2">Mon compte</Typography>
-      <Typography variant="h4" component="h3">
-        Mes informations personnelles
-      </Typography>
-      {getUser !== [] && (
-        <Box padding="20px 0">
-          <Box padding="5px 0" display="flex" alignItems="baseline">
-            <Typography>Pseudo: </Typography>
-            <span className={classes.strong}>{getUser.pseudo}</span>
-          </Box>
-          <Box padding="5px 0" display="flex" alignItems="baseline">
-            <Typography>Adresse mail: </Typography>
-            <span className={classes.strong}>{getUser.mailAddress}</span>
-          </Box>
-          <Box padding="5px 0" display="flex" alignItems="baseline">
-            <Typography>Adresse postale:</Typography>
-            <span className={classes.strong}>
-              {getUser.addressLine1} {getUser.addressLine2}
-            </span>
-          </Box>
-          <Box padding="5px 0">
-            <Typography>Numéro de téléphone: {getUser.phone}</Typography>
-          </Box>
-          {/* <Box>
+    <section>
+      <Container maxWidth="1250px">
+        <Box>
+          <Typography variant="h2">Mon compte</Typography>
+          <Typography variant="h4" component="h3">
+            Mes informations personnelles
+          </Typography>
+          {getUser !== [] && (
+            <Box padding="20px 0">
+              <Box padding="5px 0" display="flex" alignItems="baseline">
+                <Typography>Pseudo: </Typography>
+                <span className={classes.strong}>{getUser.pseudo}</span>
+              </Box>
+              <Box padding="5px 0" display="flex" alignItems="baseline">
+                <Typography>Adresse mail: </Typography>
+                <span className={classes.strong}>{getUser.mailAddress}</span>
+              </Box>
+              <Box padding="5px 0" display="flex" alignItems="baseline">
+                <Typography>Adresse postale:</Typography>
+                <span className={classes.strong}>
+                  {getUser.addressLine1} {getUser.addressLine2}
+                </span>
+              </Box>
+              <Box padding="5px 0">
+                <Typography>Numéro de téléphone: {getUser.phone}</Typography>
+              </Box>
+              {/* <Box>
               <Typography>Date de naissance: {getUser.dateBirth}</Typography>
           </Box> */}
-        </Box>
-      )}
-      <Divider style={{ backgroundColor: "#464646" }} />
-      <Box padding="20px 0">
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-around"
-          paddingBottom="20px"
-        >
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={(e) => {setConnexion(true);}}
-            className={classes.button}
-          >
-            <Typography variant="body1" style={{ textTransform: "none" }}>
-              Modifier mes informations de connexion
-            </Typography>
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={(e) => {setPersonnal(true);}}
-            className={classes.button}
-          >
-            <Typography variant="body1" style={{ textTransform: "none" }}>
-              Modifier mes informations personnelles
-            </Typography>
-          </Button>
-        </Box>
-      </Box>
-      <Modal open={connexion} onClose={(e) => {setConnexion(false);}}>
-        <Box
-          position="absolute"
-          top="37%"
-          left="33%"
-          backgroundColor="#FFF"
-          padding="30px"
-          borderRadius="8px"
-        >
-          <Box paddingBottom="30px">
-            <Typography variant="h5" color={theme.palette.text.black}>
-              Modifier mes informations de connexion
-            </Typography>
-          </Box>
-          <form>
-            <Box display="flex" flexDirection="column">
-              <Box paddingBottom="20px">
-                <TextField
-                  fullWidth
-                  value={mailAddress}
-                  onChange={(e) => {
-                    setMailAddress(e.target.value);
-                  }}
-                  label="Adresse mail"
-                />
-              </Box>
-              <Box paddingBottom="20px">
-                <TextField
-                  label="Nouveau mot de passe"
-                  placeholer="Nouveau mot de passe"
-                  type="password"
-                  value={password}
-                  fullWidth
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
-                />
-              </Box>
+            </Box>
+          )}
+          <Divider style={{ backgroundColor: "#464646" }} />
+          <Box padding="20px 0">
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-around"
+              paddingBottom="20px"
+            >
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={handleSubmit}
+                onClick={(e) => {
+                  setConnexion(true);
+                }}
+                className={classes.button}
               >
-                Envoyer
+                <Typography variant="body1" style={{ textTransform: "none" }}>
+                  Modifier mes informations de connexion
+                </Typography>
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={(e) => {
+                  setPersonnal(true);
+                }}
+                className={classes.button}
+              >
+                <Typography variant="body1" style={{ textTransform: "none" }}>
+                  Modifier mes informations personnelles
+                </Typography>
               </Button>
             </Box>
-          </form>
-        </Box>
-      </Modal>
-      <Modal open={personnal} onClose={(e) => {setPersonnal(false);}}>
-        <Box
-          position="absolute"
-          top="27%"
-          left="33%"
-          backgroundColor="#FFF"
-          padding="30px"
-          borderRadius="8px"
-        >
-          <Box paddingBottom="30px">
-            <Typography variant="h5" color={theme.palette.text.black}>
-              Modifier mes informations personnelles
-            </Typography>
           </Box>
-          <form>
-            <Box display="flex" flexDirection="column">
-              <Box paddingBottom="20px">
-                <TextField
-                  fullWidth
-                  value={pseudo}
-                  onChange={(e) => {
-                    setPseudo(e.target.value);
-                  }}
-                  placeholder="Renseigner un pseudo"
-                  label="Pseudo"
-                />
+          <Modal
+            open={connexion}
+            onClose={(e) => {
+              setConnexion(false);
+            }}
+          >
+            <Box
+              position="absolute"
+              top="37%"
+              left="33%"
+              backgroundColor="#FFF"
+              padding="30px"
+              borderRadius="8px"
+            >
+              <Box paddingBottom="30px">
+                <Typography variant="h5" color={theme.palette.text.black}>
+                  Modifier mes informations de connexion
+                </Typography>
               </Box>
-              <Box paddingBottom="20px">
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    label="mm/dd/yyyy"
-                    value={dateBirth}
-                    onChange={(e) => {
-                      setDateBirth(e);
-                    }}
-                    renderInput={(params) => (
-                      <TextField fullWidth {...params} />
-                    )}
+              <form>
+                <Box display="flex" flexDirection="column">
+                  <Box paddingBottom="20px">
+                    <TextField
+                      fullWidth
+                      value={mailAddress}
+                      onChange={(e) => {
+                        setMailAddress(e.target.value);
+                      }}
+                      label="Adresse mail"
+                    />
+                  </Box>
+                  <Box paddingBottom="20px">
+                    <TextField
+                      label="Nouveau mot de passe"
+                      placeholer="Nouveau mot de passe"
+                      type="password"
+                      value={password}
+                      fullWidth
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                    />
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleSubmit}
+                  >
+                    Envoyer
+                  </Button>
+                </Box>
+              </form>
+            </Box>
+          </Modal>
+          <Modal
+            open={personnal}
+            onClose={(e) => {
+              setPersonnal(false);
+            }}
+          >
+            <Box
+              position="absolute"
+              top="27%"
+              left="33%"
+              backgroundColor="#FFF"
+              padding="30px"
+              borderRadius="8px"
+            >
+              <Box paddingBottom="30px">
+                <Typography variant="h5" color={theme.palette.text.black}>
+                  Modifier mes informations personnelles
+                </Typography>
+              </Box>
+              <form>
+                <Box display="flex" flexDirection="column">
+                  <Box paddingBottom="20px">
+                    <TextField
+                      fullWidth
+                      value={pseudo}
+                      onChange={(e) => {
+                        setPseudo(e.target.value);
+                      }}
+                      placeholder="Renseigner un pseudo"
+                      label="Pseudo"
+                    />
+                  </Box>
+                  <Box paddingBottom="20px">
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        label="mm/dd/yyyy"
+                        value={dateBirth}
+                        onChange={(e) => {
+                          setDateBirth(e);
+                        }}
+                        renderInput={(params) => (
+                          <TextField fullWidth {...params} />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </Box>
+                  <Box paddingBottom="20px">
+                    <TextField
+                      type="phone"
+                      fullWidth
+                      label="Numéro de téléphone"
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                      }}
+                    />
+                  </Box>
+                  <InputAddress
+                    addressLine1={addressLine1}
+                    setAddressLine1={setAddressLine1}
+                    addressLine2={addressLine2}
+                    setAddressLine2={setAddressLine2}
+                    lat={lat}
+                    setLat={setLat}
+                    lon={lon}
+                    setLon={setLon}
                   />
-                </LocalizationProvider>
-              </Box>
-              <Box paddingBottom="20px">
-                <TextField
-                  type="phone"
-                  fullWidth
-                  label="Numéro de téléphone"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                  }}
-                />
-              </Box>
-              <InputAddress
-                addressLine1={addressLine1}
-                setAddressLine1={setAddressLine1}
-                addressLine2={addressLine2}
-                setAddressLine2={setAddressLine2}
-                lat={lat}
-                setLat={setLat}
-                lon={lon}
-                setLon={setLon}
-              />
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleUpdate}
-              >
-                Envoyer
-              </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleUpdate}
+                  >
+                    Envoyer
+                  </Button>
+                </Box>
+              </form>
             </Box>
-          </form>
+          </Modal>
+          <Outlet />
         </Box>
-      </Modal>
-      <Outlet />
-    </Box>
+      </Container>
+    </section>
   );
 }
 
