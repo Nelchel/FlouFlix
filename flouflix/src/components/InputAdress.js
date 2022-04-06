@@ -18,6 +18,7 @@ const makeClass = makeStyles((theme) => ({
     "& .geoapify-autocomplete-items": {
       marginTop: "-20px",
       borderRadius: "0 0 4px 4px",
+      color: theme.palette.text.black,
     },
   },
 }));

@@ -1,7 +1,7 @@
 import { Divider, Modal, TextField, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import { makeStyles } from "@mui/styles";
+import { makeStyles, useTheme } from "@mui/styles";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
@@ -36,6 +36,7 @@ function MyAccount() {
   const db = firebase.firestore();
 
   const classes = makeClass();
+  const theme = useTheme();
 
   const [getUser, setUser] = useState([]);
   const [uid, setUid] = useState();
@@ -145,7 +146,7 @@ function MyAccount() {
           </Box> */}
         </Box>
       )}
-      <Divider />
+      <Divider style={{ backgroundColor: "#464646" }} />
       <Box padding="20px 0">
         <Box
           display="flex"
@@ -185,7 +186,7 @@ function MyAccount() {
           borderRadius="8px"
         >
           <Box paddingBottom="30px">
-            <Typography variant="h5">
+            <Typography variant="h5" color={theme.palette.text.black}>
               Modifier mes informations de connexion
             </Typography>
           </Box>
@@ -234,7 +235,7 @@ function MyAccount() {
           borderRadius="8px"
         >
           <Box paddingBottom="30px">
-            <Typography variant="h5">
+            <Typography variant="h5" color={theme.palette.text.black}>
               Modifier mes informations personnelles
             </Typography>
           </Box>
