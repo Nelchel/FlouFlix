@@ -9,6 +9,8 @@ import CardMedia from "@mui/material/CardMedia";
 import StarIcon from "@mui/icons-material/Star";
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 import { Button } from "@mui/material";
+import AliceCarousel from 'react-alice-carousel';
+import 'react-alice-carousel/lib/alice-carousel.css';
 
 function Cards(props) {
     const { title, movies, isCardFavori } = props;
@@ -21,13 +23,15 @@ function Cards(props) {
         }
     };
 
+    const handleDragStart = (e) => e.preventDefault();
+
     const isFavoris = (movieId) => {
         return props.userData?.favoris?.includes(movieId);
     };
 
     const createCard = (movie) => {
       return (
-        <Box maxWidth="345px">
+        <Box maxWidth="345px" marginLeft="20px">
           <Card style={{ minWidth: "345px" }}>
             <StarIcon
               style={
@@ -58,7 +62,7 @@ function Cards(props) {
     }
     
     return (<>
-    {(!isCardFavori || (props.userData?.favoris?.length > 0)) && <Typography variant="h2">{title}</Typography>}
+    {/* {(!isCardFavori || (props.userData?.favoris?.length > 0)) && <Typography variant="h5">{title}</Typography>} */}
     {movies.map((movie, index) => {
       if (isCardFavori){
         if(props.userData?.favoris?.includes(movie.id)) return createCard(movie)
