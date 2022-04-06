@@ -9,12 +9,42 @@ import Button from "@mui/material/Button";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
+import { withStyles } from "@mui/styles";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
     marginRight: "10px",
   },
 }));
+
+const CustomTextField = withStyles((theme) => ({
+  root: {
+    zIndex: 3,
+    color: "white",
+    borderColor: "white",
+    "label + &": {
+      color: "white",
+    },
+    "& .MuiOutlinedInput-root": {
+      color: "white",
+      "&::placeholder": {
+        color: "white",
+      },
+      "& fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+      "&:hover fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "white",
+        color: "white",
+      },
+    },
+  },
+}))(TextField);
 
 function AddMovie() {
   // const storage = firebase.storage()
@@ -101,31 +131,43 @@ function AddMovie() {
     <Box>
       <Typography variant="h2">Ajouter un film</Typography>
       <form>
-        <TextField
+        <CustomTextField
           value={name}
           id="outlined-required"
           label="Nom du film"
           onChange={handleChangeName}
+          InputLabelProps={{
+            style: { color: "#fff" },
+          }}
         />
-        <TextField
+        <CustomTextField
           value={releaseDate}
           id="outlined-required"
           label="Date de sortie"
           type="number"
           onChange={handleChangeDate}
+          InputLabelProps={{
+            style: { color: "#fff" },
+          }}
         />
-        <TextField
+        <CustomTextField
           value={price}
           id="outlined-required"
           label="Prix du film"
           type="number"
           onChange={handleChangePrice}
+          InputLabelProps={{
+            style: { color: "#fff" },
+          }}
         />
-        <TextField
+        <CustomTextField
           value={desc}
           id="outlined-required"
           label="Description"
           onChange={handleChangeDesc}
+          InputLabelProps={{
+            style: { color: "#fff" },
+          }}
         />
         <input
           type="file"
