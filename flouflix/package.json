@@ -16,17 +16,18 @@
     "@testing-library/user-event": "^13.5.0",
     "date-fns": "^2.28.0",
     "firebase": "^9.6.7",
+    "mapbox-gl": "^2.6.1",
     "notistack": "^2.0.3",
     "react": "^17.0.2",
     "react-alice-carousel": "^2.5.1",
     "react-dom": "^17.0.2",
     "react-firebase-hooks": "^5.0.3",
+    "react-multi-carousel": "^2.8.0",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "react-select": "^5.2.2",
     "use-debounce": "^7.0.1",
-    "web-vitals": "^2.1.4",
-    "mapbox-gl": "^2.6.1"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",

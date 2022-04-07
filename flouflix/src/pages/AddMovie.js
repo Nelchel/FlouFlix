@@ -119,7 +119,6 @@ function AddMovie() {
     window.location.replace("/catalogue");
   };
 
-  console.log(isUpload)
 
   return (
     <Box>
