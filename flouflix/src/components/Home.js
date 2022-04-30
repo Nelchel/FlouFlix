@@ -14,6 +14,7 @@ import Catalogue from "../pages/Catalogue";
 import { SnackbarProvider, useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { createBrowserHistory } from "history";
+import Video from "./Video";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -39,7 +40,7 @@ function Home() {
       setExist(true);
       if (previousURL === "/inscription" || previousURL === "/connexion") {
         welcome(user.email);
-    }
+      }
     } else {
       setExist(false);
     }
@@ -50,10 +51,9 @@ function Home() {
     enqueueSnackbar(`Bienvenue ${email}`);
   };
 
-
   return (
     <Box>
-        <Catalogue />
+      <Catalogue />
     </Box>
   );
 }

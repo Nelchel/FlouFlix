@@ -5,7 +5,7 @@ import firebase from "firebase/compat/app";
 import { getStorage } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import { SnackbarProvider } from "notistack";
-import { GeoapifyContext } from '@geoapify/react-geocoder-autocomplete'
+import { GeoapifyContext } from "@geoapify/react-geocoder-autocomplete";
 
 import Nav from "./components/Nav";
 import Home from "./components/Home";
@@ -47,6 +47,11 @@ function App({ firebaseConfig }) {
     },
   });
 
+  const state = {
+    videosMetaInfo: [],
+    selectedVideoId: null,
+  };
+
   function onPlaceSelect(value) {
     console.log(value);
   }
@@ -56,7 +61,7 @@ function App({ firebaseConfig }) {
   }
 
   function preprocessHook(value) {
-    return `${value}, Munich, Germany`
+    return `${value}, Munich, Germany`;
   }
 
   function postprocessHook(feature) {
@@ -66,51 +71,54 @@ function App({ firebaseConfig }) {
   function suggestionsFilter(suggestions) {
     const processedStreets = [];
 
-    const filtered = suggestions.filter(value => {
-      if (!value.properties.street || processedStreets.indexOf(value.properties.street) >= 0) {
+    const filtered = suggestions.filter((value) => {
+      if (
+        !value.properties.street ||
+        processedStreets.indexOf(value.properties.street) >= 0
+      ) {
         return false;
       } else {
         processedStreets.push(value.properties.street);
         return true;
       }
-    })
+    });
 
     return filtered;
   }
 
-  return ( 
-  <GeoapifyContext apiKey="f99dc96855554b5e94169e8f6015c05c">
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <SnackbarProvider
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-        >
-          <React.Fragment>
-            <Routes>
-              <Route path="/" element={<Nav />}>
-                <Route index element={<Home />} />
-                <Route path="inscription" element={<Inscription />} />
-                <Route path="connexion" element={<Connexion />} />
-                <Route path="catalogue" element={<Catalogue />} />
-                <Route
-                  path="ajouter-film"
-                  element={<AddMovie storage={storage} />}
-                />
-                <Route path="mes-films" element={<MyMovies />} />
-                <Route path="mon-panier" element={<MyCart />} />
-                <Route path="movie/:id" element={<Movie />} />
-                <Route path="modifier-film/:id" element={<Modify />} />
-                <Route path="mon-compte" element={<MyAccount />} /> 
-                {/* <Route path="*" element={<NoMatch />} /> */}
-              </Route>
-            </Routes>
-          </React.Fragment>
-        </SnackbarProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+  return (
+    <GeoapifyContext apiKey="f99dc96855554b5e94169e8f6015c05c">
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            <React.Fragment>
+              <Routes>
+                <Route path="/" element={<Nav />}>
+                  <Route index element={<Home />} />
+                  <Route path="inscription" element={<Inscription />} />
+                  <Route path="connexion" element={<Connexion />} />
+                  <Route path="catalogue" element={<Catalogue />} />
+                  <Route
+                    path="ajouter-film"
+                    element={<AddMovie storage={storage} />}
+                  />
+                  <Route path="mes-films" element={<MyMovies />} />
+                  <Route path="mon-panier" element={<MyCart />} />
+                  <Route path="movie/:id" element={<Movie />} />
+                  <Route path="modifier-film/:id" element={<Modify />} />
+                  <Route path="mon-compte" element={<MyAccount />} />
+                  {/* <Route path="*" element={<NoMatch />} /> */}
+                </Route>
+              </Routes>
+            </React.Fragment>
+          </SnackbarProvider>
+        </ThemeProvider>
+      </BrowserRouter>
     </GeoapifyContext>
   );
 }

@@ -10,9 +10,16 @@ import { useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { chainPropTypes } from "@mui/utils";
 import Modal from "@mui/material/Modal";
-import { doc, deleteDoc,updateDoc,getDoc,arrayUnion} from "firebase/firestore";
+import {
+  doc,
+  deleteDoc,
+  updateDoc,
+  getDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 import { SnackbarProvider, useSnackbar } from "notistack";
+import Video from "../components/Video";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -36,7 +43,7 @@ function Movie() {
   const db = firebase.firestore();
   let { id } = useParams();
   const [uid, setUid] = useState("");
-  const [idFilm,setIdFilm] = useState("");
+  const [idFilm, setIdFilm] = useState("");
   const [userData, setUserData] = useState([]);
   const getMovies = [];
   const [movies, setMovies] = useState([]);
@@ -46,24 +53,26 @@ function Movie() {
   const { enqueueSnackbar } = useSnackbar();
   const { closeSnackBar } = useSnackbar();
 
-
   const auth = getAuth();
   const theme = useTheme();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const uid = user.uid;
-        setUid(uid);
-      } else {
-      }
-    },[auth]);
+    onAuthStateChanged(
+      auth,
+      (user) => {
+        if (user) {
+          const uid = user.uid;
+          setUid(uid);
+        } else {
+        }
+      },
+      [auth]
+    );
 
     db.collection("movies")
       .where("id", "==", id)
       .get()
       .then((querySnapshot) => {
-        
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
           // console.log(doc.id, " => ", doc.data());
@@ -76,70 +85,66 @@ function Movie() {
       });
   }, [uid]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(async () => {
-      const getUser = async () => {
-        let user = [];
-        const q = query(collection(db, "users"), where("uid", "==", uid));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          user.push(doc.data());
-        });
-        setUserData(user[0])
-      };
-      getUser();
-    }, [uid,db]);
-  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(async () => {
+    const getUser = async () => {
+      let user = [];
+      const q = query(collection(db, "users"), where("uid", "==", uid));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        user.push(doc.data());
+      });
+      setUserData(user[0]);
+    };
+    getUser();
+  }, [uid, db]);
+
   const handleDelete = async () => {
     await deleteDoc(doc(db, "movies", movies[0].id));
 
     window.location.replace("/catalogue");
   };
 
-  const handleClick = async() => {
-    let quantity = 1
-    const idMoovie = movies[0].id
-    const moovieName = `${movies[0].name} ajouté au panier`
-    const idMoovieFind = userData.myCart.find(m=> m.idMoovie === idMoovie)
-    if(idMoovieFind !== undefined)
-    {
-      quantity = parseFloat(idMoovieFind.Quantity)
+  const handleClick = async () => {
+    let quantity = 1;
+    const idMoovie = movies[0].id;
+    const moovieName = `${movies[0].name} ajouté au panier`;
+    const idMoovieFind = userData.myCart.find((m) => m.idMoovie === idMoovie);
+    if (idMoovieFind !== undefined) {
+      quantity = parseFloat(idMoovieFind.Quantity);
     }
-    if(idMoovieFind == undefined && idFilm==="")
-    {
-      await updateDoc(await doc(db, "users", uid),{
-        myCart:arrayUnion({idMoovie :idMoovie,Quantity : quantity})
+    if (idMoovieFind == undefined && idFilm === "") {
+      await updateDoc(await doc(db, "users", uid), {
+        myCart: arrayUnion({ idMoovie: idMoovie, Quantity: quantity }),
       });
-      addMoovie(moovieName)
-      setIdFilm(idMoovie)
-    }
-    else
-    {
+      addMoovie(moovieName);
+      setIdFilm(idMoovie);
+    } else {
       // await updateDoc(doc(db,  "users", uid), {
       //     "myCart": changeArray[0].myCart
-      //   }) 
-        console.log("n'ajoute pas le film")
-        const moovieName = `${movies[0].name} est déjà dans votre panier`
-      addMoovie(moovieName)
+      //   })
+      console.log("n'ajoute pas le film");
+      const moovieName = `${movies[0].name} est déjà dans votre panier`;
+      addMoovie(moovieName);
     }
-  }
+  };
 
-
-const addMoovie = (moovieName) =>{
-  const key = enqueueSnackbar(moovieName,{
-    autoHideDuration: 1000,
-    variant : 'success',
-    anchorOrigin :{
-      vertical: 'bottom',
-      horizontal: 'center',
-    },
-  });
-}
+  const addMoovie = (moovieName) => {
+    const key = enqueueSnackbar(moovieName, {
+      autoHideDuration: 1000,
+      variant: "success",
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "center",
+      },
+    });
+  };
   return (
     <section>
       <Box>
         {movies.length !== undefined && movies.length > 0 && (
           <>
+            <Video videoId={movies[0].trailerId} />
             <Box>
               <Typography variant="h2">{movies[0].name}</Typography>
               <img src={movies[0].url} width="300" height="300" />
@@ -149,13 +154,13 @@ const addMoovie = (moovieName) =>{
               <Typography color={theme.palette.text.white}>
                 Ajouter au panier
               </Typography>
-              </Button>
+            </Button>
             {uid === movies[0].seller && (
               <>
                 <Link to={"/modifier-film/" + movies[0].id}>
                   <Button>
                     <Typography color={theme.palette.text.white}>
-                    Modifier le film
+                      Modifier le film
                     </Typography>
                   </Button>
                 </Link>
@@ -173,10 +178,19 @@ const addMoovie = (moovieName) =>{
               aria-describedby="modal-modal-description"
             >
               <Box sx={style}>
-                <Typography color={theme.palette.text.black} id="modal-modal-title" variant="h6" component="h2">
+                <Typography
+                  color={theme.palette.text.black}
+                  id="modal-modal-title"
+                  variant="h6"
+                  component="h2"
+                >
                   Supprimer le film {movies[0].name}
                 </Typography>
-                <Typography color={theme.palette.text.black} id="modal-modal-description" sx={{ mt: 2 }}>
+                <Typography
+                  color={theme.palette.text.black}
+                  id="modal-modal-description"
+                  sx={{ mt: 2 }}
+                >
                   Êtes-vous sûr ?
                 </Typography>
                 <Button onClick={handleDelete} color="error">

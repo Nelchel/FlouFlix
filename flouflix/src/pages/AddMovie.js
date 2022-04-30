@@ -119,8 +119,11 @@ function AddMovie() {
     window.location.replace("/catalogue");
   };
 
-
   return (
+    // TODO => Refacto pour choix boutique
+    // TODO => Ajouter 2 choix possibles:
+    // Ajouter un film (version genre DVD)
+    // Ajouter un film (version streaming)
     <Box>
       <Typography variant="h2">Ajouter un film</Typography>
       <form>
