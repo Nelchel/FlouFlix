@@ -150,6 +150,9 @@ function Movie() {
               <img src={movies[0].url} width="300" height="300" />
               <Typography variant="body1">{movies[0].description}</Typography>
             </Box>
+            <Link to={`/watch/${movies[0].id}`}>
+              <Button color="secondary">Acheter le film en streaming</Button>
+            </Link>
             <Button onClick={() => handleClick()}>
               <Typography color={theme.palette.text.white}>
                 Ajouter au panier

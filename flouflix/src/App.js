@@ -19,8 +19,10 @@ import MyCart from "./pages/MyCart";
 import Movie from "./pages/Movie";
 import Modify from "./pages/Modify";
 import MyAccount from "./pages/MyAccount";
+import WatchMovie from "./pages/WatchMovie";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import AddStreamingMovie from "./pages/AddStreamingMovie";
 
 function App({ firebaseConfig }) {
   firebase.initializeApp(firebaseConfig);
@@ -112,6 +114,13 @@ function App({ firebaseConfig }) {
                   <Route path="movie/:id" element={<Movie />} />
                   <Route path="modifier-film/:id" element={<Modify />} />
                   <Route path="mon-compte" element={<MyAccount />} />
+                  <Route path="/add">
+                    <Route
+                      path="/add/streaming-movie"
+                      element={<AddStreamingMovie />}
+                    />
+                  </Route>
+                  <Route path="/watch/:id" element={<WatchMovie />} />
                   {/* <Route path="*" element={<NoMatch />} /> */}
                 </Route>
               </Routes>
