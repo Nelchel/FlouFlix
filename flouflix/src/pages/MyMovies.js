@@ -9,11 +9,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import {
-  BrowserRouter as Router,
-  Link,
-  Outlet,
-} from "react-router-dom";
+import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
@@ -41,27 +37,26 @@ function MyMovies() {
       }
     });
     db.collection("movies")
-    .where("seller", "==", uid)
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        // console.log(doc.id, " => ", doc.data());
-        getMovies.push(doc.data());
+      .where("seller", "==", uid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, " => ", doc.data());
+          getMovies.push(doc.data());
+        });
+        setMovies(getMovies);
+        console.log(getMovies);
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
       });
-      setMovies(getMovies);
-      console.log(getMovies)
-    })
-    .catch((error) => {
-      console.log("Error getting documents: ", error);
-    });
-  }, [uid]) 
-
+  }, [uid]);
 
   return (
     <Box>
       <Typography variant="h1">Mes films</Typography>
-      <Link to="/ajouter-film">
+      <Link to="/add/movie">
         <Button variant="contained" color="error">
           <Typography variant="body1">Ajouter un film</Typography>
         </Button>
