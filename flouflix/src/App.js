@@ -23,6 +23,7 @@ import WatchMovie from "./pages/WatchMovie";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AddStreamingMovie from "./pages/AddStreamingMovie";
+import AddMovieControl from "./pages/AddMovieControl";
 
 function App({ firebaseConfig }) {
   firebase.initializeApp(firebaseConfig);
@@ -105,16 +106,14 @@ function App({ firebaseConfig }) {
                   <Route path="inscription" element={<Inscription />} />
                   <Route path="connexion" element={<Connexion />} />
                   <Route path="catalogue" element={<Catalogue />} />
-                  <Route
-                    path="ajouter-film"
-                    element={<AddMovie storage={storage} />}
-                  />
                   <Route path="mes-films" element={<MyMovies />} />
                   <Route path="mon-panier" element={<MyCart />} />
                   <Route path="movie/:id" element={<Movie />} />
                   <Route path="modifier-film/:id" element={<Modify />} />
                   <Route path="mon-compte" element={<MyAccount />} />
                   <Route path="/add">
+                    <Route path="/add/movie" element={<AddMovieControl />} />
+                    <Route path="/add/dvd-movie" element={<AddMovie />} />
                     <Route
                       path="/add/streaming-movie"
                       element={<AddStreamingMovie />}

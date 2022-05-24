@@ -11,7 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 
 import { Link, Outlet } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -81,7 +81,7 @@ function Nav() {
     setAnchorEl(null);
   };
 
-  console.log(user)
+  console.log(user);
 
   return (
     <section className={classes.section}>
@@ -186,12 +186,17 @@ function Nav() {
                       <MenuItem>
                         <Avatar alt="user photo" src={user.photoURL} />
                         <Link to="/mon-compte" className={classes.linkMenu}>
-                          <Typography color={theme.palette.text.white}>Mon compte</Typography>
+                          <Typography color={theme.palette.text.white}>
+                            Mon compte
+                          </Typography>
                         </Link>
                       </MenuItem>
                       <MenuItem>
                         <ListItemIcon>
-                          <SlideshowIcon sx={{ color: "white" }}  fontSize="small" />
+                          <SlideshowIcon
+                            sx={{ color: "white" }}
+                            fontSize="small"
+                          />
                         </ListItemIcon>
                         <Link to="/mes-films" className={classes.linkMenu}>
                           <Typography
@@ -205,7 +210,7 @@ function Nav() {
                       <Divider />
                       <MenuItem>
                         <ListItemIcon>
-                          <Logout sx={{ color: "white" }}  fontSize="small" />
+                          <Logout sx={{ color: "white" }} fontSize="small" />
                         </ListItemIcon>
                         <SignOut />
                       </MenuItem>

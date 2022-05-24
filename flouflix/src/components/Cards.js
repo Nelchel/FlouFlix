@@ -17,7 +17,7 @@ import { makeStyles } from "@mui/styles";
 const makeClass = makeStyles((theme) => ({
   cardContainer: {
     backgroundColor: `${theme.palette.primary.main} !important`,
-    minWidth: "345px",
+    minWidth: "320px",
     color: theme.palette.text.white,
   },
   linkToFilm: {
@@ -106,7 +106,7 @@ function Cards(props) {
       <Carousel responsive={responsive}>
         {movies.map((movie, index) => {
           return (
-            <Box maxWidth="345px" marginLeft="20px" position="relative">
+            <Box maxWidth="370px" marginLeft="20px" position="relative">
               <Card className={classes.cardContainer} elevation={0}>
                 <StarIcon
                   className={classes.starFavoris}

@@ -121,10 +121,6 @@ function AddMovie() {
   };
 
   return (
-    // TODO => Refacto pour choix boutique
-    // TODO => Ajouter 2 choix possibles:
-    // Ajouter un film (version genre DVD)
-    // Ajouter un film (version streaming)
     <Box>
       <Link to="/add/streaming-movie">
         <Button color="secondary">Ajouter un film en streaming</Button>
