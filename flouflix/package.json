@@ -37,7 +37,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "firebase": "firebase",
-    "deploy": "npm run build && firebase deploy"
+    "deploy": "npm run build && firebase deploy",
+    "deploy-staging": "firebase deploy --only hosting:flouflix-staging"
   },
   "eslintConfig": {
     "extends": [

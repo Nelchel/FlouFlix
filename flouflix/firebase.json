@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "flouflix-staging",
     "public": "build",
     "ignore": [
       "firebase.json",
