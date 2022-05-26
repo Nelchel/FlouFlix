@@ -41,8 +41,6 @@ function CardsLists(props) {
       });
   }, [favoris]);
 
-  console.log(arrayFavoris)
-
   return (
     <>
       {!isResearch && (

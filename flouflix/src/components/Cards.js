@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
@@ -13,11 +13,12 @@ import AliceCarousel from "react-alice-carousel";
 import "react-alice-carousel/lib/alice-carousel.css";
 import Carousel from "react-multi-carousel";
 import { makeStyles } from "@mui/styles";
+import "../css/CustomCaroussel.css";
 
 const makeClass = makeStyles((theme) => ({
   cardContainer: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
-    minWidth: "320px",
+    borderRadius: "10px !important",
+    backgroundColor: `transparent !important`,
     color: theme.palette.text.white,
   },
   linkToFilm: {
@@ -50,8 +51,11 @@ const makeClass = makeStyles((theme) => ({
     padding: "25px 0 15px 0",
   },
   cardContentContainer: {
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: "transparent",
     padding: "10px !important",
+  },
+  cardMedia: {
+    borderRadius: "10px",
   },
 }));
 
@@ -95,57 +99,74 @@ function Cards(props) {
     },
   };
 
-  // console.log(movies);
-
-  // console.log(movie)
   return (
     <>
-      <Typography variant="h5" className={classes.titleCategory}>
-        {title}
-      </Typography>
-      <Carousel responsive={responsive}>
-        {movies.map((movie, index) => {
-          return (
-            <Box maxWidth="370px" marginLeft="20px" position="relative">
-              <Card className={classes.cardContainer} elevation={0}>
-                <StarIcon
-                  className={classes.starFavoris}
-                  style={
-                    isFavoris(movie.id)
-                      ? { fill: "yellow" }
-                      : { fill: "#282828" }
-                  }
-                  onClick={() => handleSubmit(movie.id)}
-                />
-                <CardMedia
-                  component="img"
-                  height="360"
-                  image={movie.url}
-                  alt={movie.name}
-                />
-                <CardContent className={classes.cardContentContainer}>
-                  <div className={classes.cardContent}>
-                    <Typography color="white" variant="h5">
-                      {movie.name}
-                    </Typography>
-                    <Link to={"/movie/" + movie.id} className={classes.link}>
-                      <Typography
-                        variant="body1"
-                        className={classes.linkToFilm}
-                      >
-                        Plus d'infos →
+      {movies.length !== 0 && (
+        <>
+          <Typography variant="h5" className={classes.titleCategory}>
+            {title}
+          </Typography>
+          <Carousel
+            showDots={true}
+            responsive={responsive}
+            itemClass="carousel-item"
+          >
+            {movies.map((movie, index) => {
+              return (
+                <Box maxWidth="300px" marginLeft="20px" position="relative">
+                  <Card className={classes.cardContainer} elevation={0}>
+                    <Tooltip
+                      title={
+                        isFavoris(movie.id)
+                          ? "Retirer des favoris"
+                          : "Ajouter en favoris"
+                      }
+                    >
+                      <StarIcon
+                        className={classes.starFavoris}
+                        style={
+                          isFavoris(movie.id)
+                            ? { fill: "yellow" }
+                            : { fill: "#282828" }
+                        }
+                        onClick={() => handleSubmit(movie.id)}
+                      />
+                    </Tooltip>
+                    <CardMedia
+                      component="img"
+                      height="400"
+                      image={movie.url}
+                      alt={movie.name}
+                      className={classes.cardMedia}
+                    />
+                    <CardContent className={classes.cardContentContainer}>
+                      <div className={classes.cardContent}>
+                        <Typography color="white" variant="h5">
+                          {movie.name}
+                        </Typography>
+                        <Link
+                          to={"/movie/" + movie.id}
+                          className={classes.link}
+                        >
+                          <Typography
+                            variant="body1"
+                            className={classes.linkToFilm}
+                          >
+                            Plus d'infos →
+                          </Typography>
+                        </Link>
+                      </div>
+                      <Typography variant="body2" color="gray">
+                        {movie.releaseDate}
                       </Typography>
-                    </Link>
-                  </div>
-                  <Typography variant="body2" color="gray">
-                    {movie.releaseDate}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-          );
-        })}
-      </Carousel>
+                    </CardContent>
+                  </Card>
+                </Box>
+              );
+            })}
+          </Carousel>
+        </>
+      )}
     </>
   );
 }
