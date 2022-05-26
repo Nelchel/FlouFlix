@@ -1,15 +1,13 @@
 import { Tooltip, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import StarIcon from "@mui/icons-material/Star";
-import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
-import { Button } from "@mui/material";
-import AliceCarousel from "react-alice-carousel";
+import { Link } from "react-router-dom";
 import "react-alice-carousel/lib/alice-carousel.css";
 import Carousel from "react-multi-carousel";
 import { makeStyles } from "@mui/styles";
@@ -76,8 +74,6 @@ function Cards(props) {
   const isFavoris = (movieId) => {
     return props.userData?.favoris?.includes(movieId);
   };
-
-  // console.log(props.userData?.favoris?.length)
 
   const responsive = {
     superLargeDesktop: {

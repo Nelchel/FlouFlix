@@ -8,6 +8,10 @@ function Video({ videoId }) {
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
       autoplay: 0,
+      modestbranding: 1,
+      showinfo: 0,
+      rel: 0,
+      vq: "hd1080",
     },
   };
 
