@@ -25,6 +25,7 @@ import { ClassNames } from "@emotion/react";
 import ReactPlayer from "react-player";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { flexbox } from "@mui/system";
+import "../css/Movie.css";
 
 const makeClass = makeStyles((theme) => ({
   videoPlayer: {
@@ -58,6 +59,10 @@ const makeClass = makeStyles((theme) => ({
   },
   link: {
     textDecoration: "unset !important",
+  },
+  fw500: {
+    fontWeight: 600,
+    marginRight: "10px",
   },
 }));
 
@@ -216,6 +221,18 @@ function Movie() {
                   </Box>
                 )}
               </Box>
+              <Box display="flex" alignItems="center" paddingTop="15px">
+                {movies[0].genre.map((genreMovie) => (
+                  <Box
+                    marginRight="10px"
+                    borderRadius="16px"
+                    border="1px solid white"
+                    padding="5px 10px"
+                  >
+                    {genreMovie}
+                  </Box>
+                ))}
+              </Box>
               <Box display="flex" paddingTop="20px">
                 <Box paddingRight="3px">
                   <img src={movies[0].url} width="280" height="420" alt="" />
@@ -230,7 +247,10 @@ function Movie() {
                 </Box>
                 <Box maxWidth="450px" paddingLeft="30px">
                   <Typography variant="h5">À propos du film</Typography>
-                  <Typography variant="body1" style={{ paddingTop: "30px" }}>
+                  <Typography
+                    variant="body1"
+                    style={{ paddingTop: "30px", textAlign: "justify" }}
+                  >
                     {movies[0].description}
                   </Typography>
                 </Box>
@@ -249,20 +269,68 @@ function Movie() {
                   </Typography>
                   <Box display="flex" paddingRight="30px">
                     <AccessTimeIcon />
-                    <Typography>{movies[0].duration}</Typography>
+                    <Typography variant="body1">
+                      {movies[0].duration}
+                    </Typography>
                   </Box>
                   <Box className={classes.pegiCircle}>{movies[0].pegi}+</Box>
                 </Box>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => handleClick()}
-                  className={classes.addToCart}
-                >
-                  <Typography variant="body1" color={theme.palette.text.white}>
-                    Ajouter au panier
+                <Box display="flex" alignItems="center">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={() => handleClick()}
+                    className={classes.addToCart}
+                  >
+                    <Typography variant="body1" style={{ marginRight: "10px" }}>
+                      {movies[0].price} €
+                    </Typography>
+                    -
+                    <Typography
+                      variant="body1"
+                      color={theme.palette.text.white}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Ajouter au panier
+                    </Typography>
+                  </Button>
+                </Box>
+              </Box>
+              <Box
+                paddingTop="20px"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Box>
+                  <Typography variant="body1" style={{ paddingBottom: "10px" }}>
+                    <span className={classes.fw500}>Réalisation :</span>
+                    {movies[0].director}
                   </Typography>
-                </Button>
+                  <Typography variant="body1" style={{ paddingBottom: "10px" }}>
+                    <span className={classes.fw500}>Scénario :</span>
+                    {movies[0].script.map((scriptGuy) => (
+                      <span className="scriptGuy">{scriptGuy}</span>
+                    ))}
+                  </Typography>
+                  <Typography variant="body1" style={{ paddingBottom: "10px" }}>
+                    <span className={classes.fw500}>Casting principal :</span>
+                    {movies[0].casting.map((actorGuy) => (
+                      <span className="scriptGuy">{actorGuy}</span>
+                    ))}
+                  </Typography>
+                  <Typography variant="body1" style={{ paddingBottom: "10px" }}>
+                    <span className={classes.fw500}>Langue disponible :</span>
+                    {movies[0].language}
+                  </Typography>
+                  <Typography variant="body1" style={{ paddingBottom: "10px" }}>
+                    <span className={classes.fw500}>Date de sortie :</span>
+                    {movies[0].exactReleaseDate}
+                  </Typography>
+                </Box>
+                <Box>
+                  <img src={movies[0].imgGallery[0]} width="800" />
+                </Box>
               </Box>
               {/* DO NOT REMOVE */}
               {/* <Link to={`/watch/${movies[0].id}`}>
