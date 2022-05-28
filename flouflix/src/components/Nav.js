@@ -81,8 +81,6 @@ function Nav() {
     setAnchorEl(null);
   };
 
-  console.log(user);
-
   return (
     <section className={classes.section}>
       <Container maxWidth="1250px">
