@@ -15,8 +15,10 @@ const Payment = (stripeConfig) => {
         
     return  (
         <form>
-            <PaymentElement/>
-            <Button>Submit</Button>
+            <Elements>
+                <PaymentElement/>
+                <Button>Submit</Button>
+            <Elements>
         </form>
     );
     
