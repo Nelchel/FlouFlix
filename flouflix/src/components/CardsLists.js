@@ -4,49 +4,69 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
 import Cards from "./Cards";
-import AliceCarousel from "react-alice-carousel";
-import "react-alice-carousel/lib/alice-carousel.css";
+
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import Typography from "@mui/material/Typography";
 
 function CardsLists(props) {
   const { userData, movies, isResearch } = props;
 
-  const items = [];
+  const db = firebase.firestore();
+
+  const [favoris, setFavoris] = useState([]);
+  const [arrayFavoris, setArrayFavoris] = useState([]);
+  const test = [];
+
+  useEffect(() => {
+    setFavoris(userData.favoris);
+  }, [userData]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    let movies = [];
+    db.collection("movies")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          favoris.forEach((item, index) => {
+            if (doc.id === item) {
+              test.push(doc.data());
+            }
+          });
+        });
+        setArrayFavoris(test);
+      });
+  }, [favoris]);
 
   return (
     <>
       {!isResearch && (
         <>
-          <Typography variant="h5">Favoris</Typography>
-          <AliceCarousel mouseTracking>
+          {arrayFavoris !== [] && (
             <Cards
               title={"Favoris"}
-              movies={movies}
+              movies={arrayFavoris}
               isCardFavori={true}
               userData={userData}
               setUpFavoris={(movie) => props.setUpFavoris(movie)}
               setDownFavoris={(movie) => props.setDownFavoris(movie)}
             />
-          </AliceCarousel>
+          )}
         </>
       )}
       {
         <>
-          <Typography variant="h5">Nouveautés</Typography>
-          <AliceCarousel mouseTracking>
-            <Box display="flex" justifyContent="flex-start">
-              <Cards
-                title={"Nouveautés"}
-                movies={movies}
-                isCardFavori={false}
-                userData={userData}
-                setUpFavoris={(movie) => props.setUpFavoris(movie)}
-                setDownFavoris={(movie) => props.setDownFavoris(movie)}
-              />
-            </Box>
-          </AliceCarousel>
+          <Cards
+            title={"Nouveautés"}
+            movies={movies}
+            isCardFavori={false}
+            userData={userData}
+            setUpFavoris={(movie) => props.setUpFavoris(movie)}
+            setDownFavoris={(movie) => props.setDownFavoris(movie)}
+          />
         </>
       }
     </>

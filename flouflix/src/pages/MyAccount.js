@@ -70,8 +70,12 @@ function MyAccount() {
       setUser(docSnap.data());
       setMailAddress(docSnap.data().mailAddress);
       setPhone(docSnap.data().phone);
-      setDateBirth(docSnap.data().dateBirth);
+      setDateBirth(getDate(docSnap.data().dateBirth));
       setPseudo(docSnap.data().pseudo);
+      setLat(docSnap.data().lat);
+      setLon(docSnap.data().lon);
+      setAddressLine1(docSnap.data().addressLine1);
+      setAddressLine2(docSnap.data().addressLine2);
     } else {
       // doc.data() will be undefined in this case
       console.log("No such document!");
@@ -79,11 +83,13 @@ function MyAccount() {
   }, [uid, db]);
 
   const handleUpdate = () => {
+    const newDateBirth = toTimestamp(dateBirth);
+    console.log(pseudo);
     var userRef = db.collection("users").doc(auth.currentUser.uid);
     return userRef
       .update({
         phone: phone,
-        dateBirth: dateBirth,
+        dateBirth: newDateBirth,
         pseudo: pseudo,
         addressLine1: addressLine1,
         addressLine2: addressLine2,
@@ -92,7 +98,7 @@ function MyAccount() {
       })
       .then(() => {
         console.log("Document successfully updated!");
-        setPersonnal(false)
+        setPersonnal(false);
       })
       .catch((error) => {
         // The document probably doesn't exist.
@@ -112,8 +118,21 @@ function MyAccount() {
     await updateDoc(docRef, {
       mailAddress: mailAddress,
     });
-    setConnexion(false)
+    setConnexion(false);
   };
+
+  function getDate(date) {
+    const newDate = new Date(parseInt(date) * 1000);
+
+    return `${
+      newDate.getMonth() + 1
+    }/${newDate.getDate()}/${newDate.getFullYear()}`;
+  }
+
+  function toTimestamp(strDate) {
+    var datum = Date.parse(strDate);
+    return datum / 1000;
+  }
 
   return (
     <section>
@@ -132,6 +151,12 @@ function MyAccount() {
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Adresse mail: </Typography>
                 <span className={classes.strong}>{getUser.mailAddress}</span>
+              </Box>
+              <Box padding="5px 0" display="flex" alignItems="baseline">
+                <Typography>Date de naissance: </Typography>
+                <span className={classes.strong}>
+                  {getDate(getUser.dateBirth)}
+                </span>
               </Box>
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Adresse postale:</Typography>
@@ -273,7 +298,7 @@ function MyAccount() {
                         label="mm/dd/yyyy"
                         value={dateBirth}
                         onChange={(e) => {
-                          setDateBirth(e);
+                          setDateBirth(getDate(toTimestamp(e)));
                         }}
                         renderInput={(params) => (
                           <TextField fullWidth {...params} />

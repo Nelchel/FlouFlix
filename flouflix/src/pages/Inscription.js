@@ -12,6 +12,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 import { withStyles } from "@mui/styles";
+import frLocale from "date-fns/locale/fr";
 
 import React, { useEffect, useState } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
@@ -21,6 +22,7 @@ import firebase from "firebase/compat/app";
 import { Link } from "react-router-dom";
 import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
+import { fr } from "date-fns/locale";
 
 const makeClass = makeStyles((theme) => ({
   submitButton: {
@@ -177,6 +179,10 @@ function Inscription() {
   const [phone, setPhone] = useState("");
   const [dateBirth, setDateBirth] = useState(null);
 
+  const localeMap = {
+    fr: frLocale,
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     await createUserWithEmailAndPassword(auth, mailAddress, password)
@@ -236,6 +242,11 @@ function Inscription() {
       // process suggestions here
     });
   }, []);
+
+  function toTimestamp(strDate) {
+    var datum = Date.parse(strDate);
+    return datum / 1000;
+  }
 
   function ValidateEmail(mail) {
     const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -375,13 +386,16 @@ function Inscription() {
                 />
               </Box>
               <Box paddingBottom="20px" position="relative">
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDateFns}
+                  adapterLocale={localeMap[fr]}
+                >
                   <DatePicker
                     label="Date de naissance"
                     placeholder="mm/dd/yyyy"
                     value={dateBirth}
                     onChange={(e) => {
-                      setDateBirth(e);
+                      setDateBirth(toTimestamp(e));
                     }}
                     renderInput={(params) => (
                       <CustomTextField
@@ -438,7 +452,7 @@ function Inscription() {
                   variant="contained"
                   color="secondary"
                   className={classes.submitButton}
-                  style={{ backgroundColor: "#ff5740", color: "white"}}
+                  style={{ backgroundColor: "#ff5740", color: "white" }}
                 >
                   <Typography variant="body1">S'inscrire</Typography>
                 </Button>

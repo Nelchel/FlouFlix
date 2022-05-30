@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import { getStorage } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import { SnackbarProvider } from "notistack";
-import { GeoapifyContext } from '@geoapify/react-geocoder-autocomplete'
+import { GeoapifyContext } from "@geoapify/react-geocoder-autocomplete";
 
 import Nav from "./components/Nav";
 import Home from "./components/Home";
@@ -19,13 +19,24 @@ import MyCart from "./pages/MyCart";
 import Movie from "./pages/Movie";
 import Modify from "./pages/Modify";
 import MyAccount from "./pages/MyAccount";
+import WatchMovie from "./pages/WatchMovie";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import AddStreamingMovie from "./pages/AddStreamingMovie";
+import AddMovieControl from "./pages/AddMovieControl";
+
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function App({ firebaseConfig }) {
   firebase.initializeApp(firebaseConfig);
   const firebaseApp = initializeApp(firebaseConfig);
   const storage = getStorage(firebaseApp);
+
+  const auth = getAuth();
+
+  const [user, setUser] = useState();
+  const [uid, setUid] = useState();
+  const [exist, setExist] = useState();
 
   const theme = createTheme({
     palette: {
@@ -47,70 +58,117 @@ function App({ firebaseConfig }) {
     },
   });
 
-  function onPlaceSelect(value) {
-    console.log(value);
-  }
-
-  function onSuggectionChange(value) {
-    console.log(value);
-  }
-
-  function preprocessHook(value) {
-    return `${value}, Munich, Germany`
-  }
-
-  function postprocessHook(feature) {
-    return feature.properties.street;
-  }
-
-  function suggestionsFilter(suggestions) {
-    const processedStreets = [];
-
-    const filtered = suggestions.filter(value => {
-      if (!value.properties.street || processedStreets.indexOf(value.properties.street) >= 0) {
-        return false;
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setExist(true);
+        const uid = user.uid;
+        setUid(uid);
       } else {
-        processedStreets.push(value.properties.street);
-        return true;
+        setExist(false);
       }
-    })
+    });
+  }, [auth]);
 
-    return filtered;
-  }
+  const ProtectedRoute = ({ children }) => {
+    if (!exist) {
+      return <Navigate to="/" replace />;
+    }
 
-  return ( 
-  <GeoapifyContext apiKey="f99dc96855554b5e94169e8f6015c05c">
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <SnackbarProvider
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-        >
-          <React.Fragment>
-            <Routes>
-              <Route path="/" element={<Nav />}>
-                <Route index element={<Home />} />
-                <Route path="inscription" element={<Inscription />} />
-                <Route path="connexion" element={<Connexion />} />
-                <Route path="catalogue" element={<Catalogue />} />
-                <Route
-                  path="ajouter-film"
-                  element={<AddMovie storage={storage} />}
-                />
-                <Route path="mes-films" element={<MyMovies />} />
-                <Route path="mon-panier" element={<MyCart />} />
-                <Route path="movie/:id" element={<Movie />} />
-                <Route path="modifier-film/:id" element={<Modify />} />
-                <Route path="mon-compte" element={<MyAccount />} /> 
-                {/* <Route path="*" element={<NoMatch />} /> */}
-              </Route>
-            </Routes>
-          </React.Fragment>
-        </SnackbarProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    return children;
+  };
+
+  return (
+    <GeoapifyContext apiKey="f99dc96855554b5e94169e8f6015c05c">
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            <React.Fragment>
+              <Routes>
+                <Route path="/" element={<Nav />}>
+                  <Route index element={<Home />} />
+                  <Route path="inscription" element={<Inscription />} />
+                  <Route path="connexion" element={<Connexion />} />
+                  <Route path="catalogue" element={<Catalogue />} />
+                  <Route
+                    path="mes-films"
+                    element={
+                      <ProtectedRoute>
+                        <MyMovies />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="mon-panier"
+                    element={
+                      <ProtectedRoute>
+                        <MyCart />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="movie/:id" element={<Movie />} />
+                  <Route
+                    path="modifier-film/:id"
+                    element={
+                      <ProtectedRoute>
+                        <Modify />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="mon-compte"
+                    element={
+                      <ProtectedRoute>
+                        <MyAccount />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route path="/add">
+                    <Route
+                      path="/add/movie"
+                      element={
+                        <ProtectedRoute>
+                          <AddMovieControl />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/add/dvd-movie"
+                      element={
+                        <ProtectedRoute>
+                          <AddMovie />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/add/streaming-movie"
+                      element={
+                        <ProtectedRoute>
+                          <AddStreamingMovie />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Route>
+                  <Route
+                    path="/watch/:id"
+                    element={
+                      <ProtectedRoute>
+                        <WatchMovie />
+                      </ProtectedRoute>
+                    }
+                  />
+                  {/* <Route path="*" element={<NoMatch />} /> */}
+                </Route>
+              </Routes>
+            </React.Fragment>
+          </SnackbarProvider>
+        </ThemeProvider>
+      </BrowserRouter>
     </GeoapifyContext>
   );
 }
