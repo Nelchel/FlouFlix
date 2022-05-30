@@ -3,10 +3,13 @@ import Box from "@mui/material/Box";
 import { makeStyles,useTheme } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import ModalSuppr from "../components/ModalSuppr";
 import MapModal from "../components/ModalMap";
+import Payment from "../components/Payment";
+import Modal from "@mui/material/Modal";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
@@ -43,7 +46,13 @@ const style = {
   p: 4,
 }; 
 
-function MyCart() {
+function MyCart(stripeConfig) {
+  //modal du paiement
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+
   const classes = makeClass();
   const theme = useTheme();
   const db = firebase.firestore();
@@ -179,6 +188,15 @@ const handleChange = async (e,index) => {
             );
           })}
         </Box>
+        <Button onClick={handleOpen} variant="contained" color="secondary">
+          Confirmer son panier
+        </Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+        >
+          <Payment stripeConfig={stripeConfig}/>
+        </Modal>
       </Box>
     </section>
   );

@@ -15,11 +15,14 @@ const firebaseConfig = {
   appId: "1:762536708495:web:ad0999b58e7a0ef5b6e3fa",
 };
 
+const stripeConfig = {
+  apiKey:"pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM",
+}
 
 
 ReactDOM.render(
   <React.StrictMode>
-        <App firebaseConfig={firebaseConfig} />
+        <App firebaseConfig={firebaseConfig} stripeConfig={stripeConfig}/>
   </React.StrictMode>,
   document.getElementById("root")
 );
