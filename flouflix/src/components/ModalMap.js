@@ -1,6 +1,17 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Collapse from "@mui/material/Collapse";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import StoreIcon from "@mui/icons-material/Store";
+import PersonIcon from "@mui/icons-material/Person";
+import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
+import FilterAltIcon from "@mui/icons-material/FilterAlt"; 
 import { makeStyles,useTheme } from "@mui/styles";
 import Modal from "@mui/material/Modal";
 import Map from './Map'
@@ -23,6 +34,18 @@ import {
 } from "firebase/firestore";
 
 
+const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  }; 
+
 function MapModal(props){
     //Gestion de la modale
     const [open, setOpen] = React.useState(false);
@@ -36,6 +59,10 @@ function MapModal(props){
     const [coordinaryUserCurrent, setCoordinaryUserCurrent] = useState([]);
     // const[boutiques,setBoutiques] = useState([]);
     const[userMoovie,setUserMoovie] = useState([]);
+
+    //liste déroulante
+    const [openList, setOpenList] = useState(false);
+
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(async () => {
@@ -47,31 +74,6 @@ function MapModal(props){
             } else {
             }
         });
-        //Récupération de toutes les boutiques 
-        // const getBoutiques = [];
-        // db.collection("users")
-        // .where("isBoutique", "==", true)
-        // .get()
-        // .then((querySnapshot) => {
-        // querySnapshot.forEach((doc) => {
-        //     getBoutiques.push(doc.data());
-        // });
-        // const coords = []
-        // for (let i = 0; i < getBoutiques.length; i++) {
-        //     coords.push({
-        //         uid : getBoutiques[i].uid,
-        //         address1 : getBoutiques[i].addressLine1,
-        //         address2 : getBoutiques[i].addressLine2,
-        //         phone : getBoutiques[i].phone,
-        //         longitute : getBoutiques[i].lon,
-        //         latitutde : getBoutiques[i].lat,
-        //     })
-        // }
-        // setBoutiques(coords);
-        // })
-        // .catch((error) => {
-        // console.log("Error getting documents: ", error);
-        // });
 
         //Récupération des users selon un film
         const getUserMoovie= []
@@ -82,6 +84,7 @@ function MapModal(props){
         querySnapshot.forEach((doc) => {
             getUserMoovie.push(doc.data());
         });
+        console.log(getUserMoovie)
         const user = []
         for (let i = 0; i < getUserMoovie.length; i++) {
             user.push({
@@ -124,7 +127,33 @@ function MapModal(props){
         getUser();
     }, [uid,db]);
 
-    console.log(userMoovie)
+
+//Affichage de la liste déroulante 
+const handleClick = () => {
+    setOpenList(!openList);
+  };
+
+
+//Gestion des filtres 
+    const handleFilterPersonClick = () =>{
+        const localFilter = false
+        const type = 'Person'
+        // removeMarkers(localFilter,type)
+    }
+    
+    const handleFilterStoreClick = () =>{
+        const localFilter = true
+        const type = "Boutique"
+        // removeMarkers(localFilter,type)
+    }
+    
+    const handleNoFilterClick = () =>{
+        const localFilter = null
+        const type = "All"
+        // removeMarkers(localFilter,type)
+    }
+
+
     return(
     <>
         <Button onClick={handleOpen}>Afficher les boutiques</Button>
@@ -132,10 +161,50 @@ function MapModal(props){
         open={open}
         onClose={handleClose}
         >
-            <Map  
-            coordinaryUserCurrent ={coordinaryUserCurrent} 
-            // boutiques={boutiques} 
-            userMoovie={userMoovie}/>
+            <Box sx={style}>
+            <List
+            sx={{ width: "100%", maxWidth: 360 }}
+            aria-labelledby="nested-list-subheader"
+            >
+                <ListItemButton onClick={handleClick}>
+                    <ListItemIcon>
+                        <FilterAltIcon />
+                    </ListItemIcon>
+                    <ListItemText style={{color:"#333"}} primary="Filtre" />
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={openList} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+
+                        <ListItemButton onClick={handleNoFilterClick} sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                            <FilterAltOffIcon />
+                            </ListItemIcon>
+                            <ListItemText style={{color:"#333"}} primary="All"/>
+                        </ListItemButton>
+
+                        <ListItemButton onClick={handleFilterStoreClick} sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                            <StoreIcon />
+                            </ListItemIcon>
+                            <ListItemText style={{color:"#333"}} primary="Boutique" />
+                        </ListItemButton>
+
+                        <ListItemButton onClick={handleFilterPersonClick} sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                            <PersonIcon />
+                            </ListItemIcon>
+                            <ListItemText style={{color:"#333"}} primary="Particulier" />
+                        </ListItemButton>
+                        
+                    </List>
+                </Collapse>
+            </List>
+                <Map  
+                coordinaryUserCurrent ={coordinaryUserCurrent} 
+                // boutiques={boutiques} 
+                userMoovie={userMoovie}/>
+            </Box>
         </Modal>
     </>
     )

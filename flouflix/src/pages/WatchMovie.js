@@ -9,8 +9,8 @@ import firebase from "firebase/compat/app";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
 const makeClass = makeStyles((theme) => ({
-  signOut: {
-    float: "right",
+  videoPlayer: {
+    width: "100%",
   },
 }));
 
@@ -55,12 +55,10 @@ function WatchMovie() {
       });
   }, [uid]);
 
-  console.log(movies);
-
   return (
     <Box>
       {movies.length !== undefined && movies.length > 0 && (
-        <video controls>
+        <video controls className={classes.videoPlayer}>
           <source src={movies[0].movieUrl} type="video/mp4"></source>
         </video>
       )}

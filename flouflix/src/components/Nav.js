@@ -81,8 +81,6 @@ function Nav() {
     setAnchorEl(null);
   };
 
-  console.log(user);
-
   return (
     <section className={classes.section}>
       <Container maxWidth="1250px">
@@ -95,7 +93,7 @@ function Nav() {
             <Box display="flex" alignItems="center">
               <Link to="/">
                 <img
-                  src="images/logo-flouflix-new.png"
+                  src="https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/logo-flouflix-new.png?alt=media&token=c5b15aa2-4dae-42ba-911a-d83e50009fd3"
                   alt="logo flouflix"
                   height="70px"
                 />
