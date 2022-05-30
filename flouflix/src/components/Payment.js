@@ -14,12 +14,12 @@ const Payment = (stripeConfig) => {
 
         
     return  (
-        <form>
+        <section>
             <Elements>
                 <PaymentElement/>
-                <Button>Submit</Button>
             </Elements>
-        </form>
+        </section>
+
     );
     
 }
