@@ -5,9 +5,6 @@ import Button from "@mui/material/Button";
 
 const Payment = (stripeConfig) => {
     const StripePromise = loadStripe("pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM")
-
-
-
     const stripe = useStripe();
     const elements = useElements();
   
@@ -17,6 +14,7 @@ const Payment = (stripeConfig) => {
       event.preventDefault();
   
       if (!stripe || !elements) {
+          console.log("stripe n'a pas été load")
         // Stripe.js has not yet loaded.
         // Make sure to disable form submission until Stripe.js has loaded.
         return;
@@ -26,7 +24,7 @@ const Payment = (stripeConfig) => {
         //`Elements` instance that was used to create the Payment Element
         elements,
         confirmParams: {
-          return_url: "https://example.com/order/123/complete",
+          return_url: "https://flouflix-staging.web.app/",
         },
       });
   
@@ -43,10 +41,10 @@ const Payment = (stripeConfig) => {
 
 
     return  (
-        <Elements Stripe={StripePromise}>
-            <CardElement/>
-            <Button disabled={!stripe}>Submit</Button>
-        </Elements>
+        <form onSubmit={handleSubmit}>
+            <PaymentElement />
+            <button disabled={!stripe}>Submit</button>
+        </form>
     );
 }
 

@@ -8,7 +8,10 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import ModalSuppr from "../components/ModalSuppr";
 import MapModal from "../components/ModalMap";
+//gestion du payement en ligne
 import Payment from "../components/Payment";
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
 import Modal from "@mui/material/Modal";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
@@ -62,7 +65,9 @@ function MyCart(stripeConfig) {
   const [quantity, setQuantity] = useState([]);
   const [userCurrent, setUserCurrent] = useState(undefined);
 
-
+  const stripePromise = loadStripe(
+    'pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM'
+    );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     onAuthStateChanged(auth, (user) => {
@@ -195,7 +200,9 @@ const handleChange = async (e,index) => {
           open={open}
           onClose={handleClose}
         >
-          <Payment stripeConfig={stripeConfig}/>
+          <Elements stripe={stripePromise}>
+            <Payment/>
+          </Elements>
         </Modal>
       </Box>
     </section>
