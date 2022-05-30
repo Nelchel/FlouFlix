@@ -65,9 +65,16 @@ function MyCart(stripeConfig) {
   const [quantity, setQuantity] = useState([]);
   const [userCurrent, setUserCurrent] = useState(undefined);
 
+  //param du strip pour le payement Element
   const stripePromise = loadStripe(
     'pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM'
     );
+  const options = {
+    // passing the client secret obtained from the server
+    clientSecret:  uid,
+  };
+
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     onAuthStateChanged(auth, (user) => {
@@ -200,7 +207,7 @@ const handleChange = async (e,index) => {
           open={open}
           onClose={handleClose}
         >
-          <Elements stripe={stripePromise}>
+          <Elements stripe={stripePromise} options={options}>
             <Payment/>
           </Elements>
         </Modal>
