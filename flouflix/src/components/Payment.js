@@ -18,7 +18,7 @@ const Payment = (stripeConfig) => {
             <Elements>
                 <PaymentElement/>
                 <Button>Submit</Button>
-            <Elements>
+            </Elements>
         </form>
     );
     
