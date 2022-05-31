@@ -1,21 +1,8 @@
-import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import StoreIcon from "@mui/icons-material/Store";
-import PersonIcon from "@mui/icons-material/Person";
-import FilterAltOffIcon from "@mui/icons-material/FilterAltOff";
-import FilterAltIcon from "@mui/icons-material/FilterAlt"; 
-import { makeStyles,useTheme } from "@mui/styles";
 import Modal from "@mui/material/Modal";
 import Map from './Map'
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
@@ -24,13 +11,10 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import {
-  doc,
-  updateDoc,
   where,
   collection,
   getDocs,
   query,
-  arrayRemove,
 } from "firebase/firestore";
 
 
@@ -59,9 +43,6 @@ function MapModal(props){
     const [coordinaryUserCurrent, setCoordinaryUserCurrent] = useState([]);
     // const[boutiques,setBoutiques] = useState([]);
     const[userMoovie,setUserMoovie] = useState([]);
-
-    //liste déroulante
-    const [openList, setOpenList] = useState(false);
 
     
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,6 +83,7 @@ function MapModal(props){
         .catch((error) => {
         console.log("Error getting documents: ", error);
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth,uid]);
     
 
@@ -128,32 +110,6 @@ function MapModal(props){
     }, [uid,db]);
 
 
-//Affichage de la liste déroulante 
-const handleClick = () => {
-    setOpenList(!openList);
-  };
-
-
-//Gestion des filtres 
-    const handleFilterPersonClick = () =>{
-        const localFilter = false
-        const type = 'Person'
-        // removeMarkers(localFilter,type)
-    }
-    
-    const handleFilterStoreClick = () =>{
-        const localFilter = true
-        const type = "Boutique"
-        // removeMarkers(localFilter,type)
-    }
-    
-    const handleNoFilterClick = () =>{
-        const localFilter = null
-        const type = "All"
-        // removeMarkers(localFilter,type)
-    }
-
-
     return(
     <>
         <Button onClick={handleOpen}>Afficher les boutiques</Button>
@@ -162,47 +118,8 @@ const handleClick = () => {
         onClose={handleClose}
         >
             <Box sx={style}>
-            <List
-            sx={{ width: "100%", maxWidth: 360 }}
-            aria-labelledby="nested-list-subheader"
-            >
-                <ListItemButton onClick={handleClick}>
-                    <ListItemIcon>
-                        <FilterAltIcon />
-                    </ListItemIcon>
-                    <ListItemText style={{color:"#333"}} primary="Filtre" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={openList} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-
-                        <ListItemButton onClick={handleNoFilterClick} sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                            <FilterAltOffIcon />
-                            </ListItemIcon>
-                            <ListItemText style={{color:"#333"}} primary="All"/>
-                        </ListItemButton>
-
-                        <ListItemButton onClick={handleFilterStoreClick} sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                            <StoreIcon />
-                            </ListItemIcon>
-                            <ListItemText style={{color:"#333"}} primary="Boutique" />
-                        </ListItemButton>
-
-                        <ListItemButton onClick={handleFilterPersonClick} sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                            <PersonIcon />
-                            </ListItemIcon>
-                            <ListItemText style={{color:"#333"}} primary="Particulier" />
-                        </ListItemButton>
-                        
-                    </List>
-                </Collapse>
-            </List>
                 <Map  
                 coordinaryUserCurrent ={coordinaryUserCurrent} 
-                // boutiques={boutiques} 
                 userMoovie={userMoovie}/>
             </Box>
         </Modal>
