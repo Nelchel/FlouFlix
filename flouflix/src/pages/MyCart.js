@@ -12,7 +12,6 @@ import MapModal from "../components/ModalMap";
 import Payment from "../components/Payment";
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
-import Stripe from 'stripe';
 import Modal from "@mui/material/Modal";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
