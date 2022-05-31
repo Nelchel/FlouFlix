@@ -69,9 +69,16 @@ function MyCart(stripeConfig) {
   const stripePromise = loadStripe(
     'pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM'
     );
+  const stripe = require('stripe')('sk_test_51L526RGH7Y6DbZsDuhWEH7RrhTBf3OaSuNpPYQt6QL3TJVO0HnuXoDGdyIdjJ39p0Usx4LMcBcliv1krqoEEBIJk006gPemnK8');
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 2000,
+    currency: 'eur',
+    payment_method_types: ['card'],
+  });
+
   const options = {
     // passing the client secret obtained from the server
-    clientSecret:  uid,
+    clientSecret:  paymentIntent.client_secret,
   };
 
 
