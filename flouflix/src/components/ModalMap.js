@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Map from './Map'
 import React, { useState, useEffect } from "react";
+import RoomIcon from '@mui/icons-material/Room';
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
@@ -16,8 +17,6 @@ import {
   getDocs,
   query,
 } from "firebase/firestore";
-
-
 const style = {
     position: "absolute",
     top: "50%",
@@ -28,7 +27,12 @@ const style = {
     border: "2px solid #000",
     boxShadow: 24,
     p: 4,
-  }; 
+};
+    
+const legend = {
+    color: "black",
+    display:"inline-block"
+};
 
 function MapModal(props){
     //Gestion de la modale
@@ -113,11 +117,11 @@ function MapModal(props){
     return(
     <>
         <Button onClick={handleOpen}>Afficher les boutiques</Button>
-        <Modal
-        open={open}
-        onClose={handleClose}
-        >
+        <Modal open={open} onClose={handleClose}>
             <Box sx={style}>
+                <div><RoomIcon style={{ fill: "#b40219", display:"inline-block" }}/> <h3 style={legend}>Votre position</h3></div>
+                <div><RoomIcon style={{ fill: "#3bb2d0", display:"inline-block" }}/> <h3 style={legend}>Boutique</h3></div>
+                <div><RoomIcon style={{ fill: "#008000", display:"inline-block" }}/> <h3 style={legend}>Particulier</h3></div>
                 <Map  
                 coordinaryUserCurrent ={coordinaryUserCurrent} 
                 userMoovie={userMoovie}/>
