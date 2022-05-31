@@ -6,6 +6,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyCwyFkoS1xUdgOtDgeDDq_hRV74lNXG7_s",
   authDomain: "flouflix-46d80.firebaseapp.com",

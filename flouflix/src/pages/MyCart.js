@@ -12,6 +12,7 @@ import MapModal from "../components/ModalMap";
 import Payment from "../components/Payment";
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
+import Stripe from 'stripe';
 import Modal from "@mui/material/Modal";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
@@ -54,6 +55,7 @@ function MyCart(stripeConfig) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [option, setOption] = useState("");
 
 
   const classes = makeClass();
@@ -69,18 +71,22 @@ function MyCart(stripeConfig) {
   const stripePromise = loadStripe(
     'pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM'
     );
-  const stripe = require('stripe')('sk_test_51L526RGH7Y6DbZsDuhWEH7RrhTBf3OaSuNpPYQt6QL3TJVO0HnuXoDGdyIdjJ39p0Usx4LMcBcliv1krqoEEBIJk006gPemnK8');
-  const paymentIntent = stripe.paymentIntents.create({
-    amount: 2000,
-    currency: 'eur',
-    payment_method_types: ['card'],
-  });
+    const options = 'pi_1JKS2Y2VYugoKSBzNHPFBNj9_secret_niLMVIt33lBGf0z6Gt5WIGc3C'
 
-  const options = {
-    // passing the client secret obtained from the server
-    clientSecret:  paymentIntent.client_secret,
-  };
-
+//   const stripe = new Stripe('sk_test_51L526RGH7Y6DbZsDuhWEH7RrhTBf3OaSuNpPYQt6QL3TJVO0HnuXoDGdyIdjJ39p0Usx4LMcBcliv1krqoEEBIJk006gPemnK8');
+//   const userPaymentIntent = async() => {
+//     const paymentIntent = await stripe.paymentIntents.create({
+//       amount: 2000,
+//       currency: 'eur',
+//       payment_method_types: ['card'],
+//     });
+//   console.log(paymentIntent);
+//   const options = {
+//     clientSecret:  paymentIntent.client_secret,
+//   };
+//   setOption(options)
+// }
+// userPaymentIntent()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -214,7 +220,7 @@ const handleChange = async (e,index) => {
           open={open}
           onClose={handleClose}
         >
-          <Elements stripe={stripePromise} options={options}>
+          <Elements stripe={stripePromise} options={option}>
             <Payment/>
           </Elements>
         </Modal>
