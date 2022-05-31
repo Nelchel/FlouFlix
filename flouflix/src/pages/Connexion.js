@@ -2,6 +2,9 @@ import { Typography } from "@mui/material";
 import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 import { makeStyles, useTheme } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import { Container } from "@mui/material";
@@ -123,13 +126,15 @@ const CustomTextField = withStyles((theme) => ({
 
 function Connexion() {
   const classes = makeClass();
+  const db = firebase.firestore();
   const auth = getAuth();
   const theme = useTheme();
 
   localStorage.setItem("url", window.location.pathname);
 
   const [mailAddress, setMailAddress] = useState("");
-  const [mailAddressPassword, setMailAddressPassword] = useState("");  
+  const [mailAddressPassword, setMailAddressPassword] = useState(""); 
+  const [resetPassword, setResetPassword] = useState(""); 
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
   const [isValid, setValid] = useState(false);
@@ -155,17 +160,18 @@ function Connexion() {
       });
   };
 
-
   const handleSubmitRessetPassword = (mail) => {
-   sendPasswordResetEmail(auth, mail)
+    console.log(auth)
+   sendPasswordResetEmail(auth, mailAddressPassword)
    .then(() => {
      console.log('c bon');
      console.log(mail);
    })
    .catch((error) => { 
      const errorCode = error.code;
+     console.log(error)
    })
-   setPassword(false);
+   setResetPassword(false);
   };
     
   function ValidateEmail(mail) {
@@ -264,17 +270,15 @@ function Connexion() {
 
               <Box paddingTop="10px">
                 Mot de passe oublié ?
-                <Button onClick={(e) => { setPassword(true); }}  variant="contained"
+                <Button onClick={(e) => { setResetPassword(true); }}  variant="contained"
                 color="secondary" className={classes.button}> Réinitialiser </Button>
             </Box>
 
             <Modal
-            open={password}
+            open={resetPassword}
             onClose={(e) => {
-              setPassword(false);
+              setResetPassword(false);
             }}> 
-
-
               <Box
               position="absolute"
               top="27%"
@@ -299,14 +303,16 @@ function Connexion() {
                       }}
                       label="Adresse mail"
                     />
-                    {console.log(mailAddressPassword)}
                   </Box>
                   </Box>
                   <Button
+                    type ="button"
                     variant="contained"
                     color="secondary"
                     onClick={handleSubmitRessetPassword}
-                  > Envoyer
+                    
+                  > Envoyer {console.log('envoie à ' + mailAddressPassword)}
+                   
                   </Button>
                 </form>
             </Box>
