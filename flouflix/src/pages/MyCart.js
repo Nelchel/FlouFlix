@@ -3,10 +3,16 @@ import Box from "@mui/material/Box";
 import { makeStyles,useTheme } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import ModalSuppr from "../components/ModalSuppr";
 import MapModal from "../components/ModalMap";
+//gestion du payement en ligne
+import Payment from "../components/Payment";
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
+import Modal from "@mui/material/Modal";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
@@ -43,7 +49,13 @@ const style = {
   p: 4,
 }; 
 
-function MyCart() {
+function MyCart(stripeConfig) {
+  //modal du paiement
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+
   const classes = makeClass();
   const theme = useTheme();
   const db = firebase.firestore();
@@ -52,6 +64,22 @@ function MyCart() {
   const [moovieInMyCart, setMoovieInMyCart] = useState([]);
   const [quantity, setQuantity] = useState([]);
   const [userCurrent, setUserCurrent] = useState(undefined);
+
+  //param du strip pour le payement Element
+  const stripePromise = loadStripe(
+    'pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM'
+    );
+  const stripe = require('stripe')('sk_test_51L526RGH7Y6DbZsDuhWEH7RrhTBf3OaSuNpPYQt6QL3TJVO0HnuXoDGdyIdjJ39p0Usx4LMcBcliv1krqoEEBIJk006gPemnK8');
+  const paymentIntent = stripe.paymentIntents.create({
+    amount: 2000,
+    currency: 'eur',
+    payment_method_types: ['card'],
+  });
+
+  const options = {
+    // passing the client secret obtained from the server
+    clientSecret:  paymentIntent.client_secret,
+  };
 
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -179,6 +207,17 @@ const handleChange = async (e,index) => {
             );
           })}
         </Box>
+        <Button onClick={handleOpen} variant="contained" color="secondary">
+          Confirmer son panier
+        </Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+        >
+          <Elements stripe={stripePromise} options={options}>
+            <Payment/>
+          </Elements>
+        </Modal>
       </Box>
     </section>
   );
