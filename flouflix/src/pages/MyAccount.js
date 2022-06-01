@@ -12,7 +12,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import { Outlet } from "react-router-dom";
-import { getAuth, updateEmail, onAuthStateChanged } from "firebase/auth";
+import { getAuth, updateEmail, onAuthStateChanged, updatePassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import { updateDoc } from "firebase/firestore";
@@ -104,6 +104,7 @@ function MyAccount() {
 
   const handleSubmit = async (event) => {
     updateEmail(auth.currentUser, mailAddress)
+    updatePassword(auth.currentUser, password)    
       .then(() => {
         console.log("MAIL geted");
       })
@@ -113,6 +114,7 @@ function MyAccount() {
     const docRef = doc(db, "users", uid);
     await updateDoc(docRef, {
       mailAddress: mailAddress,
+      password : password,
     });
     setConnexion(false)
   };
@@ -206,6 +208,7 @@ function MyAccount() {
                 <Box display="flex" flexDirection="column">
                   <Box paddingBottom="20px">
                     <TextField
+                      required
                       fullWidth
                       value={mailAddress}
                       onChange={(e) => {
@@ -216,6 +219,7 @@ function MyAccount() {
                   </Box>
                   <Box paddingBottom="20px">
                     <TextField
+                      required
                       label="Nouveau mot de passe"
                       placeholer="Nouveau mot de passe"
                       type="password"
@@ -226,7 +230,8 @@ function MyAccount() {
                       }}
                     />
                   </Box>
-                  {console.log(passwordConfirm)}
+                  {console.log(password + " mdp")}
+                  {console.log(passwordConfirm + " mdpconfirm")}
 
                   <Box paddingBottom="20px">
                     <TextField
@@ -251,12 +256,11 @@ function MyAccount() {
             <Typography color="red" >Les mots de passe ne correspondent pas.</Typography> </>} 
             </Box>
               </Box>
-
                   <Button
                     variant="contained"
                     color="secondary"
                     onClick={handleSubmit}
-                    disabled ={password!==passwordConfirm}
+                    disabled={password!==passwordConfirm}
                                         
                   >
                     Envoyer
