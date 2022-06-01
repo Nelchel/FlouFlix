@@ -12,37 +12,9 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Button } from "@mui/material";
 import { doc, updateDoc } from "firebase/firestore";
+import CustomTextField from "../helpers/CustomTextField";
 
 const makeClass = makeStyles((theme) => ({}));
-
-const CustomTextField = withStyles((theme) => ({
-  root: {
-    zIndex: 3,
-    color: "white",
-    borderColor: "white",
-    "label + &": {
-      color: "white",
-    },
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      "&::placeholder": {
-        color: "white",
-      },
-      "& fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&:hover fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-    },
-  },
-}))(TextField);
 
 function AddStreamingMovie() {
   const classes = makeClass();
