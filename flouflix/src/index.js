@@ -6,6 +6,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyCwyFkoS1xUdgOtDgeDDq_hRV74lNXG7_s",
   authDomain: "flouflix-46d80.firebaseapp.com",
@@ -18,6 +19,8 @@ const firebaseConfig = {
 const stripeConfig = {
   apiKey:"pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM",
 }
+
+
 
 
 ReactDOM.render(

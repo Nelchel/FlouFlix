@@ -64,6 +64,10 @@ const makeClass = makeStyles((theme) => ({
     fontWeight: 600,
     marginRight: "10px",
   },
+  buyStreaming: {
+    textTransform: "initial !important",
+    boxShadow: "unset !important",
+  },
 }));
 
 const style = {
@@ -86,6 +90,7 @@ function Movie() {
   const [userData, setUserData] = useState([]);
   const getMovies = [];
   const [movies, setMovies] = useState([]);
+  const [status,setStatus] =useState("success");
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -160,19 +165,18 @@ function Movie() {
       addMoovie(moovieName);
       setIdFilm(idMoovie);
     } else {
-      // await updateDoc(doc(db,  "users", uid), {
-      //     "myCart": changeArray[0].myCart
-      //   })
       console.log("n'ajoute pas le film");
       const moovieName = `${movies[0].name} est déjà dans votre panier`;
       addMoovie(moovieName);
+      setStatus("warning")
+
     }
   };
 
   const addMoovie = (moovieName) => {
     const key = enqueueSnackbar(moovieName, {
       autoHideDuration: 1000,
-      variant: "success",
+      variant: status,
       anchorOrigin: {
         vertical: "bottom",
         horizontal: "center",
@@ -276,6 +280,23 @@ function Movie() {
                   <Box className={classes.pegiCircle}>{movies[0].pegi}+</Box>
                 </Box>
                 <Box display="flex" alignItems="center">
+                  {/* DO NOT REMOVE */}
+                  <Box paddingRight="10px">
+                    <Link
+                      to={`/watch/${movies[0].id}`}
+                      className={classes.link}
+                    >
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        className={classes.buyStreaming}
+                      >
+                        <Typography variant="body1">
+                          Acheter le film en streaming
+                        </Typography>
+                      </Button>
+                    </Link>
+                  </Box>
                   <Button
                     color="secondary"
                     variant="contained"
@@ -297,7 +318,7 @@ function Movie() {
                 </Box>
               </Box>
               <Box
-                paddingTop="20px"
+                paddingTop="5px"
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"
@@ -332,10 +353,6 @@ function Movie() {
                   <img src={movies[0].imgGallery[0]} width="800" />
                 </Box>
               </Box>
-              {/* DO NOT REMOVE */}
-              {/* <Link to={`/watch/${movies[0].id}`}>
-                <Button color="secondary">Acheter le film en streaming</Button>
-              </Link> */}
               <Modal
                 open={open}
                 onClose={handleClose}

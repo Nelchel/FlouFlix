@@ -6,13 +6,13 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 import { Container } from "@mui/material";
-
+import WarningIcon from "@mui/icons-material/Warning";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import { Outlet } from "react-router-dom";
-import { getAuth, updateEmail, onAuthStateChanged } from "firebase/auth";
+import { getAuth, updateEmail, onAuthStateChanged, updatePassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import { updateDoc } from "firebase/firestore";
@@ -44,6 +44,8 @@ function MyAccount() {
   const auth = getAuth();
   const [mailAddress, setMailAddress] = useState();
   const [password, setPassword] = useState();
+  const [passwordConfirm, setPasswordConfirm] = useState();
+  const [confirm, setConfirm] = useState();
   const [pseudo, setPseudo] = useState();
   const [dateBirth, setDateBirth] = useState();
   const [phone, setPhone] = useState();
@@ -70,12 +72,8 @@ function MyAccount() {
       setUser(docSnap.data());
       setMailAddress(docSnap.data().mailAddress);
       setPhone(docSnap.data().phone);
-      setDateBirth(getDate(docSnap.data().dateBirth));
+      setDateBirth(docSnap.data().dateBirth);
       setPseudo(docSnap.data().pseudo);
-      setLat(docSnap.data().lat);
-      setLon(docSnap.data().lon);
-      setAddressLine1(docSnap.data().addressLine1);
-      setAddressLine2(docSnap.data().addressLine2);
     } else {
       // doc.data() will be undefined in this case
       console.log("No such document!");
@@ -83,13 +81,11 @@ function MyAccount() {
   }, [uid, db]);
 
   const handleUpdate = () => {
-    const newDateBirth = toTimestamp(dateBirth);
-    console.log(pseudo);
     var userRef = db.collection("users").doc(auth.currentUser.uid);
     return userRef
       .update({
         phone: phone,
-        dateBirth: newDateBirth,
+        dateBirth: dateBirth, 
         pseudo: pseudo,
         addressLine1: addressLine1,
         addressLine2: addressLine2,
@@ -98,7 +94,7 @@ function MyAccount() {
       })
       .then(() => {
         console.log("Document successfully updated!");
-        setPersonnal(false);
+        setPersonnal(false)
       })
       .catch((error) => {
         // The document probably doesn't exist.
@@ -108,6 +104,7 @@ function MyAccount() {
 
   const handleSubmit = async (event) => {
     updateEmail(auth.currentUser, mailAddress)
+    updatePassword(auth.currentUser, password)    
       .then(() => {
         console.log("MAIL geted");
       })
@@ -117,22 +114,10 @@ function MyAccount() {
     const docRef = doc(db, "users", uid);
     await updateDoc(docRef, {
       mailAddress: mailAddress,
+      password : password,
     });
-    setConnexion(false);
+    setConnexion(false)
   };
-
-  function getDate(date) {
-    const newDate = new Date(parseInt(date) * 1000);
-
-    return `${
-      newDate.getMonth() + 1
-    }/${newDate.getDate()}/${newDate.getFullYear()}`;
-  }
-
-  function toTimestamp(strDate) {
-    var datum = Date.parse(strDate);
-    return datum / 1000;
-  }
 
   return (
     <section>
@@ -151,12 +136,6 @@ function MyAccount() {
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Adresse mail: </Typography>
                 <span className={classes.strong}>{getUser.mailAddress}</span>
-              </Box>
-              <Box padding="5px 0" display="flex" alignItems="baseline">
-                <Typography>Date de naissance: </Typography>
-                <span className={classes.strong}>
-                  {getDate(getUser.dateBirth)}
-                </span>
               </Box>
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Adresse postale:</Typography>
@@ -229,6 +208,7 @@ function MyAccount() {
                 <Box display="flex" flexDirection="column">
                   <Box paddingBottom="20px">
                     <TextField
+                      required
                       fullWidth
                       value={mailAddress}
                       onChange={(e) => {
@@ -239,6 +219,7 @@ function MyAccount() {
                   </Box>
                   <Box paddingBottom="20px">
                     <TextField
+                      required
                       label="Nouveau mot de passe"
                       placeholer="Nouveau mot de passe"
                       type="password"
@@ -249,10 +230,38 @@ function MyAccount() {
                       }}
                     />
                   </Box>
+                  {console.log(password + " mdp")}
+                  {console.log(passwordConfirm + " mdpconfirm")}
+
+                  <Box paddingBottom="20px">
+                    <TextField
+                     required
+                     fullWidth
+                     type="password"
+                     value={passwordConfirm}
+                     id="passwordValidation"
+                     label="Confirmer votre mot de passe"
+                     onChange={(e) => {
+                      setPasswordConfirm(e.target.value);
+                      if (password === e.target.value) {
+                        setConfirm(true);
+                      } else setConfirm(false);
+                    }}
+                      // onChange={(e) => {
+                      //   setPassword(e.target.value);
+                      // }}
+                    />
+                    <Box display="inline-flex" vertical-align="text-top"> 
+            {password!==passwordConfirm && <> <WarningIcon style={{ marginRight: 5, color: "red" }}/>  
+            <Typography color="red" >Les mots de passe ne correspondent pas.</Typography> </>} 
+            </Box>
+              </Box>
                   <Button
                     variant="contained"
                     color="secondary"
                     onClick={handleSubmit}
+                    disabled={password!==passwordConfirm}
+                                        
                   >
                     Envoyer
                   </Button>
@@ -298,7 +307,7 @@ function MyAccount() {
                         label="mm/dd/yyyy"
                         value={dateBirth}
                         onChange={(e) => {
-                          setDateBirth(getDate(toTimestamp(e)));
+                          setDateBirth(e);
                         }}
                         renderInput={(params) => (
                           <TextField fullWidth {...params} />
