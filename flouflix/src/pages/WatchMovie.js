@@ -11,6 +11,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 const makeClass = makeStyles((theme) => ({
   videoPlayer: {
     width: "100%",
+    height: "calc(100vh - 80px)",
   },
 }));
 
