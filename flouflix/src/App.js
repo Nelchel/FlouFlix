@@ -22,8 +22,6 @@ import MyAccount from "./pages/MyAccount";
 import WatchMovie from "./pages/WatchMovie";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import AddStreamingMovie from "./pages/AddStreamingMovie";
-import AddMovieControl from "./pages/AddMovieControl";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -143,14 +141,6 @@ function App({ firebaseConfig, stripeConfig }) {
                       element={
                         <ProtectedRoute>
                           <AddMovie />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/add/streaming-movie"
-                      element={
-                        <ProtectedRoute>
-                          <AddStreamingMovie />
                         </ProtectedRoute>
                       }
                     />
