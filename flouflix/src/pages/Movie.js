@@ -297,7 +297,7 @@ function Movie() {
                 </Box>
               </Box>
               <Box
-                paddingTop="20px"
+                paddingTop="5px"
                 display="flex"
                 alignItems="center"
                 justifyContent="space-between"

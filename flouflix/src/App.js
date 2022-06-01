@@ -27,7 +27,7 @@ import AddMovieControl from "./pages/AddMovieControl";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-function App({ firebaseConfig,stripeConfig }) {
+function App({ firebaseConfig, stripeConfig }) {
   firebase.initializeApp(firebaseConfig);
   const firebaseApp = initializeApp(firebaseConfig);
   const storage = getStorage(firebaseApp);
@@ -44,6 +44,7 @@ function App({ firebaseConfig,stripeConfig }) {
         main: "#212121",
         light: "#484848",
         dark: "#000000",
+        contrastText: "#FFF",
       },
       secondary: {
         main: "#E50914",
@@ -107,7 +108,7 @@ function App({ firebaseConfig,stripeConfig }) {
                     path="mon-panier"
                     element={
                       <ProtectedRoute>
-                        <MyCart stripeConfig={stripeConfig}/>
+                        <MyCart stripeConfig={stripeConfig} />
                       </ProtectedRoute>
                     }
                   />
@@ -133,7 +134,7 @@ function App({ firebaseConfig,stripeConfig }) {
                       path="/add/movie"
                       element={
                         <ProtectedRoute>
-                          <AddMovieControl />
+                          <AddMovie />
                         </ProtectedRoute>
                       }
                     />
