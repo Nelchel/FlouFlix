@@ -1,0 +1,44 @@
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.custom-file-upload {
+  display: flex;
+  align-items: center;
+}
+
+.custom-file-upload label {
+  margin:0;
+  padding:10px;
+  width:auto;
+  max-width:300px;
+  height:auto;
+  background-color:#E50914;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  text-align:center;
+  border-radius:5px;
+  -webkit-border-radius:5px;
+  -webkit-transition:0.2s ease all;
+     -moz-transition:0.2s ease all;
+      -ms-transition:0.2s ease all;
+       -o-transition:0.2s ease all;
+          transition:0.2s ease all;
+}
+
+.custom-file-upload label:hover {
+  background:#aa0000;
+}
+
+[type=file]{
+  display:none;
+}

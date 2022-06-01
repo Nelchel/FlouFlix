@@ -11,7 +11,7 @@ const makeClass = makeStyles((theme) => ({
   },
 }));
 
-function Connexion() {
+function SignOut() {
   const classes = makeClass();
   const auth = getAuth();
 
@@ -32,4 +32,4 @@ function Connexion() {
   );
 }
 
-export default Connexion;
+export default SignOut;

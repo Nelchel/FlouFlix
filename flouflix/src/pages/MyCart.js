@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
-import { makeStyles,useTheme } from "@mui/styles";
+import { makeStyles, useTheme } from "@mui/styles";
 import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -15,11 +15,8 @@ import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-import { useDebouncedCallback } from 'use-debounce';
-import {
-  getAuth,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { useDebouncedCallback } from "use-debounce";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   doc,
   updateDoc,
@@ -30,10 +27,7 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 
-
-const makeClass = makeStyles((theme) => ({
-
-}));
+const makeClass = makeStyles((theme) => ({}));
 
 const style = {
   position: "absolute",
@@ -44,7 +38,7 @@ const style = {
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
-}; 
+};
 
 function MyCart(stripeConfig) {
   //modal du paiement
@@ -89,12 +83,12 @@ function MyCart(stripeConfig) {
       querySnapshot.forEach((doc) => {
         user.push(doc.data());
       });
-      const quantityArray = user[0].myCart
-      setQuantity(quantityArray)
+      const quantityArray = user[0].myCart;
+      setQuantity(quantityArray);
       setUserCurrent(user[0]);
     };
     getUser();
-  }, [uid,db]);
+  }, [uid, db]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -103,7 +97,10 @@ function MyCart(stripeConfig) {
       const cart = userCurrent.myCart;
       await Promise.all(
         cart.map(async (carte, index) => {
-          const q = query(collection(db, "movies"), where("id", "==", carte.idMoovie));
+          const q = query(
+            collection(db, "movies"),
+            where("id", "==", carte.idMoovie)
+          );
           const querySnapshot = await getDocs(q);
           querySnapshot.forEach((doc) => {
             movies.push(doc.data());
@@ -112,42 +109,44 @@ function MyCart(stripeConfig) {
       );
       setMoovieInMyCart(movies);
     }
-  }, [userCurrent,db]);
+  }, [userCurrent, db]);
 
-//Suppresion de film 
-const handleClick = async(index) => {
-  await updateDoc(doc(db, "users", uid),{
-    "myCart":arrayRemove({idMoovie :quantity[index].idMoovie,Quantity : quantity[index].Quantity})
-  });
-  window.location.replace("/mon-panier");
-}
-
+  //Suppresion de film
+  const handleClick = async (index) => {
+    await updateDoc(doc(db, "users", uid), {
+      myCart: arrayRemove({
+        idMoovie: quantity[index].idMoovie,
+        Quantity: quantity[index].Quantity,
+      }),
+    });
+    window.location.replace("/mon-panier");
+  };
 
   //Modifier la quantité
-  const handleSubmit = async(index,quantity) => {
+  const handleSubmit = async (index, quantity) => {
     let changeArray = [];
     const q = query(collection(db, "users"), where("uid", "==", uid));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       changeArray.push(doc.data());
     });
-    changeArray[0].myCart[index].Quantity = quantity
-    await updateDoc(doc(db,  "users", uid), {
-      "myCart": changeArray[0].myCart
-    }) 
-
-}
-const debounce = useDebouncedCallback((index,quantity) =>handleSubmit(index,quantity),3000)
-const handleChange = async (e,index) => {
-  const quantityLocal = [...quantity]
-    if(e.target.value>=0 && e.target.value <= 100)
-    {
-        quantityLocal[index].Quantity = e.target.value
-        setQuantity(quantityLocal)
-        debounce(index,e.target.value)
-    }
-    else(console.log('Valeur incorrecte'))
-}
+    changeArray[0].myCart[index].Quantity = quantity;
+    await updateDoc(doc(db, "users", uid), {
+      myCart: changeArray[0].myCart,
+    });
+  };
+  const debounce = useDebouncedCallback(
+    (index, quantity) => handleSubmit(index, quantity),
+    3000
+  );
+  const handleChange = async (e, index) => {
+    const quantityLocal = [...quantity];
+    if (e.target.value >= 0 && e.target.value <= 100) {
+      quantityLocal[index].Quantity = e.target.value;
+      setQuantity(quantityLocal);
+      debounce(index, e.target.value);
+    } else console.log("Valeur incorrecte");
+  };
 
 const calculPrice = () =>{
   let sum = 0;
@@ -182,22 +181,22 @@ const handlePayement =  () =>{
                     <Typography gutterBottom variant="h5" component="div">
                       {cart.name}
                     </Typography>
-                    <ModalSuppr 
-                      indexModal={index} 
-                      moovie={moovieInMyCart[index]} 
+                    <ModalSuppr
+                      indexModal={index}
+                      moovie={moovieInMyCart[index]}
                       quantity={quantity}
                       handleClickModal={handleClick}
                     />
                     <MapModal
                       moovie={moovieInMyCart[index]}
-                      />
-                  <TextField
-                    value={quantity[index].Quantity}
-                    id="outlined-required"
-                    label="Qté"
-                    type="number"
-                    onChange={(e)=> handleChange(e,index)}
-                  />
+                    />
+                    <TextField
+                      value={quantity[index].Quantity}
+                      id="outlined-required"
+                      label="Qté"
+                      type="number"
+                      onChange={(e) => handleChange(e, index)}
+                    />
                   </CardContent>
                 </Card>
               </Box>

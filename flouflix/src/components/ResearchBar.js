@@ -9,37 +9,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import { InputAdornment } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Box from "@mui/material/Box";
+import CustomTextField from "../helpers/CustomTextField";
 
 const makeClass = makeStyles((theme) => ({}));
-
-const CustomTextField = withStyles((theme) => ({
-  root: {
-    zIndex: 3,
-    color: "white",
-    borderColor: "white",
-    "label + &": {
-      color: "white",
-    },
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      "&::placeholder": {
-        color: "white",
-      },
-      "& fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&:hover fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-    },
-  },
-}))(TextField);
 
 function ResearchBar(props) {
   const classes = makeClass();
