@@ -26,6 +26,8 @@ import ReactPlayer from "react-player";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { flexbox } from "@mui/system";
 import "../css/Movie.css";
+import CustomTextField from "../helpers/CustomTextField";
+import Commentaires from "../components/Commentaires";
 
 const makeClass = makeStyles((theme) => ({
   videoPlayer: {
@@ -82,6 +84,18 @@ const style = {
   p: 4,
 };
 
+const style2 = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "#484848",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 function Movie() {
   const db = firebase.firestore();
   let { id } = useParams();
@@ -90,10 +104,20 @@ function Movie() {
   const [userData, setUserData] = useState([]);
   const getMovies = [];
   const [movies, setMovies] = useState([]);
-  const [status,setStatus] =useState("success");
+  const [status, setStatus] = useState("success");
   const [open, setOpen] = React.useState(false);
+  const [openAvis, setOpenAvis] = useState(false);
+
+  const [titleAvis, setTitleAvis] = useState();
+  const [descriptionAvis, setDescriptionAvis] = useState();
+  const [noteAvis, setNoteAvis] = useState();
+  const [avisId, setAvisId] = useState();
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpenAvis = () => setOpenAvis(true);
+  const handleCloseAvis = () => setOpenAvis(false);
+
   const { enqueueSnackbar } = useSnackbar();
   const { closeSnackBar } = useSnackbar();
 
@@ -146,7 +170,6 @@ function Movie() {
 
   const handleDelete = async () => {
     await deleteDoc(doc(db, "movies", movies[0].id));
-
     window.location.replace("/catalogue");
   };
 
@@ -158,7 +181,7 @@ function Movie() {
     if (idMoovieFind !== undefined) {
       quantity = parseFloat(idMoovieFind.Quantity);
     }
-    if (idMoovieFind == undefined && idFilm === "") {
+    if (idMoovieFind === undefined && idFilm === "") {
       await updateDoc(await doc(db, "users", uid), {
         myCart: arrayUnion({ idMoovie: idMoovie, Quantity: quantity }),
       });
@@ -168,9 +191,43 @@ function Movie() {
       console.log("n'ajoute pas le film");
       const moovieName = `${movies[0].name} est déjà dans votre panier`;
       addMoovie(moovieName);
-      setStatus("warning")
-
+      setStatus("warning");
     }
+  };
+
+  const handleSubmitAvis = async () => {
+    await db
+      .collection("commentaires")
+      .add({
+        idUser: uid,
+        idMovie: id,
+        title: titleAvis,
+        description: descriptionAvis,
+        datePurchase: "",
+        note: noteAvis,
+        likes: 0,
+        dislikes: 0,
+      })
+      .then(async (docRef) => {
+        // console.log(docRef);
+        // console.log("Document written with ID: ", docRef.id);
+        const avisRef = db.collection("commentaires").doc(docRef.id);
+        return avisRef
+          .update({
+            id: docRef.id,
+          })
+          .then(() => {
+            setOpenAvis(false);
+            console.log("Document successfully updated!");
+          })
+          .catch((error) => {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
   };
 
   const addMoovie = (moovieName) => {
@@ -183,6 +240,7 @@ function Movie() {
       },
     });
   };
+
   return (
     <section>
       <Box>
@@ -353,6 +411,79 @@ function Movie() {
                   <img src={movies[0].imgGallery[0]} width="800" />
                 </Box>
               </Box>
+              <Box paddingTop="20px" paddingBottom="50px">
+                <Typography variant="h4">Avis</Typography>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  onClick={handleOpenAvis}
+                >
+                  <Typography variant="body1">Ajouter un avis</Typography>
+                </Button>
+                <Commentaires />
+              </Box>
+
+              <Modal
+                open={openAvis}
+                onClose={handleCloseAvis}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style2}>
+                  <Typography color={theme.palette.text.white}>
+                    Ajouter un avis
+                  </Typography>
+                  <Box paddingTop="20px">
+                    <CustomTextField
+                      fullWidth
+                      required
+                      value={titleAvis}
+                      id="titleAvis"
+                      label="Titre du commentaire"
+                      onChange={(e) => setTitleAvis(e.target.value)}
+                      InputLabelProps={{
+                        style: { color: "#fff" },
+                      }}
+                    />
+                  </Box>
+                  <Box paddingTop="20px">
+                    <CustomTextField
+                      fullWidth
+                      required
+                      multiline
+                      value={descriptionAvis}
+                      id="descriptionAvis"
+                      label="Commentaire"
+                      onChange={(e) => setDescriptionAvis(e.target.value)}
+                      InputLabelProps={{
+                        style: { color: "#fff" },
+                      }}
+                    />
+                  </Box>
+                  <Box paddingTop="20px" paddingBottom="20px">
+                    <CustomTextField
+                      fullWidth
+                      required
+                      type="number"
+                      value={noteAvis}
+                      id="noteAvis"
+                      label="Note du film"
+                      onChange={(e) => setNoteAvis(e.target.value)}
+                      InputLabelProps={{
+                        style: { color: "#fff" },
+                      }}
+                    />
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleSubmitAvis}
+                  >
+                    <Typography>Valider mon commentaire</Typography>
+                  </Button>
+                </Box>
+              </Modal>
+
               <Modal
                 open={open}
                 onClose={handleClose}

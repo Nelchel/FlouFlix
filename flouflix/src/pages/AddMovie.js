@@ -275,8 +275,6 @@ function AddMovie() {
     return datum / 1000;
   }
 
-  console.log(genre);
-
   return (
     <section>
       <Container maxWidth="1250px">
