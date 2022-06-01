@@ -65,7 +65,6 @@ function MapModal(props){
         querySnapshot.forEach((doc) => {
             getUserMoovie.push(doc.data());
         });
-        console.log(getUserMoovie)
         const user = []
         for (let i = 0; i < getUserMoovie.length; i++) {
             user.push({

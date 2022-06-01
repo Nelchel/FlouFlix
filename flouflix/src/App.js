@@ -20,7 +20,8 @@ import Movie from "./pages/Movie";
 import Modify from "./pages/Modify";
 import MyAccount from "./pages/MyAccount";
 import WatchMovie from "./pages/WatchMovie";
-
+import ConfirmationSale from "./pages/ConfirmationSale";
+import PurchaseHistory from "./pages/PurchaseHistory";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AddStreamingMovie from "./pages/AddStreamingMovie";
 import AddMovieControl from "./pages/AddMovieControl";
@@ -109,6 +110,22 @@ function App({ firebaseConfig,stripeConfig }) {
                       <ProtectedRoute>
                         <MyCart stripeConfig={stripeConfig}/>
                       </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="confirmation-commande"
+                    element={
+                      // <ProtectedRoute>
+                        <ConfirmationSale/>
+                      // </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="Historique-achat"
+                    element={
+                      // <ProtectedRoute>
+                        <PurchaseHistory/>
+                      // </ProtectedRoute>
                     }
                   />
                   <Route path="movie/:id" element={<Movie />} />

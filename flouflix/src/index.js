@@ -21,6 +21,8 @@ const stripeConfig = {
 }
 
 
+
+
 ReactDOM.render(
   <React.StrictMode>
         <App firebaseConfig={firebaseConfig} stripeConfig={stripeConfig}/>

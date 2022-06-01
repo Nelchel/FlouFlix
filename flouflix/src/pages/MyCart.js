@@ -10,8 +10,6 @@ import ModalSuppr from "../components/ModalSuppr";
 import MapModal from "../components/ModalMap";
 //gestion du payement en ligne
 import Payment from "../components/Payment";
-import {Elements} from '@stripe/react-stripe-js';
-import {loadStripe} from '@stripe/stripe-js';
 import Modal from "@mui/material/Modal";
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
@@ -27,7 +25,7 @@ import {
   updateDoc,
   where,
   collection,
-  getDocs,
+  getDocs, 
   query,
   arrayRemove,
 } from "firebase/firestore";
@@ -43,7 +41,6 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
   p: 4,
@@ -52,40 +49,25 @@ const style = {
 function MyCart(stripeConfig) {
   //modal du paiement
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    calculPrice();
+    setOpen(true)
+  }
   const handleClose = () => setOpen(false);
-  const [option, setOption] = useState("");
-
-
+  //Style
   const classes = makeClass();
   const theme = useTheme();
+
   const db = firebase.firestore();
   const auth = getAuth();
   const [uid, setUid] = useState("");
   const [moovieInMyCart, setMoovieInMyCart] = useState([]);
+  const TotalPrice = [];
+  const finalPurchase = [];
+  const [finalPrice,setFinalPrice] = useState(0);
+  const [valdiate,setValidate] = useState(false);
   const [quantity, setQuantity] = useState([]);
   const [userCurrent, setUserCurrent] = useState(undefined);
-
-  //param du strip pour le payement Element
-  const stripePromise = loadStripe(
-    'pk_test_51L526RGH7Y6DbZsDauEw1anemg27mScrSuK7a3WOzhDx08m0vjZuyvytTzXMKyXCHQT53pw60DdQOF4aOeEnJ7To00HVayNsSM'
-    );
-    const options = 'pi_1JKS2Y2VYugoKSBzNHPFBNj9_secret_niLMVIt33lBGf0z6Gt5WIGc3C'
-
-//   const stripe = new Stripe('sk_test_51L526RGH7Y6DbZsDuhWEH7RrhTBf3OaSuNpPYQt6QL3TJVO0HnuXoDGdyIdjJ39p0Usx4LMcBcliv1krqoEEBIJk006gPemnK8');
-//   const userPaymentIntent = async() => {
-//     const paymentIntent = await stripe.paymentIntents.create({
-//       amount: 2000,
-//       currency: 'eur',
-//       payment_method_types: ['card'],
-//     });
-//   console.log(paymentIntent);
-//   const options = {
-//     clientSecret:  paymentIntent.client_secret,
-//   };
-//   setOption(options)
-// }
-// userPaymentIntent()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -167,6 +149,20 @@ const handleChange = async (e,index) => {
     else(console.log('Valeur incorrecte'))
 }
 
+const calculPrice = () =>{
+  let sum = 0;
+  for (let i = 0; i < TotalPrice.length; i++) {
+      sum += TotalPrice[i].price;
+  }
+  setFinalPrice(sum)
+}
+
+const handlePayement =  () =>{
+  setValidate(true)
+  return null
+}
+
+
   return (
     <section>
       <Box>
@@ -193,10 +189,6 @@ const handleChange = async (e,index) => {
                       handleClickModal={handleClick}
                     />
                     <MapModal
-                      // indexModal={index} 
-                      // moovie={moovieInMyCart[index]} 
-                      // quantity={quantity}
-                      // handleClickModal={handleClick}
                       moovie={moovieInMyCart[index]}
                       />
                   <TextField
@@ -219,9 +211,63 @@ const handleChange = async (e,index) => {
           open={open}
           onClose={handleClose}
         >
-          <Elements stripe={stripePromise} options={option}>
-            <Payment/>
-          </Elements>
+          <Box sx={style}>
+            <Typography>
+              Confirmation du panier
+            </Typography>
+            <Box justifyContent='space-around' display="flex">
+              <Typography gutterBottom variant="h6" component="div"> 
+                Nom du film 
+              </Typography>
+              <Typography gutterBottom variant="h6" component="div"> 
+                Qté 
+              </Typography>
+              <Typography gutterBottom variant="h6" component="div"> 
+                prix
+              </Typography>
+            </Box>
+            {moovieInMyCart.map((cart, index) => {
+              TotalPrice.push({
+                price : parseFloat(moovieInMyCart[index].price) * quantity[index].Quantity,
+                
+              })
+              finalPurchase.push({
+                price : moovieInMyCart[index].id_price,
+                quantity: quantity[index].Quantity,
+              })
+              return(
+                <Box justifyContent='space-around' display="flex">
+                  <Typography gutterBottom component="div"> 
+                    {cart.name}
+                  </Typography>
+                  <Typography gutterBottom variant="h6" component="div"> 
+                    {quantity[index].Quantity}
+                  </Typography>
+                  <Typography gutterBottom variant="h6" component="div"> 
+                    {TotalPrice[index].price.toFixed(2)} €
+                  </Typography>
+              </Box>
+              )
+            })}
+            <Box justifyContent='space-between' display="flex">
+              <Typography gutterBottom variant="h6" component="div"> 
+                Total :
+              </Typography>
+              <Typography gutterBottom variant="h6" component="div"> 
+                {finalPrice.toFixed(2)} € 
+              </Typography>
+            </Box>
+            <Box justifyContent="center"  display="flex">
+              <Button onClick={handlePayement} variant="contained" color="secondary">
+                Valider et payer 
+              </Button>
+              {valdiate === true && (
+                <Box>
+                  <Payment email={auth.currentUser.email} sale={finalPurchase}/>
+                </Box>
+              )}
+            </Box>
+          </Box>
         </Modal>
       </Box>
     </section>
