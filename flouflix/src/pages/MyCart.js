@@ -203,9 +203,11 @@ const handlePayement =  () =>{
             );
           })}
         </Box>
-        <Button onClick={handleOpen} variant="contained" color="secondary">
-          Confirmer son panier
-        </Button>
+        {moovieInMyCart.length !== 0 && (
+          <Button onClick={handleOpen} variant="contained" color="secondary">
+            Confirmer son panier
+          </Button>
+        )}
         <Modal
           open={open}
           onClose={handleClose}
