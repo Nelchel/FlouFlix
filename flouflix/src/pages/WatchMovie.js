@@ -7,6 +7,7 @@ import React, { useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import ReactPlayer from "react-player";
 
 const makeClass = makeStyles((theme) => ({
   videoPlayer: {
@@ -19,12 +20,21 @@ function WatchMovie() {
   const classes = makeClass();
   const auth = getAuth();
   const db = firebase.firestore();
+  let i = 0;
 
   const [uid, setUid] = React.useState("");
   const [idFilm, setIdFilm] = React.useState("");
   const [userData, setUserData] = React.useState([]);
   const getMovies = [];
+  const getStreaming = [];
+  const [idStreaming, setIdStreaming] = React.useState();
   const [movies, setMovies] = React.useState([]);
+  const [played, setPlayed] = React.useState();
+  const [wasPlayed, setWasPlayed] = React.useState();
+  const [counter, setCounter] = React.useState(0);
+  const playerRef = React.useRef();
+  const [isPlaying, setIsPlaying] = React.useState(true);
+  const [isReady, setIsReady] = React.useState(false);
 
   let { id } = useParams();
   useEffect(() => {
@@ -54,14 +64,64 @@ function WatchMovie() {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
+
+    db.collection("streaming")
+      .where("idMovie", "==", id)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          // doc.data() is never undefined for query doc snapshots
+          // console.log(doc.id, " => ", doc.data());
+          getStreaming.push(doc.data());
+        });
+        setIdStreaming(getStreaming[0].idStreaming);
+        setWasPlayed(getStreaming[0].played);
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
   }, [uid]);
 
+  const updateFilm = (playedProgress) => {
+    console.log("update");
+    var userRef = db.collection("streaming").doc(idStreaming);
+    return userRef
+      .update({
+        played: playedProgress,
+      })
+      .then(() => {
+        console.log("Document successfully updated!");
+        i = 0;
+      })
+      .catch((error) => {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  };
+
+  const onReady = React.useCallback(() => {
+    if (!isReady) {
+      playerRef.current.seekTo(getStreaming[0].played, "seconds");
+      setIsReady(true);
+    }
+  }, [isReady]);
+
   return (
-    <Box>
+    <Box className={classes.videoPlayer}>
       {movies.length !== undefined && movies.length > 0 && (
-        <video controls className={classes.videoPlayer}>
-          <source src={movies[0].movieUrl} type="video/mp4"></source>
-        </video>
+        <ReactPlayer
+          ref={playerRef}
+          progressInterval={30000}
+          onProgress={(progress) => {
+            setPlayed(progress.playedSeconds);
+            updateFilm(progress.playedSeconds);
+          }}
+          controls
+          onReady={onReady}
+          url={movies[0].movieUrl}
+          width="100%"
+          height="100%"
+        />
       )}
     </Box>
   );
