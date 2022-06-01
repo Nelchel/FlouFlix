@@ -11,8 +11,13 @@ import { Container } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
 import { withStyles } from "@mui/styles";
 import React, { useState } from "react";
-import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { Link } from "react-router-dom";
+import CustomTextField from "../helpers/CustomTextField";
 
 const makeClass = makeStyles((theme) => ({
   loginButton: {
@@ -95,35 +100,6 @@ const makeClass = makeStyles((theme) => ({
   },
 }));
 
-const CustomTextField = withStyles((theme) => ({
-  root: {
-    zIndex: 3,
-    color: "white",
-    borderColor: "white",
-    "label + &": {
-      color: "white",
-    },
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      "&::placeholder": {
-        color: "white",
-      },
-      "& fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&:hover fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-    },
-  },
-}))(TextField);
-
 function Connexion() {
   const classes = makeClass();
   const db = firebase.firestore();
@@ -133,15 +109,13 @@ function Connexion() {
   localStorage.setItem("url", window.location.pathname);
 
   const [mailAddress, setMailAddress] = useState("");
-  const [mailAddressPassword, setMailAddressPassword] = useState(""); 
-  const [resetPassword, setResetPassword] = useState(""); 
+  const [mailAddressPassword, setMailAddressPassword] = useState("");
+  const [resetPassword, setResetPassword] = useState("");
   const [password, setPassword] = useState("");
   const [userLog, setUserLog] = useState("");
   const [isValid, setValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [pseudo, setPseudo] = useState("");
-
-
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -161,19 +135,19 @@ function Connexion() {
   };
 
   const handleSubmitRessetPassword = (mail) => {
-    console.log(auth)
-   sendPasswordResetEmail(auth, mailAddressPassword)
-   .then(() => {
-     console.log('c bon');
-     console.log(mail);
-   })
-   .catch((error) => { 
-     const errorCode = error.code;
-     console.log(error)
-   })
-   setResetPassword(false);
+    console.log(auth);
+    sendPasswordResetEmail(auth, mailAddressPassword)
+      .then(() => {
+        console.log("c bon");
+        console.log(mail);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        console.log(error);
+      });
+    setResetPassword(false);
   };
-    
+
   function ValidateEmail(mail) {
     const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (mail.match(mailformat)) {
@@ -262,7 +236,7 @@ function Connexion() {
                   onClick={handleSubmit}
                   className={classes.loginButton}
                   disabled
-                  style={{ backgroundColor: "#ff5740", color: "white"}}
+                  style={{ backgroundColor: "#ff5740", color: "white" }}
                 >
                   <Typography variant="body1">Connexion</Typography>
                 </Button>
@@ -270,65 +244,74 @@ function Connexion() {
 
               <Box paddingTop="10px">
                 Mot de passe oublié ?
-                <Button onClick={(e) => { setResetPassword(true); }}  variant="contained"
-                color="secondary" className={classes.button}> Réinitialiser </Button>
-            </Box>
-
-            <Modal
-            open={resetPassword}
-            onClose={(e) => {
-              setResetPassword(false);
-            }}> 
-              <Box
-              position="absolute"
-              top="27%"
-              left="33%"
-              backgroundColor="#FFF"
-              padding="30px"
-              borderRadius="8px"
-            >
-       <Box paddingBottom="30px">
-                <Typography variant="h5" color={theme.palette.text.black}>
-                Entrer votre adresse mail
-                </Typography>
+                <Button
+                  onClick={(e) => {
+                    setResetPassword(true);
+                  }}
+                  variant="contained"
+                  color="secondary"
+                  className={classes.button}
+                >
+                  {" "}
+                  Réinitialiser{" "}
+                </Button>
               </Box>
-                <form>
-                <Box display="flex" flexDirection="column">
-                  <Box paddingBottom="20px">
-                    <TextField
-                      fullWidth
-                      value={mailAddressPassword}
-                      onChange={(e) => {
-                        setMailAddressPassword(e.target.value);
-                      }}
-                      label="Adresse mail"
-                    />
-                  </Box>
-                  </Box>
-                  <Button
-                    type ="button"
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleSubmitRessetPassword}
-                    
-                  > Envoyer {console.log('envoie à ' + mailAddressPassword)}
-                   
-                  </Button>
-                </form>
-            </Box>
-         </Modal>
 
-            <Box display="flex" flexDirection="column">
-                  
-              <Box paddingTop="10px">
-                <Typography variant="body1">
-                  Première visite sur FlouFlix?
-                  <Link to="/inscription" className={classes.linkColor}>
-                    Inscrivez-vous
-                  </Link>
+              <Modal
+                open={resetPassword}
+                onClose={(e) => {
+                  setResetPassword(false);
+                }}
+              >
+                <Box
+                  position="absolute"
+                  top="27%"
+                  left="33%"
+                  backgroundColor="#FFF"
+                  padding="30px"
+                  borderRadius="8px"
+                >
+                  <Box paddingBottom="30px">
+                    <Typography variant="h5" color={theme.palette.text.black}>
+                      Entrer votre adresse mail
+                    </Typography>
+                  </Box>
+                  <form>
+                    <Box display="flex" flexDirection="column">
+                      <Box paddingBottom="20px">
+                        <TextField
+                          fullWidth
+                          value={mailAddressPassword}
+                          onChange={(e) => {
+                            setMailAddressPassword(e.target.value);
+                          }}
+                          label="Adresse mail"
+                        />
+                      </Box>
+                    </Box>
+                    <Button
+                      type="button"
+                      variant="contained"
+                      color="secondary"
+                      onClick={handleSubmitRessetPassword}
+                    >
+                      {" "}
+                      Envoyer {console.log("envoie à " + mailAddressPassword)}
+                    </Button>
+                  </form>
+                </Box>
+              </Modal>
+
+              <Box display="flex" flexDirection="column">
+                <Box paddingTop="10px">
+                  <Typography variant="body1">
+                    Première visite sur FlouFlix?
+                    <Link to="/inscription" className={classes.linkColor}>
+                      Inscrivez-vous
+                    </Link>
                   </Typography>
+                </Box>
               </Box>
-            </Box>
             </Box>
           </form>
         </Box>

@@ -31,6 +31,7 @@ import InputLabel from "@mui/material/InputLabel";
 import InputBase from "@mui/material/InputBase";
 import Input from "@mui/material/Input";
 import Chip from "@mui/material/Chip";
+import CustomTextField from '../helpers/CustomTextField';
 
 const makeClass = makeStyles((theme) => ({
   formScript: {
@@ -62,35 +63,6 @@ const makeClass = makeStyles((theme) => ({
     textTransform: "initial !important",
   },
 }));
-
-const CustomTextField = withStyles((theme) => ({
-  root: {
-    zIndex: 3,
-    color: "white",
-    borderColor: "white",
-    "label + &": {
-      color: "white",
-    },
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      "&::placeholder": {
-        color: "white",
-      },
-      "& fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&:hover fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-    },
-  },
-}))(TextField);
 
 const CustomSelect = styled(InputBase)(({ theme }) => ({
   "label + &": {

@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import { fr } from "date-fns/locale";
+import CustomTextField from "../helpers/CustomTextField";
 
 const makeClass = makeStyles((theme) => ({
   submitButton: {
@@ -126,35 +127,6 @@ const makeClass = makeStyles((theme) => ({
     },
   },
 }));
-
-const CustomTextField = withStyles((theme) => ({
-  root: {
-    zIndex: 3,
-    color: "white",
-    borderColor: "white",
-    "label + &": {
-      color: "white",
-    },
-    "& .MuiOutlinedInput-root": {
-      color: "white",
-      "&::placeholder": {
-        color: "white",
-      },
-      "& fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&:hover fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "white",
-        color: "white",
-      },
-    },
-  },
-}))(TextField);
 
 function Inscription() {
   const classes = makeClass();
