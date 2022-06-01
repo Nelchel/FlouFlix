@@ -98,7 +98,7 @@ console.log(value)
                                     Quantité acheté : {item.quantity}
                                 </Typography>
                                 <Typography>
-                                    Prix du film a l'unité : {item.price}
+                                    Prix du film a l'unité : {item.price} €
                                 </Typography>
                             </Box>
                         </>
