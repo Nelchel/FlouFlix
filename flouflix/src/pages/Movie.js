@@ -90,6 +90,7 @@ function Movie() {
   const [userData, setUserData] = useState([]);
   const getMovies = [];
   const [movies, setMovies] = useState([]);
+  const [status,setStatus] =useState("success");
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -164,19 +165,18 @@ function Movie() {
       addMoovie(moovieName);
       setIdFilm(idMoovie);
     } else {
-      // await updateDoc(doc(db,  "users", uid), {
-      //     "myCart": changeArray[0].myCart
-      //   })
       console.log("n'ajoute pas le film");
       const moovieName = `${movies[0].name} est déjà dans votre panier`;
       addMoovie(moovieName);
+      setStatus("warning")
+
     }
   };
 
   const addMoovie = (moovieName) => {
     const key = enqueueSnackbar(moovieName, {
       autoHideDuration: 1000,
-      variant: "success",
+      variant: status,
       anchorOrigin: {
         vertical: "bottom",
         horizontal: "center",
