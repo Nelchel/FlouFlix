@@ -24,6 +24,7 @@ import { GeocoderAutocomplete } from "@geoapify/geocoder-autocomplete";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import { fr } from "date-fns/locale";
 import CustomTextField from "../helpers/CustomTextField";
+import toTimestamp from "../helpers/ToTimestamp";
 
 const makeClass = makeStyles((theme) => ({
   submitButton: {
@@ -214,11 +215,6 @@ function Inscription() {
       // process suggestions here
     });
   }, []);
-
-  function toTimestamp(strDate) {
-    var datum = Date.parse(strDate);
-    return datum / 1000;
-  }
 
   function ValidateEmail(mail) {
     const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
