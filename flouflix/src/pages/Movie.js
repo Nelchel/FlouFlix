@@ -44,6 +44,15 @@ const makeClass = makeStyles((theme) => ({
     width: "37px",
     height: "35px",
   },
+  pegiCircleFat: {
+    display: "flex",
+    alignItems: "center",
+    border: "1px solid white",
+    justifyContent: "center",
+    borderRadius: "30px",
+    width: "117px",
+    height: "35px",
+  },
   addToCart: {
     boxShadow: "unset !important",
     textTransform: "initial !important",
@@ -291,7 +300,7 @@ function Movie() {
                     border="1px solid white"
                     padding="5px 10px"
                   >
-                    {genreMovie}
+                    <Typography variant="body1">{genreMovie}</Typography>
                   </Box>
                 ))}
               </Box>
@@ -335,7 +344,15 @@ function Movie() {
                       {movies[0].duration}
                     </Typography>
                   </Box>
-                  <Box className={classes.pegiCircle}>{movies[0].pegi}+</Box>
+                  {movies[0].pegi === 0 ? (
+                    <Box className={classes.pegiCircleFat}>
+                      <Typography>Tous publics</Typography>
+                    </Box>
+                  ) : (
+                    <Box className={classes.pegiCircle}>
+                      <Typography>{movies[0].pegi}+</Typography>
+                    </Box>
+                  )}
                 </Box>
                 <Box display="flex" alignItems="center">
                   {/* DO NOT REMOVE */}

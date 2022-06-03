@@ -25,6 +25,7 @@ import PurchaseHistory from "./pages/PurchaseHistory";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import LostPage from "./pages/LostPage";
 
 function App({ firebaseConfig, stripeConfig }) {
   firebase.initializeApp(firebaseConfig);
@@ -115,7 +116,7 @@ function App({ firebaseConfig, stripeConfig }) {
                     path="confirmation-commande"
                     element={
                       // <ProtectedRoute>
-                        <ConfirmationSale/>
+                      <ConfirmationSale />
                       // </ProtectedRoute>
                     }
                   />
@@ -123,7 +124,7 @@ function App({ firebaseConfig, stripeConfig }) {
                     path="Historique-achat"
                     element={
                       // <ProtectedRoute>
-                        <PurchaseHistory/>
+                      <PurchaseHistory />
                       // </ProtectedRoute>
                     }
                   />
@@ -170,7 +171,7 @@ function App({ firebaseConfig, stripeConfig }) {
                       </ProtectedRoute>
                     }
                   />
-                  {/* <Route path="*" element={<NoMatch />} /> */}
+                  <Route path="*" element={<LostPage />} />
                 </Route>
               </Routes>
             </React.Fragment>
