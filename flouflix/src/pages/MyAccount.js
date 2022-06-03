@@ -12,12 +12,18 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import { Outlet } from "react-router-dom";
-import { getAuth, updateEmail, onAuthStateChanged, updatePassword } from "firebase/auth";
+import {
+  getAuth,
+  updateEmail,
+  onAuthStateChanged,
+  updatePassword,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import { updateDoc } from "firebase/firestore";
-
+import getDate from "../helpers/GetDate";
 import InputAddress from "../components/InputAdress";
+import toTimestamp from "../helpers/ToTimestamp";
 
 const makeClass = makeStyles((theme) => ({
   strong: {
@@ -37,10 +43,10 @@ function MyAccount() {
 
   const [getUser, setUser] = useState([]);
   const [uid, setUid] = useState();
-  const [addressLine1, setAddressLine1] = useState();
-  const [addressLine2, setAddressLine2] = useState();
-  const [lat, setLat] = useState();
-  const [lon, setLon] = useState();
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [lat, setLat] = useState(0);
+  const [lon, setLon] = useState(0);
   const auth = getAuth();
   const [mailAddress, setMailAddress] = useState();
   const [password, setPassword] = useState();
@@ -51,6 +57,7 @@ function MyAccount() {
   const [phone, setPhone] = useState();
   const [connexion, setConnexion] = useState(false);
   const [personnal, setPersonnal] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
@@ -72,20 +79,22 @@ function MyAccount() {
       setUser(docSnap.data());
       setMailAddress(docSnap.data().mailAddress);
       setPhone(docSnap.data().phone);
-      setDateBirth(docSnap.data().dateBirth);
+      setDateBirth(getDate(docSnap.data().dateBirth));
       setPseudo(docSnap.data().pseudo);
+      setIsUpdate(false);
     } else {
       // doc.data() will be undefined in this case
       console.log("No such document!");
     }
-  }, [uid, db]);
+  }, [uid, db, isUpdate]);
 
   const handleUpdate = () => {
     var userRef = db.collection("users").doc(auth.currentUser.uid);
+    const newDate = toTimestamp(dateBirth);
     return userRef
       .update({
         phone: phone,
-        dateBirth: dateBirth, 
+        dateBirth: newDate,
         pseudo: pseudo,
         addressLine1: addressLine1,
         addressLine2: addressLine2,
@@ -94,7 +103,8 @@ function MyAccount() {
       })
       .then(() => {
         console.log("Document successfully updated!");
-        setPersonnal(false)
+        setPersonnal(false);
+        setIsUpdate(true);
       })
       .catch((error) => {
         // The document probably doesn't exist.
@@ -103,8 +113,8 @@ function MyAccount() {
   };
 
   const handleSubmit = async (event) => {
-    updateEmail(auth.currentUser, mailAddress)
-    updatePassword(auth.currentUser, password)    
+    updateEmail(auth.currentUser, mailAddress);
+    updatePassword(auth.currentUser, password)
       .then(() => {
         console.log("MAIL geted");
       })
@@ -114,9 +124,9 @@ function MyAccount() {
     const docRef = doc(db, "users", uid);
     await updateDoc(docRef, {
       mailAddress: mailAddress,
-      password : password,
+      password: password,
     });
-    setConnexion(false)
+    setConnexion(false);
   };
 
   return (
@@ -131,24 +141,32 @@ function MyAccount() {
             <Box padding="20px 0">
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Pseudo: </Typography>
-                <span className={classes.strong}>{getUser.pseudo}</span>
+                <Typography>
+                  <span className={classes.strong}>{getUser.pseudo}</span>
+                </Typography>
               </Box>
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Adresse mail: </Typography>
-                <span className={classes.strong}>{getUser.mailAddress}</span>
+                <Typography>
+                  <span className={classes.strong}>{getUser.mailAddress}</span>
+                </Typography>
               </Box>
               <Box padding="5px 0" display="flex" alignItems="baseline">
                 <Typography>Adresse postale:</Typography>
-                <span className={classes.strong}>
-                  {getUser.addressLine1} {getUser.addressLine2}
-                </span>
+                <Typography>
+                  <span className={classes.strong}>
+                    {getUser.addressLine1} {getUser.addressLine2}
+                  </span>
+                </Typography>
               </Box>
               <Box padding="5px 0">
                 <Typography>Numéro de téléphone: {getUser.phone}</Typography>
               </Box>
-              {/* <Box>
-              <Typography>Date de naissance: {getUser.dateBirth}</Typography>
-          </Box> */}
+              <Box>
+                <Typography>
+                  Date de naissance: {getDate(getUser.dateBirth)}
+                </Typography>
+              </Box>
             </Box>
           )}
           <Divider style={{ backgroundColor: "#464646" }} />
@@ -230,38 +248,39 @@ function MyAccount() {
                       }}
                     />
                   </Box>
-                  {console.log(password + " mdp")}
-                  {console.log(passwordConfirm + " mdpconfirm")}
-
                   <Box paddingBottom="20px">
                     <TextField
-                     required
-                     fullWidth
-                     type="password"
-                     value={passwordConfirm}
-                     id="passwordValidation"
-                     label="Confirmer votre mot de passe"
-                     onChange={(e) => {
-                      setPasswordConfirm(e.target.value);
-                      if (password === e.target.value) {
-                        setConfirm(true);
-                      } else setConfirm(false);
-                    }}
-                      // onChange={(e) => {
-                      //   setPassword(e.target.value);
-                      // }}
+                      required
+                      fullWidth
+                      type="password"
+                      value={passwordConfirm}
+                      id="passwordValidation"
+                      label="Confirmer votre mot de passe"
+                      onChange={(e) => {
+                        setPasswordConfirm(e.target.value);
+                        if (password === e.target.value) {
+                          setConfirm(true);
+                        } else setConfirm(false);
+                      }}
                     />
-                    <Box display="inline-flex" vertical-align="text-top"> 
-            {password!==passwordConfirm && <> <WarningIcon style={{ marginRight: 5, color: "red" }}/>  
-            <Typography color="red" >Les mots de passe ne correspondent pas.</Typography> </>} 
-            </Box>
-              </Box>
+                    <Box display="inline-flex" vertical-align="text-top">
+                      {password !== passwordConfirm && (
+                        <>
+                          <WarningIcon
+                            style={{ marginRight: 5, color: "red" }}
+                          />
+                          <Typography color="red">
+                            Les mots de passe ne correspondent pas
+                          </Typography>
+                        </>
+                      )}
+                    </Box>
+                  </Box>
                   <Button
                     variant="contained"
                     color="secondary"
                     onClick={handleSubmit}
-                    disabled={password!==passwordConfirm}
-                                        
+                    disabled={password !== passwordConfirm}
                   >
                     Envoyer
                   </Button>

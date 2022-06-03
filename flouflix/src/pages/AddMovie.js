@@ -33,7 +33,7 @@ import Input from "@mui/material/Input";
 import Chip from "@mui/material/Chip";
 import CustomTextField from "../helpers/CustomTextField";
 import toTimestamp from "../helpers/ToTimestamp";
-import getDate from "../helpers/GetDate";
+import getDateWithYear from "../helpers/GetDate";
 
 const makeClass = makeStyles((theme) => ({
   formScript: {
@@ -308,7 +308,9 @@ function AddMovie() {
                   placeholder="mm/dd/yyyy"
                   value={releaseDate}
                   onChange={(e) => {
-                    setReleaseDate(getDate(toTimestamp(e), setOnlyYear));
+                    setReleaseDate(
+                      getDateWithYear(toTimestamp(e), setOnlyYear)
+                    );
                   }}
                   renderInput={(params) => (
                     <CustomTextField
