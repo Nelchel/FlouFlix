@@ -106,7 +106,6 @@ const purchase = async(movies,quantityArray) => {
         })
         
     }
-    console.log(infoMovie)
     if (uid !== "") {
         await db
         .collection("purchase")

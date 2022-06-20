@@ -437,7 +437,7 @@ function Movie() {
                 >
                   <Typography variant="body1">Ajouter un avis</Typography>
                 </Button>
-                <Commentaires />
+                <Commentaires movie={movies}/>
               </Box>
 
               <Modal
