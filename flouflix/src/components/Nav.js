@@ -12,6 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import { Link, Outlet } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -19,6 +20,7 @@ import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import firebase from "firebase/compat/app";
 import SignOut from "./SignOut";
+import NotificationsBoard from "./NotificationsBoard";
 
 const makeClass = makeStyles((theme) => ({
   section: {
@@ -46,6 +48,10 @@ function Nav() {
 
   const [user, setUser] = useState();
   const [uid, setUid] = useState();
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -130,9 +136,15 @@ function Nav() {
                     style={{ color: "white" }}
                   />
                 </Link>
+                <IconButton onClick={handleOpenModal}>
+                  <NotificationsIcon
+                    fontSize="medium"
+                    style={{ color: "white" }}
+                  />
+                </IconButton>
                 {user !== undefined && (
                   <>
-                    <Tooltip title="Account settings">
+                    <Tooltip title="Mon compte">
                       <IconButton
                         onClick={handleClick}
                         size="small"
@@ -220,6 +232,7 @@ function Nav() {
           </Box>
           <Outlet />
         </Box>
+        <NotificationsBoard open={openModal} handleClose={handleCloseModal} />
       </Container>
     </section>
   );
