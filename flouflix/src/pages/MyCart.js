@@ -34,6 +34,18 @@ const makeClass = makeStyles((theme) => ({
     textDecoration: "none",
     color: theme.palette.text.white,
   },
+  titleEmptyCart: {
+    marginTop: "-200px !important",
+    textAlign: "center",
+    paddingBottom: "10px",
+  },
+  linkEmptyCart: {
+    margin: "auto",
+    textDecoration: "unset !important",
+  },
+  buttonEmptyCart: {
+    textTransform: "unset !important",
+  },
 }));
 
 const style = {
@@ -176,18 +188,29 @@ function MyCart(stripeConfig) {
         <Box>
           {moovieInMyCart.length === 0 && (
             <Box width="fit-content" margin="auto">
-              <img src="https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/empty-cart.png?alt=media&token=0eabbf69-8387-49c3-8378-a8b9090b4a36" />
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/empty-cart.png?alt=media&token=0eabbf69-8387-49c3-8378-a8b9090b4a36"
+                alt=""
+              />
               <Box width="fit-content" margin="auto">
-                <Typography variant="h5">Votre panier est vide</Typography>
-                <Typography variant="body1">
+                <Typography variant="h5" className={classes.titleEmptyCart}>
+                  Votre panier est vide
+                </Typography>
+                <Typography variant="body1" style={{ textAlign: "center" }}>
                   Vous pouvez ajouter des films dans le panier depuis le
                   catalogue
                 </Typography>
-                <Link to="/catalogue">
-                  <Button color="secondary" variant="contained">
-                    <Typography>Catalogue</Typography>
-                  </Button>
-                </Link>
+                <Box width="fit-content" margin="auto" paddingTop="20px">
+                  <Link to="/catalogue" className={classes.linkEmptyCart}>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      className={classes.buttonEmptyCart}
+                    >
+                      <Typography>Catalogue</Typography>
+                    </Button>
+                  </Link>
+                </Box>
               </Box>
             </Box>
             // <Typography variant="h5">
