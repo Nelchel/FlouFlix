@@ -108,7 +108,7 @@ function MyAccount() {
       .then(() => {
         console.log("MAIL geted");
       })
-      .catch((error) => {
+      .catch((error) => { 
         console.log(error);
       });
     const docRef = doc(db, "users", uid);
