@@ -47,15 +47,15 @@ const style = {
 const ListUser = (props) => {
 
     //modal de confirmation
-    const [open, setOpen] = React.useState(false);
+    const [openReport, setOpenReport] = React.useState(false);
     const [openDelete, setopenDelete] = React.useState(false);
-    const handleOpen = async (user) => {
+    const handleOpenReport = async (user) => {
         await setUserModal(user)
-        setOpen(true);
+        setOpenReport(true);
     }
-    const handleClose = () => setOpen(false);
+    const handleCloseReport = () => setOpenReport(false);
 
-    const handleopenDelete = async (user) => {
+    const handleOpenDelete = async (user) => {
         await setUserModal(user)
         setopenDelete(true);
     }
@@ -110,6 +110,7 @@ useEffect(() => {
 
 
   const handleReport = async (idUser,description) => {
+    setOpenReport(false)
     if (uid !== "") {
       await db
       .collection("notifications")
@@ -132,6 +133,7 @@ useEffect(() => {
 
   const handleSuppr = async (uid) => {
     await deleteDoc(doc(db,"users",uid))
+    setopenDelete(false)
   };
     return(
         <Box>
@@ -166,11 +168,11 @@ useEffect(() => {
                                     </Typography>
                                 </Box>
                                 <Box>
-                                    <Button color="secondary" variant="contained" onClick={() => handleopenDelete(user)}>
+                                    <Button color="secondary" variant="contained" onClick={() => handleOpenReport(user)}>
                                     <Typography>Signaler l'utilisateur</Typography>
                                     </Button>
 
-                                    <Button color="secondary" variant="contained" onClick={() => handleOpen(user)}>
+                                    <Button color="secondary" variant="contained" onClick={() => handleOpenDelete(user)}>
                                     <Typography>Supprimer l'utilisateur</Typography>
                                     </Button>
                                 </Box>
@@ -179,39 +181,8 @@ useEffect(() => {
                     })}
                 </Box>
                 <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={style}>
-                    <Typography
-                        color={theme.palette.text.black}
-                        id="modal-modal-title"
-                        variant="h6"
-                        component="h2"
-                    >
-                        Supprimer l'utilisateur {userModal.pseudo}
-                    </Typography>
-                    <Typography
-                        color={theme.palette.text.black}
-                        id="modal-modal-description"
-                        sx={{ mt: 2 }}
-                    >
-                        Êtes-vous sûr ?
-                    </Typography>
-                    <Button onClick={handleClose} color="error">
-                        Annluer
-                    </Button>
-                    <Button onClick={() => handleSuppr(userModal.uid)} color="error">
-                        Supprimer
-                    </Button>
-                    </Box>
-                </Modal>
-
-                <Modal
-                    open={openDelete}
-                    onClose={handleCloseDelete}
+                    open={openReport}
+                    onClose={handleCloseReport}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
@@ -232,7 +203,7 @@ useEffect(() => {
                     >
                         Êtes-vous sûr ?
                     </TextField>
-                    <Button onClick={handleCloseDelete} color="error">
+                    <Button onClick={handleCloseReport} color="error">
                         Annluer
                     </Button>
                     <Button onClick={() => handleReport(userModal.uid, description)} color="error">
@@ -240,6 +211,38 @@ useEffect(() => {
                     </Button>
                     </Box>
                 </Modal>
+
+                <Modal
+                    open={openDelete}
+                    onClose={handleCloseDelete}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                    <Typography
+                        color={theme.palette.text.black}
+                        id="modal-modal-title"
+                        variant="h6"
+                        component="h2"
+                    >
+                        Supprimer l'utilisateur {userModal.pseudo}
+                    </Typography>
+                    <Typography
+                        color={theme.palette.text.black}
+                        id="modal-modal-description"
+                        sx={{ mt: 2 }}
+                    >
+                        Êtes-vous sûr ?
+                    </Typography>
+                    <Button onClick={handleCloseDelete} color="error">
+                        Annluer
+                    </Button>
+                    <Button onClick={() => handleSuppr(userModal.uid)} color="error">
+                        Supprimer
+                    </Button>
+                    </Box>
+                </Modal>
+
             </>
             )
             }

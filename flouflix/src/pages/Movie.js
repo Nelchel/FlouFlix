@@ -112,6 +112,8 @@ function Movie() {
   const [idFilm, setIdFilm] = useState("");
   const [userData, setUserData] = useState([]);
   const getMovies = [];
+  const getUserCurrent = [];
+  const [userCurrent, setUserCurrent] = useState([]);
   const [movies, setMovies] = useState([]);
   const [status, setStatus] = useState("success");
   const [open, setOpen] = React.useState(false);
@@ -161,6 +163,22 @@ function Movie() {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
+      
+
+      db.collection("users")
+      .where("uid", "==", uid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          getUserCurrent.push(doc.data());
+        });
+        setUserCurrent(getUserCurrent);
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+
+
   }, [uid]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,6 +268,50 @@ function Movie() {
     });
   };
 
+  const handleReport = async () => {
+    if (uid !== "") {
+      await db
+      .collection("notifications")
+      .add({
+          content : "Vous avez été signaler par un modérateur concernant votre annonce : "+ movies[0].name,
+          idUser: movies[0].seller,
+          isRead : false,
+      })
+      .then(async (docRef) => {
+        const movieRef = await doc(db, "notifications", docRef.id);
+        await updateDoc(movieRef, {
+          id: docRef.id,
+        });
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+    }
+  };
+
+  const handleSuppr = async () => {
+    // await deleteDoc(doc(db,"movies",id))
+    if (uid !== "") {
+      await db
+      .collection("notifications")
+      .add({
+          content : "L'une de vos de annonces à été supprimé : ",
+          idUser: movies[0].seller,
+          isRead : false,
+      })
+      .then(async (docRef) => {
+        const movieRef = await doc(db, "notifications", docRef.id);
+        await updateDoc(movieRef, {
+          id: docRef.id,
+        });
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+    }
+  };
+
+
   return (
     <section>
       <Box>
@@ -263,6 +325,24 @@ function Movie() {
                 justifyContent="space-between"
               >
                 <Typography variant="h2">{movies[0].name}</Typography>
+                {console.log(userCurrent)}
+
+
+                {userCurrent[0] !== undefined && (
+                <>
+                  {userCurrent[0].moderator === true &&(
+                    <>
+                    <Button color="secondary" variant="contained" onClick={() => handleReport()}>
+                      <Typography>Signaler le film</Typography>
+                      </Button>
+                      <Button color="secondary" variant="contained" onClick={() => handleSuppr()}>
+                      <Typography>Supprimer le film</Typography>
+                        </Button>
+                      </>
+                  )} 
+                </> 
+                )}
+
                 {uid === movies[0].seller && (
                   <Box>
                     <Link

@@ -25,9 +25,9 @@ function Commentaires(props) {
   let { id } = useParams();
 
   const getAvis = [];
-  const getMovies = [];
+  const getUsers = [];
   const [avis, setAvis] = useState([]);
-  const [movie, setMovie] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     onAuthStateChanged(
@@ -62,10 +62,9 @@ function Commentaires(props) {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          getMovies.push(doc.data());
+          getUsers.push(doc.data());
         });
-        console.log(getMovies)
-        setMovie(getMovies);
+        setUsers(getUsers);
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
@@ -126,9 +125,9 @@ function Commentaires(props) {
             <Typography>{commentaire.title}</Typography>
             <Typography>{commentaire.description}</Typography>
             <Typography>{commentaire.note}</Typography>
-            {movie[0] !== undefined && (
+            {users[0] !== undefined && (
               <>
-                {movie[0].moderator === true &&(
+                {users[0].moderator === true &&(
                   <>
                     <Button color="secondary" variant="contained" onClick={() => handleReport(avis[index].idUser)}>
                       <Typography>Signaler l'utilisateur</Typography>
