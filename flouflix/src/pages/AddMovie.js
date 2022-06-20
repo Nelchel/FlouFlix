@@ -31,7 +31,9 @@ import InputLabel from "@mui/material/InputLabel";
 import InputBase from "@mui/material/InputBase";
 import Input from "@mui/material/Input";
 import Chip from "@mui/material/Chip";
-import CustomTextField from '../helpers/CustomTextField';
+import CustomTextField from "../helpers/CustomTextField";
+import toTimestamp from "../helpers/ToTimestamp";
+import getDateWithYear from "../helpers/GetDate";
 
 const makeClass = makeStyles((theme) => ({
   formScript: {
@@ -261,22 +263,6 @@ function AddMovie() {
     setLanguage(event.target.value);
   };
 
-  function getDate(date) {
-    const newDate = new Date(parseInt(date) * 1000);
-    setOnlyYear(newDate.getFullYear());
-
-    return `${
-      newDate.getMonth() + 1
-    }/${newDate.getDate()}/${newDate.getFullYear()}`;
-  }
-
-  function toTimestamp(strDate) {
-    var datum = Date.parse(strDate);
-    return datum / 1000;
-  }
-
-  console.log(genre);
-
   return (
     <section>
       <Container maxWidth="1250px">
@@ -322,7 +308,9 @@ function AddMovie() {
                   placeholder="mm/dd/yyyy"
                   value={releaseDate}
                   onChange={(e) => {
-                    setReleaseDate(getDate(toTimestamp(e)));
+                    setReleaseDate(
+                      getDateWithYear(toTimestamp(e), setOnlyYear)
+                    );
                   }}
                   renderInput={(params) => (
                     <CustomTextField
