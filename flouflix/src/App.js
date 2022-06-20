@@ -14,6 +14,7 @@ import Inscription from "./pages/Inscription";
 import Connexion from "./pages/Connexion";
 import Catalogue from "./pages/Catalogue";
 import AddMovie from "./pages/AddMovie";
+import Legal from "./pages/Legal";
 import MyMovies from "./pages/MyMovies";
 import MyCart from "./pages/MyCart";
 import Movie from "./pages/Movie";
@@ -27,6 +28,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import LostPage from "./pages/LostPage";
+
 
 function App({ firebaseConfig, stripeConfig }) {
   firebase.initializeApp(firebaseConfig);
@@ -97,6 +99,7 @@ function App({ firebaseConfig, stripeConfig }) {
                   <Route path="inscription" element={<Inscription />} />
                   <Route path="connexion" element={<Connexion />} />
                   <Route path="catalogue" element={<Catalogue />} />
+                  <Route path="legal" element={<Legal />} />
                   <Route
                     path="mes-films"
                     element={

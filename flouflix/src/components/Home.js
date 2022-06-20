@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+  import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
@@ -56,7 +56,7 @@ function Home() {
   return (
     <Box>
       <Catalogue />
-      <CookieConsent  enableDeclineButton flipButtons>Ce site utilise des cookies pour stocker et/ou accéder à des informations sur votre terminal. Cliquez sur "Accepter" pour consentir</CookieConsent>
+      <CookieConsent buttonText="Accepter" declineButtonText="Refuser" enableDeclineButton flipButtons>Ce site utilise des cookies pour stocker et/ou accéder à des informations sur votre terminal. Cliquez sur "Accepter" pour consentir</CookieConsent>
     </Box>
   );
 }
