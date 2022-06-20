@@ -12,6 +12,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
 import Inventory from "@mui/icons-material/Inventory";
+import Person from "@mui/icons-material/Person";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
@@ -231,6 +232,23 @@ function Nav() {
                           </Typography>
                         </Link>
                       </MenuItem>
+
+                      {user.moderator === true &&(
+                        <MenuItem>
+                          <ListItemIcon>
+                            <Person
+                              sx={{ color: "white" }}
+                              fontSize="small"
+                            />
+                          </ListItemIcon>
+                          <Link to="/List-user" className={classes.linkMenu}>
+                            <Typography color={theme.palette.text.white}>
+                              Utilisateurs
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      )}
+
                       <Divider />
                       <MenuItem>
                         <ListItemIcon>

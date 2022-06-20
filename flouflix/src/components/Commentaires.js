@@ -29,7 +29,6 @@ function Commentaires(props) {
   const [avis, setAvis] = useState([]);
   const [movie, setMovie] = useState([]);
 
-
   useEffect(() => {
     onAuthStateChanged(
       auth,
@@ -75,9 +74,7 @@ function Commentaires(props) {
 
 
 
-
   const handleReport = async (idUser) => {
-    console.log(idUser)
     if (uid !== "") {
       await db
       .collection("notifications")
@@ -95,11 +92,30 @@ function Commentaires(props) {
       .catch((error) => {
         console.error("Error writing document: ", error);
       });
-  }
+    }
   };
 
-  const handleSuppr = async (idUser) => {
-    await deleteDoc(doc(db,"commentaires",idUser))
+  const handleSuppr = async (id,idUser) => {
+    await deleteDoc(doc(db,"commentaires",id))
+
+    if (uid !== "") {
+      await db
+      .collection("notifications")
+      .add({
+          content : "L'un de vos commentaires sur le film "+props.movie[0].name+" a été supprimé",
+          idUser: idUser,
+          isRead : false,
+      })
+      .then(async (docRef) => {
+        const movieRef = await doc(db, "notifications", docRef.id);
+        await updateDoc(movieRef, {
+          id: docRef.id,
+        });
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+    }
   };
 
   return (
@@ -117,7 +133,7 @@ function Commentaires(props) {
                     <Button color="secondary" variant="contained" onClick={() => handleReport(avis[index].idUser)}>
                       <Typography>Signaler l'utilisateur</Typography>
                     </Button>
-                    <Button color="secondary" variant="contained" onClick={() => handleSuppr(avis[index].id)}>
+                    <Button color="secondary" variant="contained" onClick={() => handleSuppr(avis[index].id,avis[index].idUser)}>
                       <Typography>Supprimer le commentaire</Typography>
                     </Button>
                   </>

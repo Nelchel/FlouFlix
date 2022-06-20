@@ -22,6 +22,7 @@ import MyAccount from "./pages/MyAccount";
 import WatchMovie from "./pages/WatchMovie";
 import ConfirmationSale from "./pages/ConfirmationSale";
 import PurchaseHistory from "./pages/PurchaseHistory";
+import ListUser from "./pages/ListUser";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -125,6 +126,14 @@ function App({ firebaseConfig, stripeConfig }) {
                     element={
                       // <ProtectedRoute>
                       <PurchaseHistory />
+                      // </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="List-user"
+                    element={
+                      // <ProtectedRoute>
+                      <ListUser/>
                       // </ProtectedRoute>
                     }
                   />
