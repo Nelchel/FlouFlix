@@ -31,6 +31,7 @@ const PurchaseHistory = (props) => {
     const [valdiate,setValidate] = useState(false);
     const [infoPurchase,setInfoPurchase] = useState([]);
     const [value,setValue] = useState([]);
+    const [command,setCommand] = useState([]);
     const [userCurrent, setUserCurrent] = useState(undefined);
 
 //Récupération des informations de transaction de la BDD
@@ -46,7 +47,6 @@ useEffect(() => {
       },
       [auth]
     );
-    console.log(uid)
     let transactions = [];
     db.collection("purchase")
       .where("idUser", "==", uid)
@@ -56,7 +56,7 @@ useEffect(() => {
             transactions.push(doc.data());
         });
         if(transactions[0]!== undefined){
-            // infoPurchaseFunction(transactions)
+            setCommand(transactions)
             setValue(transactions[0].purchase)
         }
       })
@@ -67,59 +67,44 @@ useEffect(() => {
   }, [uid]);
 
 
-//   const infoPurchaseFunction = (transactions) => {
-//       let info = []
-//       for (let index = 0; index < transactions[0].purchase.length; index++) {
-//           info.push({
-//               prix : transactions[0].purchase[index].price,
-//               quantity : transactions[0].purchase[index].quantity,
-//               name : transactions[0].purchase[index].idMoovie,
-//           })
-//           setInfoPurchase(info)
-//       }
-//   }
-
-console.log(value)
     return(
         <Box>
-            {value !== undefined && 
-            <Box>
-                {value.map((item,index) => {
-                    return (
-                        <>
-                            <Typography>
-                                Film n°{index+1}
-                            </Typography>
-                            <Box justifyContent='space-around' display="flex">
-                                <Typography>
-                                    Id du film : {item.idMoovie}
+            {command !== undefined && 
+                <Box>
+                    {command.map((item,index)=>{
+                        return(
+                            <Box sx={{border:1}}>
+                                <Typography variant="h6" color='secondary'>
+                                    Commande n°{index+1}
                                 </Typography>
-                                <Typography>
-                                    Quantité acheté : {item.quantity}
-                                </Typography>
-                                <Typography>
-                                    Prix du film a l'unité : {item.price} €
-                                </Typography>
-                            </Box>
-                        </>
-                    )
-                })}
-            </Box>
-            }
-            {/* {value!== undefined && (
-                value.purchase.map((purchase, index) => {
-                    console.log(purchase);
-                    return(
-                        <Box key={index}>
-                            <Typography>
-                                {purchase[index].name}
-                                {purchase[index].quantity}
-                                {purchase[index].prix}
-                            </Typography>
+                            {command[index].purchase.map((item,index) => {
+                                return (
+                                    <>
+                                        <Typography>
+                                            Article n°{index+1}
+                                        </Typography>
+                                        <Box justifyContent='space-around' display="flex">
+                                            <Typography>
+                                                Nom du film : {item.name}
+                                            </Typography>
+                                            <Typography>
+                                                Quantité acheté : {item.quantity}
+                                            </Typography>
+                                            <Typography>
+                                                Prix du film a l'unité : {parseFloat(item.price).toFixed(2)} €
+                                            </Typography>
+                                            <Typography>
+                                                Prix total : {parseFloat(item.price*item.quantity).toFixed(2)} €
+                                            </Typography>
+                                        </Box>
+                                    </>
+                                )
+                            })}
                         </Box>
-                    )
-                })
-            )} */}
+                        )
+                    }) }
+                </Box>
+            }
         </Box>
     )
 }

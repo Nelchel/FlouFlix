@@ -176,6 +176,7 @@ function Inscription() {
         await setDoc(doc(db, "users", userLog), {
           uid: userLog,
           mailAddress: mailAddress,
+          moderator : false,
           myCart: [],
           password: password,
           isBoutique: isBoutique,

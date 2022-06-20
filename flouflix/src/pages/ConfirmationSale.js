@@ -98,14 +98,14 @@ const purchase = async(movies,quantityArray) => {
     let infoMovie = []
     for (let index = 0; index < movies.length; index++) {
         infoMovie.push({
+            name : movies[index].name,
             idMoovie :quantityArray[index].idMoovie,
             quantity :quantityArray[index].Quantity,
             price : movies[index].price,
-            IdPrice : movies[index].id_price,
+            idPrice : movies[index].id_price,
         })
         
     }
-    console.log(infoMovie)
     if (uid !== "") {
         await db
         .collection("purchase")

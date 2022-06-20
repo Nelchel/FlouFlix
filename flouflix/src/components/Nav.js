@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
+import Inventory from "@mui/icons-material/Inventory";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
@@ -214,6 +215,19 @@ function Nav() {
                             variant="body1"
                           >
                             Mes films
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+                      <MenuItem>
+                        <ListItemIcon>
+                          <Inventory
+                            sx={{ color: "white" }}
+                            fontSize="small"
+                          />
+                        </ListItemIcon>
+                        <Link to="/historique-achat" className={classes.linkMenu}>
+                          <Typography color={theme.palette.text.white}>
+                            Historique
                           </Typography>
                         </Link>
                       </MenuItem>

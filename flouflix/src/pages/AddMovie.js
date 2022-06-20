@@ -1,36 +1,35 @@
-import { TextField, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { makeStyles, useTheme } from "@mui/styles";
-import React, { useState, useEffect } from "react";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/firestore";
 import Button from "@mui/material/Button";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
 import { withStyles } from "@mui/styles";
-import { Link } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import { fr } from "date-fns/locale";
-import frLocale from "date-fns/locale/fr";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
-import "../css/AddMovie.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
 import InputBase from "@mui/material/InputBase";
-import Input from "@mui/material/Input";
 import Chip from "@mui/material/Chip";
+
+import React, { useState, useEffect } from "react";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
+
+import { fr } from "date-fns/locale";
+import frLocale from "date-fns/locale/fr";
+
+import "../css/AddMovie.css";
 import CustomTextField from "../helpers/CustomTextField";
 import toTimestamp from "../helpers/ToTimestamp";
 import getDateWithYear from "../helpers/GetDate";
@@ -100,7 +99,6 @@ function AddMovie() {
   const db = firebase.firestore();
   const storage = getStorage();
 
-  const theme = useTheme();
   const classes = makeClass();
 
   const auth = getAuth();
@@ -353,7 +351,11 @@ function AddMovie() {
             </Box>
             <div class="custom-file-upload">
               <form>
-                <label htmlFor="file">Choisir une affiche</label>
+                <label htmlFor="file">
+                  <Typography className="forLabel">
+                    Choisir une affiche
+                  </Typography>
+                </label>
                 <input
                   id="file"
                   name="file"
@@ -550,7 +552,9 @@ function AddMovie() {
             <div class="custom-file-upload">
               <form>
                 <label htmlFor="fileGallery">
-                  Charger des photos supplémentaires
+                  <Typography className="forLabel">
+                    Charger des photos supplémentaires
+                  </Typography>
                 </label>
                 <input
                   id="fileGallery"
@@ -593,7 +597,11 @@ function AddMovie() {
             <Box paddingTop="40px">
               <div class="custom-file-upload">
                 <form>
-                  <label htmlFor="trailer">Charger une bande annonce</label>
+                  <label htmlFor="trailer">
+                    <Typography className="forLabel">
+                      Charger une bande annonce
+                    </Typography>
+                  </label>
                   <input
                     id="trailer"
                     multiple
@@ -634,7 +642,11 @@ function AddMovie() {
               <Box paddingTop="40px">
                 <div class="custom-file-upload">
                   <form>
-                    <label htmlFor="streaming">Charger un film</label>
+                    <label htmlFor="streaming">
+                      <Typography className="forLabel">
+                        Charger un film
+                      </Typography>
+                    </label>
                     <input
                       id="streaming"
                       name="file"

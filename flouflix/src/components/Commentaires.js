@@ -6,14 +6,18 @@ import React, { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
-
+import {
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 const makeClass = makeStyles((theme) => ({
   signOut: {
     float: "right",
   },
 }));
 
-function Commentaires() {
+function Commentaires(props) {
   const classes = makeClass();
   const auth = getAuth();
   const [uid, setUid] = useState("");
@@ -21,7 +25,10 @@ function Commentaires() {
   let { id } = useParams();
 
   const getAvis = [];
+  const getMovies = [];
   const [avis, setAvis] = useState([]);
+  const [movie, setMovie] = useState([]);
+
 
   useEffect(() => {
     onAuthStateChanged(
@@ -50,22 +57,73 @@ function Commentaires() {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
+      
+      db.collection("users")
+      .where("uid", "==", uid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          getMovies.push(doc.data());
+        });
+        console.log(getMovies)
+        setMovie(getMovies);
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
   }, [uid]);
+
+
+
+
+  const handleReport = async (idUser) => {
+    console.log(idUser)
+    if (uid !== "") {
+      await db
+      .collection("notifications")
+      .add({
+          content : "Vous avez été signaler par un modérateur concernant l'avis",
+          idUser: idUser,
+          isRead : false,
+      })
+      .then(async (docRef) => {
+        const movieRef = await doc(db, "notifications", docRef.id);
+        await updateDoc(movieRef, {
+          id: docRef.id,
+        });
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+  }
+  };
+
+  const handleSuppr = async (idUser) => {
+    await deleteDoc(doc(db,"commentaires",idUser))
+  };
 
   return (
     <Box>
-      {avis.map((commentaire) => {
+      {avis.map((commentaire,index) => {
         return (
           <Box>
             <Typography>{commentaire.title}</Typography>
             <Typography>{commentaire.description}</Typography>
             <Typography>{commentaire.note}</Typography>
-            <Button color="secondary" variant="contained">
-              <Typography>Signaler l'utilisateur</Typography>
-            </Button>
-            <Button color="secondary" variant="contained">
-              <Typography>Supprimer le commentaire</Typography>
-            </Button>
+            {movie[0] !== undefined && (
+              <>
+                {movie[0].moderator === true &&(
+                  <>
+                    <Button color="secondary" variant="contained" onClick={() => handleReport(avis[index].idUser)}>
+                      <Typography>Signaler l'utilisateur</Typography>
+                    </Button>
+                    <Button color="secondary" variant="contained" onClick={() => handleSuppr(avis[index].id)}>
+                      <Typography>Supprimer le commentaire</Typography>
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
           </Box>
         );
       })}
