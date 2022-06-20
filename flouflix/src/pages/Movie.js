@@ -287,6 +287,8 @@ function Movie() {
         console.error("Error writing document: ", error);
       });
     }
+    const moovieName = `le film a bien été signalé`;
+    addMoovie(moovieName);
   };
 
   const handleSuppr = async () => {
@@ -309,6 +311,8 @@ function Movie() {
         console.error("Error writing document: ", error);
       });
     }
+    const moovieName = `le film a bien été supprimé`;
+    addMoovie(moovieName);
   };
 
 

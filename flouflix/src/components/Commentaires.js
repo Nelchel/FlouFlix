@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { SnackbarProvider, useSnackbar } from "notistack";
 import Grid from "@mui/material/Grid";
 import getDate from "../helpers/GetDate";
 import "../css/Avis.css";
@@ -49,6 +50,9 @@ function Commentaires(props) {
   const [avis, setAvis] = useState([]);
   const [movie, setMovie] = useState([]);
   const [users, setUsers] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const { closeSnackBar } = useSnackbar();
+  const [status, setStatus] = useState("success");
 
   useEffect(() => {
     onAuthStateChanged(
@@ -123,6 +127,8 @@ function Commentaires(props) {
           console.error("Error writing document: ", error);
         });
     }
+    const moovieName = `l'avis a bel et bien été signalé`;
+    addMoovie(moovieName);
   };
 
   const handleSuppr = async (id, idUser) => {
@@ -149,8 +155,22 @@ function Commentaires(props) {
           console.error("Error writing document: ", error);
         });
     }
+    const moovieName = `l'avis a été supprimé`;
+    addMoovie(moovieName);
   };
 
+
+  const addMoovie = (moovieName) => {
+    const key = enqueueSnackbar(moovieName, {
+      autoHideDuration: 1000,
+      variant: status,
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "center",
+      },
+    });
+  };
+  
   const ReadMore = ({ children }) => {
     const text = children;
     const classes = makeClass();

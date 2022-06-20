@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import firebase from "firebase/compat/app";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
+import { SnackbarProvider, useSnackbar } from "notistack";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import {
@@ -72,8 +73,10 @@ const ListUser = (props) => {
     const [description,setDescription] = useState('');
     const [message,setMessage] = useState('');
     const [userCurrent, setUserCurrent] = useState(undefined);
+    const { enqueueSnackbar } = useSnackbar();
+    const { closeSnackBar } = useSnackbar();
+    const [status, setStatus] = useState("success");
     
-
 //Récupération des informations de transaction de la BDD
 useEffect(() => {
     onAuthStateChanged(
@@ -129,11 +132,26 @@ useEffect(() => {
         console.error("Error writing document: ", error);
       });
     }
+    const moovieName = `l'utilisateur a été signalé`;
+    addMoovie(moovieName);
   };
 
   const handleSuppr = async (uid) => {
-    await deleteDoc(doc(db,"users",uid))
+    await deleteDoc (doc(db,"users",uid))
     setopenDelete(false)
+    const moovieName = `l'utilisateur a été supprimé`;
+    addMoovie(moovieName);
+  };
+
+  const addMoovie = (moovieName) => {
+    const key = enqueueSnackbar(moovieName, {
+      autoHideDuration: 1000,
+      variant: status,
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "center",
+      },
+    });
   };
     return(
         <Box>
