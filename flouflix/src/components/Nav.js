@@ -133,10 +133,12 @@ function Nav() {
             ) : (
               <Box display="flex" alignItems="center">
                 <Link to="/mon-panier" className={classes.linkMenuRight}>
-                  <ShoppingBasketIcon
-                    fontSize="medium"
-                    style={{ color: "white" }}
-                  />
+                  <IconButton>
+                    <ShoppingBasketIcon
+                      fontSize="medium"
+                      style={{ color: "white" }}
+                    />
+                  </IconButton>
                 </Link>
                 <IconButton onClick={handleOpenModal}>
                   <NotificationsIcon
@@ -221,12 +223,12 @@ function Nav() {
                       </MenuItem>
                       <MenuItem>
                         <ListItemIcon>
-                          <Inventory
-                            sx={{ color: "white" }}
-                            fontSize="small"
-                          />
+                          <Inventory sx={{ color: "white" }} fontSize="small" />
                         </ListItemIcon>
-                        <Link to="/historique-achat" className={classes.linkMenu}>
+                        <Link
+                          to="/historique-achat"
+                          className={classes.linkMenu}
+                        >
                           <Typography color={theme.palette.text.white}>
                             Historique
                           </Typography>

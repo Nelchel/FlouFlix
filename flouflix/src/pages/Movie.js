@@ -509,15 +509,22 @@ function Movie() {
                 </Box>
               </Box>
               <Box paddingTop="20px" paddingBottom="50px">
-                <Typography variant="h4">Avis</Typography>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  onClick={handleOpenAvis}
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
                 >
-                  <Typography variant="body1">Ajouter un avis</Typography>
-                </Button>
-                <Commentaires movie={movies}/>
+                  <Typography variant="h4">Avis</Typography>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={handleOpenAvis}
+                    className={classes.deleteFilmButton}
+                  >
+                    <Typography variant="body1">Ajouter un avis</Typography>
+                  </Button>
+                </Box>
+                <Commentaires movies={movies} />
               </Box>
 
               <Modal

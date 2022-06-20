@@ -17,9 +17,7 @@ function SignOut() {
 
   const handleSubmit = async () => {
     signOut(auth)
-      .then(() => {
-        // console.log("success")
-      })
+      .then(() => {})
       .catch((error) => {
         // console.log(error)
       });
