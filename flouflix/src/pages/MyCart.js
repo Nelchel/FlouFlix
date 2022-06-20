@@ -23,17 +23,17 @@ import {
   updateDoc,
   where,
   collection,
-  getDocs, 
+  getDocs,
   query,
   arrayRemove,
 } from "firebase/firestore";
 
 const makeClass = makeStyles((theme) => ({
-    linkMenu: {
-      marginLeft: "15px",
-      textDecoration: "none",
-      color: theme.palette.text.white,
-    },
+  linkMenu: {
+    marginLeft: "15px",
+    textDecoration: "none",
+    color: theme.palette.text.white,
+  },
 }));
 
 const style = {
@@ -52,8 +52,8 @@ function MyCart(stripeConfig) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     calculPrice();
-    setOpen(true)
-  }
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
   //Style
   const classes = makeClass();
@@ -65,8 +65,8 @@ function MyCart(stripeConfig) {
   const [moovieInMyCart, setMoovieInMyCart] = useState([]);
   const TotalPrice = [];
   const finalPurchase = [];
-  const [finalPrice,setFinalPrice] = useState(0);
-  const [valdiate,setValidate] = useState(false);
+  const [finalPrice, setFinalPrice] = useState(0);
+  const [valdiate, setValidate] = useState(false);
   const [quantity, setQuantity] = useState([]);
   const [userCurrent, setUserCurrent] = useState(undefined);
 
@@ -155,32 +155,47 @@ function MyCart(stripeConfig) {
     } else console.log("Valeur incorrecte");
   };
 
-const calculPrice = () =>{
-  let sum = 0;
-  for (let i = 0; i < TotalPrice.length; i++) {
+  const calculPrice = () => {
+    let sum = 0;
+    for (let i = 0; i < TotalPrice.length; i++) {
       sum += TotalPrice[i].price;
-  }
-  setFinalPrice(sum)
-}
+    }
+    setFinalPrice(sum);
+  };
 
-const handlePayement =  () =>{
-  setValidate(true)
-  return null
-}
+  const handlePayement = () => {
+    setValidate(true);
+    return null;
+  };
 
-console.log(moovieInMyCart)
+  console.log(moovieInMyCart);
   return (
     <section>
       <Box>
-        <Typography variant="h1">Page du panier</Typography>
+        <Typography variant="h2">Mon panier</Typography>
         <Box>
-          {moovieInMyCart.length=== 0 && (
-            <Typography variant="h5">
-              Votre panier est vide :  
-              <Link to="/catalogue" className={classes.linkMenu}>
-              ajouter un film
-              </Link> 
-            </Typography>
+          {moovieInMyCart.length === 0 && (
+            <Box width="fit-content" margin="auto">
+              <img src="https://firebasestorage.googleapis.com/v0/b/flouflix-46d80.appspot.com/o/empty-cart.png?alt=media&token=0eabbf69-8387-49c3-8378-a8b9090b4a36" />
+              <Box width="fit-content" margin="auto">
+                <Typography variant="h5">Votre panier est vide</Typography>
+                <Typography variant="body1">
+                  Vous pouvez ajouter des films dans le panier depuis le
+                  catalogue
+                </Typography>
+                <Link to="/catalogue">
+                  <Button color="secondary" variant="contained">
+                    <Typography>Catalogue</Typography>
+                  </Button>
+                </Link>
+              </Box>
+            </Box>
+            // <Typography variant="h5">
+            //   Votre panier est vide :
+            //   <Link to="/catalogue" className={classes.linkMenu}>
+            //     ajouter un film
+            //   </Link>
+            // </Typography>
           )}
           {moovieInMyCart.map((cart, index) => {
             return (
@@ -202,9 +217,7 @@ console.log(moovieInMyCart)
                       quantity={quantity}
                       handleClickModal={handleClick}
                     />
-                    <MapModal
-                      moovie={moovieInMyCart[index]}
-                    />
+                    <MapModal moovie={moovieInMyCart[index]} />
                     <TextField
                       value={quantity[index].Quantity}
                       id="outlined-required"
@@ -223,63 +236,66 @@ console.log(moovieInMyCart)
             Confirmer son panier
           </Button>
         )}
-        <Modal
-          open={open}
-          onClose={handleClose}
-        >
+        <Modal open={open} onClose={handleClose}>
           <Box sx={style}>
-            <Typography>
-              Confirmation du panier
-            </Typography>
-            <Box justifyContent='space-around' display="flex">
-              <Typography gutterBottom variant="h6" component="div"> 
-                Nom du film 
+            <Typography>Confirmation du panier</Typography>
+            <Box justifyContent="space-around" display="flex">
+              <Typography gutterBottom variant="h6" component="div">
+                Nom du film
               </Typography>
-              <Typography gutterBottom variant="h6" component="div"> 
-                Qté 
+              <Typography gutterBottom variant="h6" component="div">
+                Qté
               </Typography>
-              <Typography gutterBottom variant="h6" component="div"> 
+              <Typography gutterBottom variant="h6" component="div">
                 prix
               </Typography>
             </Box>
             {moovieInMyCart.map((cart, index) => {
               TotalPrice.push({
-                price : parseFloat(moovieInMyCart[index].price) * quantity[index].Quantity,
-                
-              })
+                price:
+                  parseFloat(moovieInMyCart[index].price) *
+                  quantity[index].Quantity,
+              });
               finalPurchase.push({
-                price : moovieInMyCart[index].id_price,
+                price: moovieInMyCart[index].id_price,
                 quantity: quantity[index].Quantity,
-              })
-              return(
-                <Box justifyContent='space-around' display="flex">
-                  <Typography gutterBottom component="div"> 
+              });
+              return (
+                <Box justifyContent="space-around" display="flex">
+                  <Typography gutterBottom component="div">
                     {cart.name}
                   </Typography>
-                  <Typography gutterBottom variant="h6" component="div"> 
+                  <Typography gutterBottom variant="h6" component="div">
                     {quantity[index].Quantity}
                   </Typography>
-                  <Typography gutterBottom variant="h6" component="div"> 
+                  <Typography gutterBottom variant="h6" component="div">
                     {TotalPrice[index].price.toFixed(2)} €
                   </Typography>
-              </Box>
-              )
+                </Box>
+              );
             })}
-            <Box justifyContent='space-between' display="flex">
-              <Typography gutterBottom variant="h6" component="div"> 
+            <Box justifyContent="space-between" display="flex">
+              <Typography gutterBottom variant="h6" component="div">
                 Total :
               </Typography>
-              <Typography gutterBottom variant="h6" component="div"> 
-                {finalPrice.toFixed(2)} € 
+              <Typography gutterBottom variant="h6" component="div">
+                {finalPrice.toFixed(2)} €
               </Typography>
             </Box>
-            <Box justifyContent="center"  display="flex">
-              <Button onClick={handlePayement} variant="contained" color="secondary">
-                Valider et payer 
+            <Box justifyContent="center" display="flex">
+              <Button
+                onClick={handlePayement}
+                variant="contained"
+                color="secondary"
+              >
+                Valider et payer
               </Button>
               {valdiate === true && (
                 <Box>
-                  <Payment email={auth.currentUser.email} sale={finalPurchase}/>
+                  <Payment
+                    email={auth.currentUser.email}
+                    sale={finalPurchase}
+                  />
                 </Box>
               )}
             </Box>
