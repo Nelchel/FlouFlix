@@ -8,6 +8,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import ModalSuppr from "../components/ModalSuppr";
 import MapModal from "../components/ModalMap";
+import { Link } from "react-router-dom";
 //gestion du payement en ligne
 import Payment from "../components/Payment";
 import Modal from "@mui/material/Modal";
@@ -27,7 +28,13 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 
-const makeClass = makeStyles((theme) => ({}));
+const makeClass = makeStyles((theme) => ({
+    linkMenu: {
+      marginLeft: "15px",
+      textDecoration: "none",
+      color: theme.palette.text.white,
+    },
+}));
 
 const style = {
   position: "absolute",
@@ -119,7 +126,7 @@ function MyCart(stripeConfig) {
         Quantity: quantity[index].Quantity,
       }),
     });
-    window.location.replace("/mon-panier");
+    window.location.replace("mon-panier");
   };
 
   //Modifier la quantité
@@ -161,12 +168,20 @@ const handlePayement =  () =>{
   return null
 }
 
-
+console.log(moovieInMyCart)
   return (
     <section>
       <Box>
         <Typography variant="h1">Page du panier</Typography>
         <Box>
+          {moovieInMyCart.length=== 0 && (
+            <Typography variant="h5">
+              Votre panier est vide :  
+              <Link to="/catalogue" className={classes.linkMenu}>
+              ajouter un film
+              </Link> 
+            </Typography>
+          )}
           {moovieInMyCart.map((cart, index) => {
             return (
               <Box maxWidth="345px" key={index}>
