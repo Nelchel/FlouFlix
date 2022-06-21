@@ -197,6 +197,28 @@ function Movie() {
 
   const handleDelete = async () => {
     await deleteDoc(doc(db, "movies", movies[0].id));
+
+    if (userCurrent[0].moderator === true) {
+      await db
+      .collection("notifications")
+      .add({
+          content : "L'une de vos de annonces à été supprimé : ",
+          idUser: movies[0].seller,
+          isRead : false,
+      })
+      .then(async (docRef) => {
+        const movieRef = await doc(db, "notifications", docRef.id);
+        await updateDoc(movieRef, {
+          id: docRef.id,
+        });
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+    }
+    const moovieName = `le film a bien été supprimé`;
+    addMoovie(moovieName);
+
     window.location.replace("/catalogue");
   };
 
@@ -291,29 +313,29 @@ function Movie() {
     addMoovie(moovieName);
   };
 
-  const handleSuppr = async () => {
-    // await deleteDoc(doc(db,"movies",id))
-    if (uid !== "") {
-      await db
-      .collection("notifications")
-      .add({
-          content : "L'une de vos de annonces à été supprimé : ",
-          idUser: movies[0].seller,
-          isRead : false,
-      })
-      .then(async (docRef) => {
-        const movieRef = await doc(db, "notifications", docRef.id);
-        await updateDoc(movieRef, {
-          id: docRef.id,
-        });
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
-    }
-    const moovieName = `le film a bien été supprimé`;
-    addMoovie(moovieName);
-  };
+  // const handleSuppr = async () => {
+  //   // await deleteDoc(doc(db,"movies",id))
+  //   if (uid !== "") {
+  //     await db
+  //     .collection("notifications")
+  //     .add({
+  //         content : "L'une de vos de annonces à été supprimé : ",
+  //         idUser: movies[0].seller,
+  //         isRead : false,
+  //     })
+  //     .then(async (docRef) => {
+  //       const movieRef = await doc(db, "notifications", docRef.id);
+  //       await updateDoc(movieRef, {
+  //         id: docRef.id,
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error writing document: ", error);
+  //     });
+  //   }
+  //   const moovieName = `le film a bien été supprimé`;
+  //   addMoovie(moovieName);
+  // };
 
 
   return (
@@ -332,20 +354,6 @@ function Movie() {
                 {console.log(userCurrent)}
 
 
-                {userCurrent[0] !== undefined && (
-                <>
-                  {userCurrent[0].moderator === true &&(
-                    <>
-                    <Button color="secondary" variant="contained" onClick={() => handleReport()}>
-                      <Typography>Signaler le film</Typography>
-                      </Button>
-                      <Button color="secondary" variant="contained" onClick={() => handleSuppr()}>
-                      <Typography>Supprimer le film</Typography>
-                        </Button>
-                      </>
-                  )} 
-                </> 
-                )}
 
                 {uid === movies[0].seller && (
                   <Box>
@@ -375,6 +383,35 @@ function Movie() {
                     </Button>
                   </Box>
                 )}
+                {userCurrent[0] !== undefined && (
+                <>
+                  {userCurrent[0].moderator === true &&(
+                    <>
+                      <Button                      
+                        className={classes.deleteFilmButton}
+                        color="secondary"
+                        variant="contained"
+                        onClick={() => handleReport()}
+                      >
+                        <Typography color={theme.palette.text.white}>
+                          Signaler le film
+                        </Typography>
+                      </Button>
+                      <Button                      
+                        className={classes.deleteFilmButton}
+                        color="secondary"
+                        variant="contained"
+                        onClick={handleOpen}
+                      >
+                        <Typography color={theme.palette.text.white}>
+                          Supprimer le film
+                        </Typography>
+                      </Button>
+                    </>
+                  )} 
+                </> 
+                )}
+
               </Box>
               <Box display="flex" alignItems="center" paddingTop="15px">
                 {movies[0].genre.map((genreMovie) => (

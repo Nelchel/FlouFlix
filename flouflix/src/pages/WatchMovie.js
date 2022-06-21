@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
 
@@ -6,7 +5,6 @@ import { useParams } from "react-router-dom";
 import React, { useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebase from "firebase/compat/app";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import ReactPlayer from "react-player";
 
 const makeClass = makeStyles((theme) => ({
