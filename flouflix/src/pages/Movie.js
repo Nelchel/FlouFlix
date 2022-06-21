@@ -68,6 +68,11 @@ const makeClass = makeStyles((theme) => ({
     backgroundColor: `${theme.palette.primary.dark} !important`,
     marginRight: "20px !important",
   },
+  otherButtons: {
+    boxShadow: "unset !important",
+    textTransform: "initial !important",
+    marginRight: "20px !important",
+  },
   link: {
     textDecoration: "unset !important",
   },
@@ -327,59 +332,65 @@ function Movie() {
                 justifyContent="space-between"
               >
                 <Typography variant="h2">{movies[0].name}</Typography>
-                {console.log(userCurrent)}
 
-                {userCurrent[0] !== undefined && (
+                <Box>
                   <>
-                    {userCurrent[0].moderator === true && (
+                    {userCurrent[0] !== undefined && (
                       <>
+                        {userCurrent[0].moderator === true && (
+                          <>
+                            <Button
+                              className={classes.otherButtons}
+                              color="secondary"
+                              variant="contained"
+                              onClick={() => handleReport()}
+                            >
+                              <Typography>Signaler le film</Typography>
+                            </Button>
+                            <Button
+                              className={classes.otherButtons}
+                              color="secondary"
+                              variant="contained"
+                              onClick={() => handleSuppr()}
+                            >
+                              <Typography>Supprimer le film</Typography>
+                            </Button>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </>
+                  <>
+                    {uid === movies[0].seller && (
+                      <>
+                        <Link
+                          to={"/modifier-film/" + movies[0].id}
+                          className={classes.link}
+                        >
+                          <Button
+                            color="primary"
+                            variant="contained"
+                            className={classes.modifyFilmButton}
+                          >
+                            <Typography color={theme.palette.text.white}>
+                              Modifier le film
+                            </Typography>
+                          </Button>
+                        </Link>
                         <Button
+                          className={classes.deleteFilmButton}
                           color="secondary"
                           variant="contained"
-                          onClick={() => handleReport()}
+                          onClick={handleOpen}
                         >
-                          <Typography>Signaler le film</Typography>
-                        </Button>
-                        <Button
-                          color="secondary"
-                          variant="contained"
-                          onClick={() => handleSuppr()}
-                        >
-                          <Typography>Supprimer le film</Typography>
+                          <Typography color={theme.palette.text.white}>
+                            Supprimer le film
+                          </Typography>
                         </Button>
                       </>
                     )}
                   </>
-                )}
-
-                {uid === movies[0].seller && (
-                  <Box>
-                    <Link
-                      to={"/modifier-film/" + movies[0].id}
-                      className={classes.link}
-                    >
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        className={classes.modifyFilmButton}
-                      >
-                        <Typography color={theme.palette.text.white}>
-                          Modifier le film
-                        </Typography>
-                      </Button>
-                    </Link>
-                    <Button
-                      className={classes.deleteFilmButton}
-                      color="secondary"
-                      variant="contained"
-                      onClick={handleOpen}
-                    >
-                      <Typography color={theme.palette.text.white}>
-                        Supprimer le film
-                      </Typography>
-                    </Button>
-                  </Box>
-                )}
+                </Box>
               </Box>
               <Box display="flex" alignItems="center" paddingTop="15px">
                 {movies[0].genre.map((genreMovie) => (
