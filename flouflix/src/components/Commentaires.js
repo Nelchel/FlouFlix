@@ -87,7 +87,7 @@ function Commentaires(props) {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          getUsers.push(doc.data());
+          getMovies.push(doc.data());
         });
         setMovie(getMovies);
       })
@@ -159,7 +159,6 @@ function Commentaires(props) {
     addMoovie(moovieName);
   };
 
-
   const addMoovie = (moovieName) => {
     const key = enqueueSnackbar(moovieName, {
       autoHideDuration: 1000,
@@ -170,7 +169,7 @@ function Commentaires(props) {
       },
     });
   };
-  
+
   const ReadMore = ({ children }) => {
     const text = children;
     const classes = makeClass();
@@ -215,17 +214,15 @@ function Commentaires(props) {
               >
                 <Box display="flex" alignItems="top" justifyContent="center">
                   <Box paddingRight="15px">
-                    {users.map((user) => {
-                      return (
-                        <>
-                          {user.uid === commentaire.idUser && (
-                            <>
-                              <Avatar src={user.photoURL} alt={user.pseudo} />
-                            </>
-                          )}
-                        </>
-                      );
-                    })}
+                    {users.map((user) => (
+                      <>
+                        {user.uid === commentaire.idUser && (
+                          <>
+                            <Avatar src={user.photoURL} alt={user.pseudo} />
+                          </>
+                        )}
+                      </>
+                    ))}
                   </Box>
                   <Box minWidth="370px" paddingBottom="20px">
                     <Box
@@ -234,20 +231,18 @@ function Commentaires(props) {
                       justifyContent="space-between"
                     >
                       <Box>
-                        {users.map((user) => {
-                          return (
-                            <>
-                              {user.uid === commentaire.idUser && (
-                                <Typography
-                                  variant="body1"
-                                  className={classes.fw500}
-                                >
-                                  {user.pseudo}
-                                </Typography>
-                              )}
-                            </>
-                          );
-                        })}
+                        {users.map((user) => (
+                          <>
+                            {user.uid === commentaire.idUser && (
+                              <Typography
+                                variant="body1"
+                                className={classes.fw500}
+                              >
+                                {user.pseudo}
+                              </Typography>
+                            )}
+                          </>
+                        ))}
                         <Typography variant="body1">
                           {getDate(commentaire.dateAvis)}
                         </Typography>

@@ -163,9 +163,8 @@ function Movie() {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-      
 
-      db.collection("users")
+    db.collection("users")
       .where("uid", "==", uid)
       .get()
       .then((querySnapshot) => {
@@ -177,8 +176,6 @@ function Movie() {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-
-
   }, [uid]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -271,21 +268,23 @@ function Movie() {
   const handleReport = async () => {
     if (uid !== "") {
       await db
-      .collection("notifications")
-      .add({
-          content : "Vous avez été signaler par un modérateur concernant votre annonce : "+ movies[0].name,
+        .collection("notifications")
+        .add({
+          content:
+            "Vous avez été signaler par un modérateur concernant votre annonce : " +
+            movies[0].name,
           idUser: movies[0].seller,
-          isRead : false,
-      })
-      .then(async (docRef) => {
-        const movieRef = await doc(db, "notifications", docRef.id);
-        await updateDoc(movieRef, {
-          id: docRef.id,
+          isRead: false,
+        })
+        .then(async (docRef) => {
+          const movieRef = await doc(db, "notifications", docRef.id);
+          await updateDoc(movieRef, {
+            id: docRef.id,
+          });
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
         });
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
     }
     const moovieName = `le film a bien été signalé`;
     addMoovie(moovieName);
@@ -295,26 +294,25 @@ function Movie() {
     // await deleteDoc(doc(db,"movies",id))
     if (uid !== "") {
       await db
-      .collection("notifications")
-      .add({
-          content : "L'une de vos de annonces à été supprimé : ",
+        .collection("notifications")
+        .add({
+          content: "L'une de vos de annonces à été supprimé : ",
           idUser: movies[0].seller,
-          isRead : false,
-      })
-      .then(async (docRef) => {
-        const movieRef = await doc(db, "notifications", docRef.id);
-        await updateDoc(movieRef, {
-          id: docRef.id,
+          isRead: false,
+        })
+        .then(async (docRef) => {
+          const movieRef = await doc(db, "notifications", docRef.id);
+          await updateDoc(movieRef, {
+            id: docRef.id,
+          });
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
         });
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
     }
     const moovieName = `le film a bien été supprimé`;
     addMoovie(moovieName);
   };
-
 
   return (
     <section>
@@ -331,20 +329,27 @@ function Movie() {
                 <Typography variant="h2">{movies[0].name}</Typography>
                 {console.log(userCurrent)}
 
-
                 {userCurrent[0] !== undefined && (
-                <>
-                  {userCurrent[0].moderator === true &&(
-                    <>
-                    <Button color="secondary" variant="contained" onClick={() => handleReport()}>
-                      <Typography>Signaler le film</Typography>
-                      </Button>
-                      <Button color="secondary" variant="contained" onClick={() => handleSuppr()}>
-                      <Typography>Supprimer le film</Typography>
+                  <>
+                    {userCurrent[0].moderator === true && (
+                      <>
+                        <Button
+                          color="secondary"
+                          variant="contained"
+                          onClick={() => handleReport()}
+                        >
+                          <Typography>Signaler le film</Typography>
+                        </Button>
+                        <Button
+                          color="secondary"
+                          variant="contained"
+                          onClick={() => handleSuppr()}
+                        >
+                          <Typography>Supprimer le film</Typography>
                         </Button>
                       </>
-                  )} 
-                </> 
+                    )}
+                  </>
                 )}
 
                 {uid === movies[0].seller && (
