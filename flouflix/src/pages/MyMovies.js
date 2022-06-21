@@ -9,12 +9,10 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { BrowserRouter as Router, Link, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import "react-alice-carousel/lib/alice-carousel.css";
 import Carousel from "react-multi-carousel";
-import Tooltip from "@mui/material";
 
 const makeClass = makeStyles((theme) => ({
   link: {
@@ -63,7 +61,7 @@ const makeClass = makeStyles((theme) => ({
     padding: "10px !important",
   },
   cardMedia: {
-    borderRadius: "10px",
+    borderRadius: "10px !important",
   },
 }));
 
