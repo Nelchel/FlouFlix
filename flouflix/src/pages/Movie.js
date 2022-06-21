@@ -373,7 +373,7 @@ function Movie() {
                               className={classes.otherButtons}
                               color="secondary"
                               variant="contained"
-                              onClick={() => handleSuppr()}
+                              onClick={() => handleOpen()}
                             >
                               <Typography>Supprimer le film</Typography>
                             </Button>
