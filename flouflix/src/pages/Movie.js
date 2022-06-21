@@ -68,6 +68,11 @@ const makeClass = makeStyles((theme) => ({
     backgroundColor: `${theme.palette.primary.dark} !important`,
     marginRight: "20px !important",
   },
+  otherButtons: {
+    boxShadow: "unset !important",
+    textTransform: "initial !important",
+    marginRight: "20px !important",
+  },
   link: {
     textDecoration: "unset !important",
   },
@@ -163,9 +168,8 @@ function Movie() {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-      
 
-      db.collection("users")
+    db.collection("users")
       .where("uid", "==", uid)
       .get()
       .then((querySnapshot) => {
@@ -177,8 +181,6 @@ function Movie() {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-
-
   }, [uid]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -293,21 +295,23 @@ function Movie() {
   const handleReport = async () => {
     if (uid !== "") {
       await db
-      .collection("notifications")
-      .add({
-          content : "Vous avez été signaler par un modérateur concernant votre annonce : "+ movies[0].name,
+        .collection("notifications")
+        .add({
+          content:
+            "Vous avez été signaler par un modérateur concernant votre annonce : " +
+            movies[0].name,
           idUser: movies[0].seller,
-          isRead : false,
-      })
-      .then(async (docRef) => {
-        const movieRef = await doc(db, "notifications", docRef.id);
-        await updateDoc(movieRef, {
-          id: docRef.id,
+          isRead: false,
+        })
+        .then(async (docRef) => {
+          const movieRef = await doc(db, "notifications", docRef.id);
+          await updateDoc(movieRef, {
+            id: docRef.id,
+          });
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
         });
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
     }
     const moovieName = `le film a bien été signalé`;
     addMoovie(moovieName);
@@ -337,7 +341,6 @@ function Movie() {
   //   addMoovie(moovieName);
   // };
 
-
   return (
     <section>
       <Box>
@@ -351,67 +354,65 @@ function Movie() {
                 justifyContent="space-between"
               >
                 <Typography variant="h2">{movies[0].name}</Typography>
-                {console.log(userCurrent)}
 
-
-
-                {uid === movies[0].seller && (
-                  <Box>
-                    <Link
-                      to={"/modifier-film/" + movies[0].id}
-                      className={classes.link}
-                    >
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        className={classes.modifyFilmButton}
-                      >
-                        <Typography color={theme.palette.text.white}>
-                          Modifier le film
-                        </Typography>
-                      </Button>
-                    </Link>
-                    <Button
-                      className={classes.deleteFilmButton}
-                      color="secondary"
-                      variant="contained"
-                      onClick={handleOpen}
-                    >
-                      <Typography color={theme.palette.text.white}>
-                        Supprimer le film
-                      </Typography>
-                    </Button>
-                  </Box>
-                )}
-                {userCurrent[0] !== undefined && (
-                <>
-                  {userCurrent[0].moderator === true &&(
-                    <>
-                      <Button                      
-                        className={classes.deleteFilmButton}
-                        color="secondary"
-                        variant="contained"
-                        onClick={() => handleReport()}
-                      >
-                        <Typography color={theme.palette.text.white}>
-                          Signaler le film
-                        </Typography>
-                      </Button>
-                      <Button                      
-                        className={classes.deleteFilmButton}
-                        color="secondary"
-                        variant="contained"
-                        onClick={handleOpen}
-                      >
-                        <Typography color={theme.palette.text.white}>
-                          Supprimer le film
-                        </Typography>
-                      </Button>
-                    </>
-                  )} 
-                </> 
-                )}
-
+                <Box>
+                  <>
+                    {userCurrent[0] !== undefined && (
+                      <>
+                        {userCurrent[0].moderator === true && (
+                          <>
+                            <Button
+                              className={classes.otherButtons}
+                              color="secondary"
+                              variant="contained"
+                              onClick={() => handleReport()}
+                            >
+                              <Typography>Signaler le film</Typography>
+                            </Button>
+                            <Button
+                              className={classes.otherButtons}
+                              color="secondary"
+                              variant="contained"
+                              onClick={() => handleSuppr()}
+                            >
+                              <Typography>Supprimer le film</Typography>
+                            </Button>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </>
+                  <>
+                    {uid === movies[0].seller && (
+                      <>
+                        <Link
+                          to={"/modifier-film/" + movies[0].id}
+                          className={classes.link}
+                        >
+                          <Button
+                            color="primary"
+                            variant="contained"
+                            className={classes.modifyFilmButton}
+                          >
+                            <Typography color={theme.palette.text.white}>
+                              Modifier le film
+                            </Typography>
+                          </Button>
+                        </Link>
+                        <Button
+                          className={classes.deleteFilmButton}
+                          color="secondary"
+                          variant="contained"
+                          onClick={handleOpen}
+                        >
+                          <Typography color={theme.palette.text.white}>
+                            Supprimer le film
+                          </Typography>
+                        </Button>
+                      </>
+                    )}
+                  </>
+                </Box>
               </Box>
               <Box display="flex" alignItems="center" paddingTop="15px">
                 {movies[0].genre.map((genreMovie) => (
