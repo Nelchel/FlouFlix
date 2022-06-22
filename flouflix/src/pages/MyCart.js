@@ -219,7 +219,7 @@ function MyCart(stripeConfig) {
 
   const handleMoins = (quantite, index) => {
     const quantityLocal = [...quantity];
-    if (quantite > 0 && quantite <= 100) {
+    if (quantite > 1 && quantite <= 100) {
       quantityLocal[index].Quantity = quantite - 1;
       setQuantity(quantityLocal);
       debounce(index, quantite);
