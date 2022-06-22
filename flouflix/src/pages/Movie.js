@@ -613,7 +613,7 @@ function Movie() {
                       type="number"
                       value={noteAvis}
                       id="noteAvis"
-                      label="Note du film"
+                      label="Nombre d'étoiles"
                       onChange={(e) => setNoteAvis(e.target.value)}
                       InputLabelProps={{
                         style: { color: "#fff" },
