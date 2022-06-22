@@ -87,7 +87,7 @@ function Commentaires(props) {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          getUsers.push(doc.data());
+          getMovies.push(doc.data());
         });
         setMovie(getMovies);
       })
@@ -113,7 +113,7 @@ function Commentaires(props) {
       await db
         .collection("notifications")
         .add({
-          content: "Vous avez été signaler par un modérateur concernant l'avis",
+          content: "Vous avez été signalé par un modérateur concernant l'avis",
           idUser: idUser,
           isRead: false,
         })
@@ -127,41 +127,38 @@ function Commentaires(props) {
           console.error("Error writing document: ", error);
         });
     }
-    const moovieName = `l'avis a bel et bien été signalé`;
-    addMoovie(moovieName);
+    const Avis = `l'avis a bel et bien été signalé`;
+    addAvis(Avis);
   };
 
   const handleSuppr = async (id, idUser) => {
     await deleteDoc(doc(db, "commentaires", id));
-
-    if (uid !== "") {
-      await db
-        .collection("notifications")
-        .add({
-          content:
-            "L'un de vos commentaires sur le film " +
-            props.movie[0].name +
-            " a été supprimé",
-          idUser: idUser,
-          isRead: false,
-        })
-        .then(async (docRef) => {
-          const movieRef = await doc(db, "notifications", docRef.id);
-          await updateDoc(movieRef, {
-            id: docRef.id,
-          });
-        })
-        .catch((error) => {
-          console.error("Error writing document: ", error);
-        });
-    }
-    const moovieName = `l'avis a été supprimé`;
-    addMoovie(moovieName);
+     await db
+    .collection("notifications")
+    .add({
+      content:
+      "L'un de vos commentaires sur le film " +
+      props.movies[0].name +
+      " a été supprimé",
+      idUser: idUser,
+      isRead: false,
+    })
+    .then(async (docRef) => {
+      const movieRef = await doc(db, "notifications", docRef.id);
+      await updateDoc(movieRef, {
+        id: docRef.id,
+      });
+    })
+    .catch((error) => {
+      console.error("Error writing document: ", error);
+    });
+    const Avis = `l'avis a été supprimé`;
+    addAvis(Avis);
+    window.location.replace("/movie/"+props.movies[0].id);
   };
 
-
-  const addMoovie = (moovieName) => {
-    const key = enqueueSnackbar(moovieName, {
+  const addAvis = (Avis) => {
+    const key = enqueueSnackbar(Avis, {
       autoHideDuration: 1000,
       variant: status,
       anchorOrigin: {
@@ -170,7 +167,7 @@ function Commentaires(props) {
       },
     });
   };
-  
+
   const ReadMore = ({ children }) => {
     const text = children;
     const classes = makeClass();
@@ -215,17 +212,15 @@ function Commentaires(props) {
               >
                 <Box display="flex" alignItems="top" justifyContent="center">
                   <Box paddingRight="15px">
-                    {users.map((user) => {
-                      return (
-                        <>
-                          {user.uid === commentaire.idUser && (
-                            <>
-                              <Avatar src={user.photoURL} alt={user.pseudo} />
-                            </>
-                          )}
-                        </>
-                      );
-                    })}
+                    {users.map((user) => (
+                      <>
+                        {user.uid === commentaire.idUser && (
+                          <>
+                            <Avatar src={user.photoURL} alt={user.pseudo} />
+                          </>
+                        )}
+                      </>
+                    ))}
                   </Box>
                   <Box minWidth="370px" paddingBottom="20px">
                     <Box
@@ -234,20 +229,18 @@ function Commentaires(props) {
                       justifyContent="space-between"
                     >
                       <Box>
-                        {users.map((user) => {
-                          return (
-                            <>
-                              {user.uid === commentaire.idUser && (
-                                <Typography
-                                  variant="body1"
-                                  className={classes.fw500}
-                                >
-                                  {user.pseudo}
-                                </Typography>
-                              )}
-                            </>
-                          );
-                        })}
+                        {users.map((user) => (
+                          <>
+                            {user.uid === commentaire.idUser && (
+                              <Typography
+                                variant="body1"
+                                className={classes.fw500}
+                              >
+                                {user.pseudo}
+                              </Typography>
+                            )}
+                          </>
+                        ))}
                         <Typography variant="body1">
                           {getDate(commentaire.dateAvis)}
                         </Typography>
