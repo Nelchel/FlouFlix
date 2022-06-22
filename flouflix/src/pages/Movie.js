@@ -247,12 +247,15 @@ function Movie() {
   };
 
   const handleSubmitAvis = async () => {
+    const currentDate = new Date();
+    const timestamp = currentDate.getTime();
     await db
       .collection("commentaires")
       .add({
         idUser: uid,
         idMovie: id,
         title: titleAvis,
+        dateAvis: timestamp,
         description: descriptionAvis,
         datePurchase: "",
         note: noteAvis,
@@ -477,23 +480,24 @@ function Movie() {
                   )}
                 </Box>
                 <Box display="flex" alignItems="center">
-                  {/* DO NOT REMOVE */}
-                  <Box paddingRight="10px">
-                    <Link
-                      to={`/watch/${movies[0].id}`}
-                      className={classes.link}
-                    >
-                      <Button
-                        color="secondary"
-                        variant="contained"
-                        className={classes.buyStreaming}
+                  {movies[0].movieUrl !== undefined && (
+                    <Box paddingRight="10px">
+                      <Link
+                        to={`/watch/${movies[0].id}`}
+                        className={classes.link}
                       >
-                        <Typography variant="body1">
-                          Acheter le film en streaming
-                        </Typography>
-                      </Button>
-                    </Link>
-                  </Box>
+                        <Button
+                          color="secondary"
+                          variant="contained"
+                          className={classes.buyStreaming}
+                        >
+                          <Typography variant="body1">
+                            Acheter le film en streaming
+                          </Typography>
+                        </Button>
+                      </Link>
+                    </Box>
+                  )}
                   <Button
                     color="secondary"
                     variant="contained"

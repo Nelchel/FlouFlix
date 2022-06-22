@@ -34,7 +34,7 @@ const makeClass = makeStyles((theme) => ({
   button: {
     boxShadow: "unset !important",
     textTransform: "unset !important",
-    padding: "6px 11px !important",
+    // padding: "6px 11px !important",
   },
 }));
 
@@ -63,7 +63,9 @@ function NotificationsBoard({ open, handleClose }) {
       },
       [auth]
     );
+  }, [uid]);
 
+  useEffect(() => {
     db.collection("notifications")
       .where("idUser", "==", uid)
       .where("isRead", "==", false)
@@ -80,7 +82,9 @@ function NotificationsBoard({ open, handleClose }) {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
+  }, [uid, isUpdate]);
 
+  useEffect(() => {
     db.collection("notifications")
       .where("idUser", "==", uid)
       .where("isRead", "==", true)
@@ -108,8 +112,10 @@ function NotificationsBoard({ open, handleClose }) {
       })
       .then(() => {
         console.log("Document successfully updated!");
-        getNotifications.splice(index, 1);
-        setNotifications(getNotifications);
+        let tmp = [];
+        tmp = notifications;
+        tmp.splice(index, 1);
+        setNotifications(tmp);
       })
       .catch((error) => {
         // The document probably doesn't exist.
@@ -126,8 +132,13 @@ function NotificationsBoard({ open, handleClose }) {
       })
       .then(() => {
         console.log("Document successfully updated!");
-        getNotifications.splice(index, 1);
-        setNotifications(getNotifications);
+        let tmp = [];
+        tmp = readNotifications;
+        console.log(index);
+        tmp.splice(index, 1);
+        console.log(tmp);
+        setReadNotifications(tmp);
+        console.log(notifications);
       })
       .catch((error) => {
         // The document probably doesn't exist.
@@ -135,7 +146,7 @@ function NotificationsBoard({ open, handleClose }) {
       });
   };
 
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -202,35 +213,39 @@ function NotificationsBoard({ open, handleClose }) {
           {notifications.map((notif, index) => {
             return (
               <Box>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Typography
-                    color={theme.palette.text.white}
-                    style={{ maxWidth: "301px" }}
-                    variant="body2"
-                  >
-                    {notif.content}
-                  </Typography>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    className={classes.button}
-                    onClick={(e) => {
-                      handleClick(notif.id, index);
-                    }}
-                  >
-                    <Typography
-                      variant="body2"
-                      color={theme.palette.text.white}
+                {notif.isRead === false && (
+                  <>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
                     >
-                      Marquer comme lue
-                    </Typography>
-                  </Button>
-                </Box>
-                <hr style={{ borderColor: "#929292" }} />
+                      <Typography
+                        color={theme.palette.text.white}
+                        style={{ maxWidth: "301px" }}
+                        variant="body2"
+                      >
+                        {notif.content}
+                      </Typography>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        className={classes.button}
+                        onClick={(e) => {
+                          handleClick(notif.id, index);
+                        }}
+                      >
+                        <Typography
+                          variant="body2"
+                          color={theme.palette.text.white}
+                        >
+                          Marquer comme lue
+                        </Typography>
+                      </Button>
+                    </Box>
+                    <hr style={{ borderColor: "#929292" }} />
+                  </>
+                )}
               </Box>
             );
           })}
