@@ -283,6 +283,7 @@ function Movie() {
       .catch((error) => {
         console.error("Error writing document: ", error);
       });
+      window.location.replace("/movie/"+movies[0].id);
   };
 
   const addMoovie = (moovieName) => {

@@ -140,6 +140,7 @@ const ListUser = (props) => {
     setopenDelete(false);
     const moovieName = `l'utilisateur a été supprimé`;
     addMoovie(moovieName);
+    window.location.replace("/List-user/");
   };
 
   const addMoovie = (moovieName) => {
