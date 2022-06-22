@@ -133,28 +133,28 @@ function Commentaires(props) {
 
   const handleSuppr = async (id, idUser) => {
     await deleteDoc(doc(db, "commentaires", id));
-    await db
-        .collection("notifications")
-        .add({
-          content:
-            "L'un de vos commentaires sur le film " +
-            props.movie[0].name +
-            " a été supprimé",
-          idUser: idUser,
-          isRead: false,
-        })
-        .then(async (docRef) => {
-          const movieRef = await doc(db, "notifications", docRef.id);
-          await updateDoc(movieRef, {
-            id: docRef.id,
-          });
-        })
-        .catch((error) => {
-          console.error("Error writing document: ", error);
+     await db
+    .collection("notifications")
+    .add({
+      content:
+      "L'un de vos commentaires sur le film " +
+      props.movies[0].name +
+      " a été supprimé",
+      idUser: idUser,
+      isRead: false,
+    })
+    .then(async (docRef) => {
+      const movieRef = await doc(db, "notifications", docRef.id);
+      await updateDoc(movieRef, {
+        id: docRef.id,
+      });
+    })
+    .catch((error) => {
+      console.error("Error writing document: ", error);
     });
     const Avis = `l'avis a été supprimé`;
     addAvis(Avis);
-    window.location.replace("/movie/"+movie[0].id);
+    window.location.replace("/movie/"+props.movies[0].id);
   };
 
   const addAvis = (Avis) => {
