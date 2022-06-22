@@ -127,15 +127,13 @@ function Commentaires(props) {
           console.error("Error writing document: ", error);
         });
     }
-    const moovieName = `l'avis a bel et bien été signalé`;
-    addMoovie(moovieName);
+    const Avis = `l'avis a bel et bien été signalé`;
+    addAvis(Avis);
   };
 
   const handleSuppr = async (id, idUser) => {
     await deleteDoc(doc(db, "commentaires", id));
-
-    if (uid !== "") {
-      await db
+    await db
         .collection("notifications")
         .add({
           content:
@@ -153,14 +151,14 @@ function Commentaires(props) {
         })
         .catch((error) => {
           console.error("Error writing document: ", error);
-        });
-    }
-    const moovieName = `l'avis a été supprimé`;
-    addMoovie(moovieName);
+    });
+    const Avis = `l'avis a été supprimé`;
+    addAvis(Avis);
+    window.location.replace("/movie/"+movie[0].id);
   };
 
-  const addMoovie = (moovieName) => {
-    const key = enqueueSnackbar(moovieName, {
+  const addAvis = (Avis) => {
+    const key = enqueueSnackbar(Avis, {
       autoHideDuration: 1000,
       variant: status,
       anchorOrigin: {
