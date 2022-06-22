@@ -53,7 +53,7 @@ const makeClass = makeStyles((theme) => ({
     padding: "10px !important",
   },
   cardMedia: {
-    borderRadius: "10px",
+    borderRadius: "10px !important",
   },
 }));
 

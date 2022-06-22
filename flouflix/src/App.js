@@ -14,6 +14,7 @@ import Inscription from "./pages/Inscription";
 import Connexion from "./pages/Connexion";
 import Catalogue from "./pages/Catalogue";
 import AddMovie from "./pages/AddMovie";
+import Legal from "./pages/Legal";
 import MyMovies from "./pages/MyMovies";
 import MyCart from "./pages/MyCart";
 import Movie from "./pages/Movie";
@@ -22,9 +23,12 @@ import MyAccount from "./pages/MyAccount";
 import WatchMovie from "./pages/WatchMovie";
 import ConfirmationSale from "./pages/ConfirmationSale";
 import PurchaseHistory from "./pages/PurchaseHistory";
+import ListUser from "./pages/ListUser";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import LostPage from "./pages/LostPage";
+
 
 function App({ firebaseConfig, stripeConfig }) {
   firebase.initializeApp(firebaseConfig);
@@ -95,6 +99,7 @@ function App({ firebaseConfig, stripeConfig }) {
                   <Route path="inscription" element={<Inscription />} />
                   <Route path="connexion" element={<Connexion />} />
                   <Route path="catalogue" element={<Catalogue />} />
+                  <Route path="legal" element={<Legal />} />
                   <Route
                     path="mes-films"
                     element={
@@ -115,7 +120,7 @@ function App({ firebaseConfig, stripeConfig }) {
                     path="confirmation-commande"
                     element={
                       // <ProtectedRoute>
-                        <ConfirmationSale/>
+                      <ConfirmationSale />
                       // </ProtectedRoute>
                     }
                   />
@@ -123,7 +128,15 @@ function App({ firebaseConfig, stripeConfig }) {
                     path="Historique-achat"
                     element={
                       // <ProtectedRoute>
-                        <PurchaseHistory/>
+                      <PurchaseHistory />
+                      // </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="List-user"
+                    element={
+                      // <ProtectedRoute>
+                      <ListUser/>
                       // </ProtectedRoute>
                     }
                   />
@@ -170,7 +183,7 @@ function App({ firebaseConfig, stripeConfig }) {
                       </ProtectedRoute>
                     }
                   />
-                  {/* <Route path="*" element={<NoMatch />} /> */}
+                  <Route path="*" element={<LostPage />} />
                 </Route>
               </Routes>
             </React.Fragment>

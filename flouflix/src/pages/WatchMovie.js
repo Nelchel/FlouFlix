@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@mui/styles";
 
@@ -6,7 +5,6 @@ import { useParams } from "react-router-dom";
 import React, { useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import firebase from "firebase/compat/app";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import ReactPlayer from "react-player";
 
 const makeClass = makeStyles((theme) => ({
@@ -35,6 +33,7 @@ function WatchMovie() {
   const playerRef = React.useRef();
   const [isPlaying, setIsPlaying] = React.useState(true);
   const [isReady, setIsReady] = React.useState(false);
+  const [streaming, setStreaming] = React.useState([]);
 
   let { id } = useParams();
   useEffect(() => {
@@ -67,6 +66,7 @@ function WatchMovie() {
 
     db.collection("streaming")
       .where("idMovie", "==", id)
+      .where("idUser", "==", uid)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
@@ -74,8 +74,12 @@ function WatchMovie() {
           // console.log(doc.id, " => ", doc.data());
           getStreaming.push(doc.data());
         });
-        setIdStreaming(getStreaming[0].idStreaming);
-        setWasPlayed(getStreaming[0].played);
+        if (getStreaming.length !== 0) {
+          setIdStreaming(getStreaming[0].idStreaming);
+          setWasPlayed(getStreaming[0].played);
+          localStorage.setItem("items", getStreaming[0].played);
+          setStreaming(getStreaming);
+        }
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
@@ -101,28 +105,32 @@ function WatchMovie() {
 
   const onReady = React.useCallback(() => {
     if (!isReady) {
-      playerRef.current.seekTo(getStreaming[0].played, "seconds");
       setIsReady(true);
+      const played = localStorage.getItem("items");
+      console.log(played);
+      playerRef.current.seekTo(played, "seconds");
     }
   }, [isReady]);
 
   return (
     <Box className={classes.videoPlayer}>
-      {movies.length !== undefined && movies.length > 0 && (
-        <ReactPlayer
-          ref={playerRef}
-          progressInterval={30000}
-          onProgress={(progress) => {
-            setPlayed(progress.playedSeconds);
-            updateFilm(progress.playedSeconds);
-          }}
-          controls
-          onReady={onReady}
-          url={movies[0].movieUrl}
-          width="100%"
-          height="100%"
-        />
-      )}
+      {movies.length !== undefined &&
+        movies.length > 0 &&
+        streaming.length !== 0 && (
+          <ReactPlayer
+            ref={playerRef}
+            progressInterval={30000}
+            onProgress={(progress) => {
+              setPlayed(progress.playedSeconds);
+              updateFilm(progress.playedSeconds);
+            }}
+            controls
+            onReady={onReady}
+            url={movies[0].movieUrl}
+            width="100%"
+            height="100%"
+          />
+        )}
     </Box>
   );
 }

@@ -11,7 +11,10 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
+import Inventory from "@mui/icons-material/Inventory";
+import Person from "@mui/icons-material/Person";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import { Link, Outlet } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -19,6 +22,7 @@ import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import firebase from "firebase/compat/app";
 import SignOut from "./SignOut";
+import NotificationsBoard from "./NotificationsBoard";
 
 const makeClass = makeStyles((theme) => ({
   section: {
@@ -46,6 +50,10 @@ function Nav() {
 
   const [user, setUser] = useState();
   const [uid, setUid] = useState();
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -125,14 +133,22 @@ function Nav() {
             ) : (
               <Box display="flex" alignItems="center">
                 <Link to="/mon-panier" className={classes.linkMenuRight}>
-                  <ShoppingBasketIcon
+                  <IconButton>
+                    <ShoppingBasketIcon
+                      fontSize="medium"
+                      style={{ color: "white" }}
+                    />
+                  </IconButton>
+                </Link>
+                <IconButton onClick={handleOpenModal}>
+                  <NotificationsIcon
                     fontSize="medium"
                     style={{ color: "white" }}
                   />
-                </Link>
+                </IconButton>
                 {user !== undefined && (
                   <>
-                    <Tooltip title="Account settings">
+                    <Tooltip title="Mon compte">
                       <IconButton
                         onClick={handleClick}
                         size="small"
@@ -205,6 +221,36 @@ function Nav() {
                           </Typography>
                         </Link>
                       </MenuItem>
+                      <MenuItem>
+                        <ListItemIcon>
+                          <Inventory sx={{ color: "white" }} fontSize="small" />
+                        </ListItemIcon>
+                        <Link
+                          to="/historique-achat"
+                          className={classes.linkMenu}
+                        >
+                          <Typography color={theme.palette.text.white}>
+                            Historique
+                          </Typography>
+                        </Link>
+                      </MenuItem>
+
+                      {user.moderator === true &&(
+                        <MenuItem>
+                          <ListItemIcon>
+                            <Person
+                              sx={{ color: "white" }}
+                              fontSize="small"
+                            />
+                          </ListItemIcon>
+                          <Link to="/List-user" className={classes.linkMenu}>
+                            <Typography color={theme.palette.text.white}>
+                              Utilisateurs
+                            </Typography>
+                          </Link>
+                        </MenuItem>
+                      )}
+
                       <Divider />
                       <MenuItem>
                         <ListItemIcon>
@@ -220,6 +266,7 @@ function Nav() {
           </Box>
           <Outlet />
         </Box>
+        <NotificationsBoard open={openModal} handleClose={handleCloseModal} />
       </Container>
     </section>
   );

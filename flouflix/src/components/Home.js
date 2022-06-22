@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+  import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { makeStyles } from "@mui/styles";
@@ -15,12 +15,14 @@ import { SnackbarProvider, useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import Video from "./Video";
+import CookieConsent, { Cookies } from "react-cookie-consent";
+
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
     marginRight: "10px",
   },
-}));
+  }));
 
 function Home() {
   const classes = makeClass();
@@ -54,6 +56,7 @@ function Home() {
   return (
     <Box>
       <Catalogue />
+      <CookieConsent buttonText="Accepter" declineButtonText="Refuser" enableDeclineButton flipButtons>Ce site utilise des cookies pour stocker et/ou accéder à des informations sur votre terminal. Cliquez sur "Accepter" pour consentir</CookieConsent>
     </Box>
   );
 }

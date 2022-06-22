@@ -26,6 +26,9 @@ import ReactPlayer from "react-player";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { flexbox } from "@mui/system";
 import "../css/Movie.css";
+import CustomTextField from "../helpers/CustomTextField";
+import Commentaires from "../components/Commentaires";
+import toTimestamp from "../helpers/ToTimestamp";
 
 const makeClass = makeStyles((theme) => ({
   videoPlayer: {
@@ -42,6 +45,15 @@ const makeClass = makeStyles((theme) => ({
     width: "37px",
     height: "35px",
   },
+  pegiCircleFat: {
+    display: "flex",
+    alignItems: "center",
+    border: "1px solid white",
+    justifyContent: "center",
+    borderRadius: "30px",
+    width: "117px",
+    height: "35px",
+  },
   addToCart: {
     boxShadow: "unset !important",
     textTransform: "initial !important",
@@ -55,6 +67,11 @@ const makeClass = makeStyles((theme) => ({
     boxShadow: "unset !important",
     textTransform: "initial !important",
     backgroundColor: `${theme.palette.primary.dark} !important`,
+    marginRight: "20px !important",
+  },
+  otherButtons: {
+    boxShadow: "unset !important",
+    textTransform: "initial !important",
     marginRight: "20px !important",
   },
   link: {
@@ -82,6 +99,18 @@ const style = {
   p: 4,
 };
 
+const style2 = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "#484848",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
 function Movie() {
   const db = firebase.firestore();
   let { id } = useParams();
@@ -89,11 +118,23 @@ function Movie() {
   const [idFilm, setIdFilm] = useState("");
   const [userData, setUserData] = useState([]);
   const getMovies = [];
+  const getUserCurrent = [];
+  const [userCurrent, setUserCurrent] = useState([]);
   const [movies, setMovies] = useState([]);
-  const [status,setStatus] =useState("success");
+  const [status, setStatus] = useState("success");
   const [open, setOpen] = React.useState(false);
+  const [openAvis, setOpenAvis] = useState(false);
+
+  const [titleAvis, setTitleAvis] = useState();
+  const [descriptionAvis, setDescriptionAvis] = useState();
+  const [noteAvis, setNoteAvis] = useState();
+  const [avisId, setAvisId] = useState();
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpenAvis = () => setOpenAvis(true);
+  const handleCloseAvis = () => setOpenAvis(false);
+
   const { enqueueSnackbar } = useSnackbar();
   const { closeSnackBar } = useSnackbar();
 
@@ -128,6 +169,19 @@ function Movie() {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
+
+    db.collection("users")
+      .where("uid", "==", uid)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          getUserCurrent.push(doc.data());
+        });
+        setUserCurrent(getUserCurrent);
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
   }, [uid]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,6 +201,27 @@ function Movie() {
   const handleDelete = async () => {
     await deleteDoc(doc(db, "movies", movies[0].id));
 
+    if (userCurrent[0].moderator === true) {
+      await db
+        .collection("notifications")
+        .add({
+          content: "L'une de vos de annonces à été supprimé : ",
+          idUser: movies[0].seller,
+          isRead: false,
+        })
+        .then(async (docRef) => {
+          const movieRef = await doc(db, "notifications", docRef.id);
+          await updateDoc(movieRef, {
+            id: docRef.id,
+          });
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    }
+    const moovieName = `le film a bien été supprimé`;
+    addMoovie(moovieName);
+
     window.location.replace("/catalogue");
   };
 
@@ -158,7 +233,7 @@ function Movie() {
     if (idMoovieFind !== undefined) {
       quantity = parseFloat(idMoovieFind.Quantity);
     }
-    if (idMoovieFind == undefined && idFilm === "") {
+    if (idMoovieFind === undefined && idFilm === "") {
       await updateDoc(await doc(db, "users", uid), {
         myCart: arrayUnion({ idMoovie: idMoovie, Quantity: quantity }),
       });
@@ -168,9 +243,46 @@ function Movie() {
       console.log("n'ajoute pas le film");
       const moovieName = `${movies[0].name} est déjà dans votre panier`;
       addMoovie(moovieName);
-      setStatus("warning")
-
+      setStatus("warning");
     }
+  };
+
+  const handleSubmitAvis = async () => {
+    const currentDate = new Date();
+    const tmp = toTimestamp(currentDate);
+    await db
+      .collection("commentaires")
+      .add({
+        idUser: uid,
+        idMovie: id,
+        title: titleAvis,
+        dateAvis: tmp,
+        description: descriptionAvis,
+        datePurchase: "",
+        note: noteAvis,
+        likes: 0,
+        dislikes: 0,
+      })
+      .then(async (docRef) => {
+        // console.log(docRef);
+        // console.log("Document written with ID: ", docRef.id);
+        const avisRef = db.collection("commentaires").doc(docRef.id);
+        return avisRef
+          .update({
+            id: docRef.id,
+          })
+          .then(() => {
+            setOpenAvis(false);
+            console.log("Document successfully updated!");
+          })
+          .catch((error) => {
+            // The document probably doesn't exist.
+            console.error("Error updating document: ", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
   };
 
   const addMoovie = (moovieName) => {
@@ -183,6 +295,56 @@ function Movie() {
       },
     });
   };
+
+  const handleReport = async () => {
+    if (uid !== "") {
+      await db
+        .collection("notifications")
+        .add({
+          content:
+            "Vous avez été signalé par un modérateur concernant votre annonce : " +
+            movies[0].name,
+          idUser: movies[0].seller,
+          isRead: false,
+        })
+        .then(async (docRef) => {
+          const movieRef = await doc(db, "notifications", docRef.id);
+          await updateDoc(movieRef, {
+            id: docRef.id,
+          });
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    }
+    const moovieName = `le film a bien été signalé`;
+    addMoovie(moovieName);
+  };
+
+  // const handleSuppr = async () => {
+  //   // await deleteDoc(doc(db,"movies",id))
+  //   if (uid !== "") {
+  //     await db
+  //     .collection("notifications")
+  //     .add({
+  //         content : "L'une de vos de annonces à été supprimé : ",
+  //         idUser: movies[0].seller,
+  //         isRead : false,
+  //     })
+  //     .then(async (docRef) => {
+  //       const movieRef = await doc(db, "notifications", docRef.id);
+  //       await updateDoc(movieRef, {
+  //         id: docRef.id,
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error writing document: ", error);
+  //     });
+  //   }
+  //   const moovieName = `le film a bien été supprimé`;
+  //   addMoovie(moovieName);
+  // };
+
   return (
     <section>
       <Box>
@@ -196,34 +358,65 @@ function Movie() {
                 justifyContent="space-between"
               >
                 <Typography variant="h2">{movies[0].name}</Typography>
-                {uid === movies[0].seller && (
-                  <Box>
-                    <Link
-                      to={"/modifier-film/" + movies[0].id}
-                      className={classes.link}
-                    >
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        className={classes.modifyFilmButton}
-                      >
-                        <Typography color={theme.palette.text.white}>
-                          Modifier le film
-                        </Typography>
-                      </Button>
-                    </Link>
-                    <Button
-                      className={classes.deleteFilmButton}
-                      color="secondary"
-                      variant="contained"
-                      onClick={handleOpen}
-                    >
-                      <Typography color={theme.palette.text.white}>
-                        Supprimer le film
-                      </Typography>
-                    </Button>
-                  </Box>
-                )}
+
+                <Box>
+                  <>
+                    {userCurrent[0] !== undefined && (
+                      <>
+                        {userCurrent[0].moderator === true && (
+                          <>
+                            <Button
+                              className={classes.otherButtons}
+                              color="secondary"
+                              variant="contained"
+                              onClick={() => handleReport()}
+                            >
+                              <Typography>Signaler le film</Typography>
+                            </Button>
+                            <Button
+                              className={classes.otherButtons}
+                              color="secondary"
+                              variant="contained"
+                              onClick={() => handleOpen()}
+                            >
+                              <Typography>Supprimer le film</Typography>
+                            </Button>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </>
+                  <>
+                    {uid === movies[0].seller && (
+                      <>
+                        <Link
+                          to={"/modifier-film/" + movies[0].id}
+                          className={classes.link}
+                        >
+                          <Button
+                            color="primary"
+                            variant="contained"
+                            className={classes.modifyFilmButton}
+                          >
+                            <Typography color={theme.palette.text.white}>
+                              Modifier le film
+                            </Typography>
+                          </Button>
+                        </Link>
+                        <Button
+                          className={classes.deleteFilmButton}
+                          color="secondary"
+                          variant="contained"
+                          onClick={handleOpen}
+                        >
+                          <Typography color={theme.palette.text.white}>
+                            Supprimer le film
+                          </Typography>
+                        </Button>
+                      </>
+                    )}
+                  </>
+                </Box>
               </Box>
               <Box display="flex" alignItems="center" paddingTop="15px">
                 {movies[0].genre.map((genreMovie) => (
@@ -233,7 +426,7 @@ function Movie() {
                     border="1px solid white"
                     padding="5px 10px"
                   >
-                    {genreMovie}
+                    <Typography variant="body1">{genreMovie}</Typography>
                   </Box>
                 ))}
               </Box>
@@ -277,26 +470,35 @@ function Movie() {
                       {movies[0].duration}
                     </Typography>
                   </Box>
-                  <Box className={classes.pegiCircle}>{movies[0].pegi}+</Box>
+                  {movies[0].pegi === 0 ? (
+                    <Box className={classes.pegiCircleFat}>
+                      <Typography>Tous publics</Typography>
+                    </Box>
+                  ) : (
+                    <Box className={classes.pegiCircle}>
+                      <Typography>{movies[0].pegi}+</Typography>
+                    </Box>
+                  )}
                 </Box>
                 <Box display="flex" alignItems="center">
-                  {/* DO NOT REMOVE */}
-                  <Box paddingRight="10px">
-                    <Link
-                      to={`/watch/${movies[0].id}`}
-                      className={classes.link}
-                    >
-                      <Button
-                        color="secondary"
-                        variant="contained"
-                        className={classes.buyStreaming}
+                  {movies[0].movieUrl !== undefined && (
+                    <Box paddingRight="10px">
+                      <Link
+                        to={`/watch/${movies[0].id}`}
+                        className={classes.link}
                       >
-                        <Typography variant="body1">
-                          Acheter le film en streaming
-                        </Typography>
-                      </Button>
-                    </Link>
-                  </Box>
+                        <Button
+                          color="secondary"
+                          variant="contained"
+                          className={classes.buyStreaming}
+                        >
+                          <Typography variant="body1">
+                            Acheter le film en streaming
+                          </Typography>
+                        </Button>
+                      </Link>
+                    </Box>
+                  )}
                   <Button
                     color="secondary"
                     variant="contained"
@@ -353,6 +555,86 @@ function Movie() {
                   <img src={movies[0].imgGallery[0]} width="800" />
                 </Box>
               </Box>
+              <Box paddingTop="20px" paddingBottom="50px">
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Typography variant="h4">Avis</Typography>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={handleOpenAvis}
+                    className={classes.deleteFilmButton}
+                  >
+                    <Typography variant="body1">Ajouter un avis</Typography>
+                  </Button>
+                </Box>
+                <Commentaires movies={movies} />
+              </Box>
+
+              <Modal
+                open={openAvis}
+                onClose={handleCloseAvis}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style2}>
+                  <Typography color={theme.palette.text.white}>
+                    Ajouter un avis
+                  </Typography>
+                  <Box paddingTop="20px">
+                    <CustomTextField
+                      fullWidth
+                      required
+                      value={titleAvis}
+                      id="titleAvis"
+                      label="Titre du commentaire"
+                      onChange={(e) => setTitleAvis(e.target.value)}
+                      InputLabelProps={{
+                        style: { color: "#fff" },
+                      }}
+                    />
+                  </Box>
+                  <Box paddingTop="20px">
+                    <CustomTextField
+                      fullWidth
+                      required
+                      multiline
+                      value={descriptionAvis}
+                      id="descriptionAvis"
+                      label="Commentaire"
+                      onChange={(e) => setDescriptionAvis(e.target.value)}
+                      InputLabelProps={{
+                        style: { color: "#fff" },
+                      }}
+                    />
+                  </Box>
+                  <Box paddingTop="20px" paddingBottom="20px">
+                    <CustomTextField
+                      fullWidth
+                      required
+                      type="number"
+                      value={noteAvis}
+                      id="noteAvis"
+                      label="Nombre d'étoiles"
+                      onChange={(e) => setNoteAvis(e.target.value)}
+                      InputLabelProps={{
+                        style: { color: "#fff" },
+                      }}
+                    />
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleSubmitAvis}
+                  >
+                    <Typography>Valider mon commentaire</Typography>
+                  </Button>
+                </Box>
+              </Modal>
+
               <Modal
                 open={open}
                 onClose={handleClose}

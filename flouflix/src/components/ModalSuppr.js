@@ -1,70 +1,76 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { makeStyles,useTheme } from "@mui/styles";
+import { makeStyles, useTheme } from "@mui/styles";
 import Modal from "@mui/material/Modal";
-import React, { useState, useEffect } from "react";
-import { useDebouncedCallback } from 'use-debounce';
-import {
-  getAuth,
-  onAuthStateChanged,
-} from "firebase/auth";
-import {
-  doc,
-  updateDoc,
-  where,
-  collection,
-  getDocs,
-  query,
-  arrayRemove,
-} from "firebase/firestore";
 
-const style = {
+import React from "react";
+
+const makeClass = makeStyles((theme) => ({
+  modale: {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  }; 
-
-
+    width: 500,
+    backgroundColor: theme.palette.primary.light,
+    padding: "40px",
+    borderRadius: "8px",
+  },
+  button: {
+    textTransform: "unset !important",
+    boxShadow: "unset !important",
+  },
+}));
 
 function ModalSuppr(props) {
-  //Gestion de la fenêtre de suppression  
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  return(
-<>
-    <Button onClick={handleOpen}>Supprimer</Button>
-
-    <Modal
-    open={open}
-    onClose={handleClose}
-    aria-labelledby="modal-modal-title"
-    aria-describedby="modal-modal-description"
-    >
-    <Box sx={style}>
-      <Typography id="modal-modal-title" variant="h6" component="h2" color="primary">
-        Supprimer le film {props.moovie.name}
-      </Typography>
-      <Typography id="modal-modal-description" sx={{ mt: 2 }} color="primary">
-        Êtes-vous sûr ?
-      </Typography>
-      <Button onClick={() => handleClose()} color="primary">
-        Annuler
-      </Button>
-      <Button onClick={() =>props.handleClickModal(props.indexModal)} color="secondary">
-        Supprimer
-      </Button>
-    </Box>
-  </Modal>
-</> 
-  )
+  const classes = makeClass();
+  const theme = useTheme();
+  return (
+    <>
+      <Modal
+        open={props.open}
+        onClose={props.handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box className={classes.modale}>
+          <Typography
+            id="modal-modal-title"
+            variant="h5"
+            color={theme.palette.text.white}
+          >
+            Supprimer le film {props.moovie.name}
+          </Typography>
+          <Box paddingTop="20px">
+            <Typography
+              id="modal-modal-description"
+              color={theme.palette.text.white}
+            >
+              Êtes-vous sûr de vouloir supprimer ce film ?
+            </Typography>
+          </Box>
+          <Box paddingTop="30px" display="flex" justifyContent="space-between">
+            <Button
+              onClick={() => props.handleClose()}
+              variant="contained"
+              color="primary"
+              className={classes.button}
+            >
+              <Typography variant="body1">Annuler</Typography>
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => props.handleClickModal(props.indexModal)}
+              color="secondary"
+              className={classes.button}
+            >
+              <Typography variant="body1">Confirmer la suppression</Typography>
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+    </>
+  );
 }
 export default ModalSuppr;
