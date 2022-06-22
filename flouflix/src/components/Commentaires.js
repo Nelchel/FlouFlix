@@ -113,7 +113,7 @@ function Commentaires(props) {
       await db
         .collection("notifications")
         .add({
-          content: "Vous avez été signaler par un modérateur concernant l'avis",
+          content: "Vous avez été signalé par un modérateur concernant l'avis",
           idUser: idUser,
           isRead: false,
         })

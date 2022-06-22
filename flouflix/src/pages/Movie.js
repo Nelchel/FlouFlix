@@ -202,21 +202,21 @@ function Movie() {
 
     if (userCurrent[0].moderator === true) {
       await db
-      .collection("notifications")
-      .add({
-          content : "L'une de vos de annonces à été supprimé : ",
+        .collection("notifications")
+        .add({
+          content: "L'une de vos de annonces à été supprimé : ",
           idUser: movies[0].seller,
-          isRead : false,
-      })
-      .then(async (docRef) => {
-        const movieRef = await doc(db, "notifications", docRef.id);
-        await updateDoc(movieRef, {
-          id: docRef.id,
+          isRead: false,
+        })
+        .then(async (docRef) => {
+          const movieRef = await doc(db, "notifications", docRef.id);
+          await updateDoc(movieRef, {
+            id: docRef.id,
+          });
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
         });
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
     }
     const moovieName = `le film a bien été supprimé`;
     addMoovie(moovieName);
@@ -298,7 +298,7 @@ function Movie() {
         .collection("notifications")
         .add({
           content:
-            "Vous avez été signaler par un modérateur concernant votre annonce : " +
+            "Vous avez été signalé par un modérateur concernant votre annonce : " +
             movies[0].name,
           idUser: movies[0].seller,
           isRead: false,
