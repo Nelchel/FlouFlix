@@ -12,6 +12,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import CardsLists from "../components/CardsLists";
 import ResearchBar from "../components/ResearchBar";
 import { Container } from "@mui/material";
+import Footer from "../components/Footer";
 
 const makeClass = makeStyles((theme) => ({
   signupButton: {
@@ -89,31 +90,34 @@ function Catalogue() {
   }, [downFavoris]);
 
   return (
-    <section>
-      <Container maxWidth="1250px">
-        <Box paddingTop="50px">
-          <ResearchBar
-            userData={userData}
-            setUpFavoris={(movie) => setUpFavoris(movie)}
-            setDownFavoris={(movie) => setDownFavoris(movie)}
-            setInputText={(text) => setInputText(text)}
-            setFilter={(filter) => setFilter(filter)}
-            setDisplayList={(isDisplay) => setDisplayList(isDisplay)}
-            allInput={{ getMovies, inputText, inputFilter, displayList }}
-          ></ResearchBar>
-          {/* <Typography variant="h1">Catalogue</Typography> */}
-          {!displayList && (
-            <CardsLists
+    <>
+      <section>
+        <Container maxWidth="1250px">
+          <Box paddingTop="50px">
+            <ResearchBar
               userData={userData}
-              movies={getMovies}
               setUpFavoris={(movie) => setUpFavoris(movie)}
               setDownFavoris={(movie) => setDownFavoris(movie)}
-            ></CardsLists>
-          )}
-          <Outlet />
-        </Box>
-      </Container>
-    </section>
+              setInputText={(text) => setInputText(text)}
+              setFilter={(filter) => setFilter(filter)}
+              setDisplayList={(isDisplay) => setDisplayList(isDisplay)}
+              allInput={{ getMovies, inputText, inputFilter, displayList }}
+            ></ResearchBar>
+            {/* <Typography variant="h1">Catalogue</Typography> */}
+            {!displayList && (
+              <CardsLists
+                userData={userData}
+                movies={getMovies}
+                setUpFavoris={(movie) => setUpFavoris(movie)}
+                setDownFavoris={(movie) => setDownFavoris(movie)}
+              ></CardsLists>
+            )}
+            <Outlet />
+          </Box>
+        </Container>
+      </section>
+      <Footer />
+    </>
   );
 }
 
