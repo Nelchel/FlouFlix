@@ -28,6 +28,7 @@ import { flexbox } from "@mui/system";
 import "../css/Movie.css";
 import CustomTextField from "../helpers/CustomTextField";
 import Commentaires from "../components/Commentaires";
+import toTimestamp from "../helpers/ToTimestamp";
 
 const makeClass = makeStyles((theme) => ({
   videoPlayer: {
@@ -248,14 +249,14 @@ function Movie() {
 
   const handleSubmitAvis = async () => {
     const currentDate = new Date();
-    const timestamp = currentDate.getTime();
+    const tmp = toTimestamp(currentDate);
     await db
       .collection("commentaires")
       .add({
         idUser: uid,
         idMovie: id,
         title: titleAvis,
-        dateAvis: timestamp,
+        dateAvis: tmp,
         description: descriptionAvis,
         datePurchase: "",
         note: noteAvis,
