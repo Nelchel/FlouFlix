@@ -14,11 +14,12 @@ import "firebase/compat/firestore";
 import { Outlet } from "react-router-dom";
 import {
   getAuth,
+  signOut,
   updateEmail,
   onAuthStateChanged,
   updatePassword,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc } from "firebase/firestore";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 import { updateDoc } from "firebase/firestore";
 import getDate from "../helpers/GetDate";
@@ -118,7 +119,7 @@ function MyAccount() {
       .then(() => {
         console.log("MAIL geted");
       })
-      .catch((error) => { 
+      .catch((error) => {
         console.log(error);
       });
     const docRef = doc(db, "users", uid);
@@ -129,6 +130,23 @@ function MyAccount() {
     setConnexion(false);
   };
 
+
+  const DeletePersonnal = async () => {
+    await signOut(auth)
+      .then(() => {
+        // console.log("success")
+      })
+      .catch((error) => {
+        // console.log(error)
+      });
+
+    deleteDoc(doc(db, "users", uid))
+    window.location('/')
+
+  }
+
+
+  
   return (
     <section>
       <Container maxWidth="1250px">
@@ -201,6 +219,19 @@ function MyAccount() {
                   Modifier mes informations personnelles
                 </Typography>
               </Button>
+
+
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={DeletePersonnal}
+                className={classes.button}
+              >
+                <Typography variant="body1" style={{ textTransform: "none" }}>
+                  Supprimer mon compte
+                </Typography>
+              </Button>
+
             </Box>
           </Box>
           <Modal
@@ -217,10 +248,13 @@ function MyAccount() {
               padding="30px"
               borderRadius="8px"
             >
+
               <Box paddingBottom="30px">
+
                 <Typography variant="h5" color={theme.palette.text.black}>
                   Modifier mes informations de connexion
                 </Typography>
+
               </Box>
               <form>
                 <Box display="flex" flexDirection="column">
@@ -371,6 +405,7 @@ function MyAccount() {
       </Container>
     </section>
   );
-}
+ }
 
-export default MyAccount;
+
+  export default MyAccount;

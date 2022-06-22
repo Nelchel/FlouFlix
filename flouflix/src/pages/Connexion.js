@@ -131,6 +131,9 @@ function Connexion() {
         if (error.code === "auth/user-not-found") {
           setErrorMessage("Il n'existe aucun compte associé à cet email.");
         }
+        if (error.code ==="auth/invalid-password"){
+          setErrorMessage("Mot de passe incorect")
+        }
       });
   };
 
@@ -296,7 +299,7 @@ function Connexion() {
                       onClick={handleSubmitRessetPassword}
                     >
                       {" "}
-                      Envoyer {console.log("envoie à " + mailAddressPassword)}
+                      {/* Envoyer {console.log("envoie à " + mailAddressPassword)} */}
                     </Button>
                   </form>
                 </Box>
