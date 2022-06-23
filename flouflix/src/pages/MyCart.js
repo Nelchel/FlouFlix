@@ -186,14 +186,6 @@ function MyCart(stripeConfig) {
     (index, quantity) => handleSubmit(index, quantity),
     3000
   );
-  // const handleChange = async (e, index) => {
-  //   const quantityLocal = [...quantity];
-  //   if (e.target.value >= 0 && e.target.value <= 100) {
-  //     quantityLocal[index].Quantity = e.target.value;
-  //     setQuantity(quantityLocal);
-  //     debounce(index, e.target.value);
-  //   } else console.log("Valeur incorrecte");
-  // };
 
   const calculPrice = () => {
     let sum = 0;
@@ -210,10 +202,11 @@ function MyCart(stripeConfig) {
 
   const handlePlus = (quantite, index) => {
     const quantityLocal = [...quantity];
-    if (quantite >= 0 && quantite <= 100) {
+    if (quantite >1  && quantite <= 100) {
       quantityLocal[index].Quantity = quantite + 1;
       setQuantity(quantityLocal);
-      debounce(index, quantite);
+      // debounce(index,quantityLocal[index].Quantity);
+      handleSubmit(index, quantityLocal[index].Quantity);
     } else console.log("Valeur incorrecte");
   };
 
@@ -222,7 +215,8 @@ function MyCart(stripeConfig) {
     if (quantite > 1 && quantite <= 100) {
       quantityLocal[index].Quantity = quantite - 1;
       setQuantity(quantityLocal);
-      debounce(index, quantite);
+      // debounce(index, quantityLocal[index].Quantity);
+      handleSubmit(index, quantityLocal[index].Quantity);
     }
   };
 
