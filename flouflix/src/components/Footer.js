@@ -25,10 +25,10 @@ function Footer() {
     <Box
       maxWidth="100vw"
       padding="30px 0"
-      left="0"
+      left="-15px"
       bottom="-90px"
       position="relative"
-      minWidth="100vw"
+      minWidth="calc(100vw - 20px)"
       borderTop="1px solid #464646"
     >
       <Box width="fit-content" margin="auto">
