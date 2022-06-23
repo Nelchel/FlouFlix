@@ -28,10 +28,8 @@ const Payment = (props) => {
             lineItems:
                 lineItem,
             mode : 'payment',
-            // cancelUrl : 'https://flouflix-staging.web.app/mon-panier',
-            // successUrl : 'https://flouflix-staging.web.app/confirmation-commande',
-            cancelUrl : "http://localhost:3000/mon-panier",
-            successUrl : "http://localhost:3000/confirmation-commande",
+            cancelUrl : 'https://flouflix-staging.web.app/mon-panier',
+            successUrl : 'https://flouflix-staging.web.app/confirmation-commande',
             customerEmail : props.email,
         });
         if(error){
