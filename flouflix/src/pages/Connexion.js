@@ -160,7 +160,7 @@ function Connexion() {
   }
 
   return (
-    <section>
+    <section> 
       <Container maxWidth="1250px">
         <Box
           display="flex"
